@@ -18,7 +18,7 @@ public class Controller implements Listener {
 
     private Menu menu;
     //TODO: EventBus
-    EventBus eventBus;
+    private EventBus eventBus;
 
     public Controller(Menu menu, EventBus eventBus) {
         this.menu = menu;
