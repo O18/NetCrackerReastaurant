@@ -1,9 +1,9 @@
 package com.sanik3d.restaurant.eventbus;
 
-import com.sanik3d.restaurant.eventbus.event.Event;
+import com.sanik3d.restaurant.eventbus.events.Event;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Александр on 12.11.2016.
@@ -11,7 +11,7 @@ import java.util.Set;
 public class EventBus {
     private static EventBus eventBus;
 
-    private Set<Listener> listeners = new HashSet<>();
+    private Map<Class, Handler> handlers = new HashMap<>();
 
     public static EventBus getInstance(){
         if(eventBus == null)
@@ -22,17 +22,19 @@ public class EventBus {
 
     private EventBus(){}
 
-    public void addListener(Listener l){
-        listeners.add(l);
+    public void addHandler(Class handlerClass, Handler handler ){
+        handlers.put(handlerClass, handler);
     }
 
-    public void deleteListener(Listener l){
-        listeners.remove(l);
+    public void deleteHandler(Class handlerClass){
+        handlers.remove(handlerClass);
     }
 
     public void post(Event e){
-        for (Listener l : listeners) {
-            l.onEvent(e);
+        for (Class handlerClass: handlers.keySet()){
+            if(handlerClass == e.getClass()) {
+                handlers.get(handlerClass).handle(e);
+            }
         }
     }
 }

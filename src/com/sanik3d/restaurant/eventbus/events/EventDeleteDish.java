@@ -1,4 +1,4 @@
-package com.sanik3d.restaurant.eventbus.event;
+package com.sanik3d.restaurant.eventbus.events;
 
 /**
  * Created by 1 on 21.11.2016.

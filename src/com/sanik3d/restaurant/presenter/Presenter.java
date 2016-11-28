@@ -1,7 +1,7 @@
 package com.sanik3d.restaurant.presenter;
 
 import com.sanik3d.restaurant.eventbus.EventBus;
-import com.sanik3d.restaurant.eventbus.event.*;
+import com.sanik3d.restaurant.eventbus.events.*;
 import com.sanik3d.restaurant.exceptions.ExceptionAddDish;
 import com.sanik3d.restaurant.exceptions.ExceptionNameCategory;
 import com.sanik3d.restaurant.exceptions.ExceptionNameDish;
@@ -32,6 +32,7 @@ public class Presenter {
                 strAndDig[j] = str;
         }
         j = 0;
+        //TODO: переделать switch с помощью паттерна Стратегия
         switch (String.valueOf(strAndDig[j++])) {
             case "load": {
                 if (strAndDig.length < (j + 1))

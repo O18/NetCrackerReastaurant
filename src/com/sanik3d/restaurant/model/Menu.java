@@ -9,23 +9,16 @@ import java.util.Set;
 public class Menu implements Serializable{
     private static final long serialVersionUID = 1L;
 
-    private Set<Dish> dishes;
     private Set<Category> categories;
+    private MenuCash cash;
 
     public Menu() {
+        cash = new MenuCash(this);
     }
 
-    public Menu(Set<Dish> dishes, Set<Category> categories) {
-        this.dishes = dishes;
+    public Menu(Set<Category> categories) {
         this.categories = categories;
-    }
-
-    public Set<Dish> getDishes() {
-        return dishes;
-    }
-
-    public void setDishes(Set<Dish> dishes) {
-        this.dishes = dishes;
+        cash = new MenuCash(this);
     }
 
     public Set<Category> getCategories() {
@@ -36,11 +29,11 @@ public class Menu implements Serializable{
         this.categories = categories;
     }
 
-    public boolean addDish(Dish dish){
-        return dishes.add(dish);
+    public void addDish(Dish dish){
+
     }
 
-    public boolean addCategory(Category category){
-        return categories.add(category);
+    public void addCategory(Category category){
+        categories.add(category);
     }
 }
