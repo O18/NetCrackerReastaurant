@@ -12,20 +12,20 @@ public class EventBus {
 
     private Map<Class, Handler> handlers = new HashMap<>();
 
+    public EventBus() {
+    }
 
-    public EventBus(){}
-
-    public void addHandler(Class handlerClass, Handler handler ){
+    public void addHandler(Class handlerClass, Handler handler) {
         handlers.put(handlerClass, handler);
     }
 
-    public void deleteHandler(Class handlerClass){
+    public void deleteHandler(Class handlerClass) {
         handlers.remove(handlerClass);
     }
 
-    public void post(Event e){
-        for (Class handlerClass: handlers.keySet()){
-            if(handlerClass == e.getClass()) {
+    public void post(Event e) {
+        for (Class handlerClass : handlers.keySet()) {
+            if (handlerClass == e.getClass()) {
                 handlers.get(handlerClass).handle(e);
             }
         }
