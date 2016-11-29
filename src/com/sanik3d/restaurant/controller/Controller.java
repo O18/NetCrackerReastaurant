@@ -8,6 +8,7 @@ import com.sanik3d.restaurant.model.Menu;
 
 import java.io.*;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Александр on 12.11.2016.
@@ -15,7 +16,6 @@ import java.util.Map;
 public class Controller {
 
     private Menu menu;
-    //TODO: EventBus
     private EventBus eventBus;
 
     public Controller(Menu menu, EventBus eventBus) {
@@ -33,6 +33,10 @@ public class Controller {
                 event -> deleteCategory((DeleteCategoryEvent)event));
         this.eventBus.addHandler(DeleteDishEvent.class,
                 event -> deleteDish((DeleteDishEvent)event));
+        this.eventBus.addHandler(ShowAllCategoriesEvent.class,
+                event -> showAllCategories((ShowAllCategoriesEvent)event));
+        this.eventBus.addHandler(ShowAllDishesEvent.class,
+                event -> showAllDishes((ShowAllDishesEvent)event));
     }
 
     private void loadMenuFrom(LoadInMemoryEvent event) {
@@ -41,10 +45,11 @@ public class Controller {
             Menu loadedMenu = (Menu) in.readObject();
             in.close();
             menu = loadedMenu;
+            event.getCallback().onSuccess();
         } catch (FileNotFoundException e) {
-            event.
+            event.getCallback().onFailFileNotFound();
         } catch (ClassNotFoundException | IOException e) {
-            //TODO: Callback - ошибка чтения
+            event.getCallback().onFailReadError();
         }
     }
 
@@ -54,10 +59,9 @@ public class Controller {
             out.writeObject(menu);
             out.flush();
             out.close();
-        } catch (FileNotFoundException e) {
-            //TODO: Callback - ошибка создания файла
+            event.getCallback().onSuccess();
         } catch (IOException e) {
-            //TODO: Callback - ошибка записи
+            event.getCallback().onFailWriteError();
         }
     }
 
@@ -67,10 +71,10 @@ public class Controller {
         if(!nameCategoryMap.containsKey(categoryName)){
             Category categoryToAdd = new Category(categoryName);
             menu.addCategory(categoryToAdd);
-            //TODO: callback onSuccess
+            event.getCallback().onSuccess();
         }
         else {
-            //TODO: callback категория с таким именем уже существует
+            event.getCallback().onFailCategoryAlreadyExists();
         }
 
     }
@@ -82,10 +86,10 @@ public class Controller {
         if(nameCategoryMap.containsKey(categoryName)){
             Category category = nameCategoryMap.get(categoryName);
             menu.deleteCategory(category);
-            //TODO: callback успешно
+            event.getCallback().onSuccess();
         }
         else {
-            //TODO: callback категории с таким именем не существует
+            event.getCallback().onFailCategoryDoesNotExist();
         }
     }
 
@@ -100,14 +104,14 @@ public class Controller {
             if(!nameDishMap.containsKey(dishName)){
                 Dish dishToAdd = createDishFromEvent(event);
                 menu.addDish(dishToAdd);
-                //TODO: callback успешно
+                event.getCallback().onSuccess();
             }
             else {
-                //TODO: callback уже есть блюдо с таким именем
+                event.getCallback().onFailDishAlreadyExists();
             }
         }
         else{
-            //TODO: callback категории с таким именем не существует
+            event.getCallback().onFailCategoryDoesNotExist();
         }
     }
 
@@ -126,10 +130,21 @@ public class Controller {
         if(nameDishMap.containsKey(dishName)){
             Dish dishToDelete = nameDishMap.get(dishName);
             menu.deleteDish(dishToDelete);
-            //TODO: callback успешно
+            event.getCallback().onSuccess();
         }
         else{
-            //TODO: callback блюда с таким именем не существует
+            event.getCallback().onFailDishDoesNotExist();
         }
+    }
+
+
+    private void showAllDishes(ShowAllDishesEvent event) {
+        Set<Dish> dishes = menu.getDishes();
+        event.getCallback().onSuccess();//TODO: вернуть блюда
+    }
+
+    private void showAllCategories(ShowAllCategoriesEvent event) {
+        Set<Category> categories = menu.getCategories();
+        event.getCallback().onSuccess();//TODO: вернуть категории блюд
     }
 }

@@ -9,18 +9,11 @@ import java.util.Map;
  * Created by Александр on 12.11.2016.
  */
 public class EventBus {
-    private static EventBus eventBus;
 
     private Map<Class, Handler> handlers = new HashMap<>();
 
-    public static EventBus getInstance(){
-        if(eventBus == null)
-            eventBus = new EventBus();
 
-        return eventBus;
-    }
-
-    private EventBus(){}
+    public EventBus(){}
 
     public void addHandler(Class handlerClass, Handler handler ){
         handlers.put(handlerClass, handler);

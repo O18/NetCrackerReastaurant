@@ -8,7 +8,8 @@ import com.sanik3d.restaurant.presenter.callbacks.SaveMenuCallback;
 public class SaveMenuEvent implements Event {
     private String path;
     private SaveMenuCallback callback;
-    public SaveMenuEvent(String path,SaveMenuCallback callback) {
+
+    public SaveMenuEvent(String path, SaveMenuCallback callback) {
         this.path = path;
         this.callback = callback;
     }
@@ -17,4 +18,7 @@ public class SaveMenuEvent implements Event {
         return path;
     }
 
+    public SaveMenuCallback getCallback() {
+        return callback;
+    }
 }

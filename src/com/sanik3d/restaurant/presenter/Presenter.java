@@ -1,8 +1,7 @@
 package com.sanik3d.restaurant.presenter;
 
 import com.sanik3d.restaurant.eventbus.EventBus;
-import com.sanik3d.restaurant.eventbus.event.*;
-import com.sanik3d.restaurant.eventbus.events.Event;
+import com.sanik3d.restaurant.events.*;
 import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
 import com.sanik3d.restaurant.presenter.callbacks.*;
 import com.sanik3d.restaurant.view.Parser;
@@ -43,7 +42,7 @@ public class Presenter {
                 }
 
                 @Override
-                public void onFailCategoryDontExists() {
+                public void onFailCategoryDoesNotExist() {
                     view.print("Неудача! Указанной категории не существует.");//TODO:предложить создать такую категорию
                 }
             }));
@@ -65,7 +64,7 @@ public class Presenter {
                 }
 
                 @Override
-                public void onFailDishDontExists() {
+                public void onFailDishDoesNotExist() {
                     view.print("Неудача! Указанное блюдо не существует.");
                 }
             }));
@@ -76,7 +75,7 @@ public class Presenter {
                 }
 
                 @Override
-                public void onFailCategoryDontExists() {
+                public void onFailCategoryDoesNotExist() {
                     view.print("Неудача! Указанная категория не существует.");
                 }
 
@@ -119,7 +118,7 @@ public class Presenter {
                 @Override
                 public void onSuccess() {
                     view.print("Полный список блюд :");
-                }
+                }//TODO: сделать возвращаемое значение
 
                 @Override
                 public void onFail() {
@@ -130,7 +129,7 @@ public class Presenter {
                 @Override
                 public void onSuccess() {
                     view.print("Полный список категорий: ");
-                }
+                }//TODO: сделать возвращаемое значение
 
                 @Override
                 public void onFail() {
