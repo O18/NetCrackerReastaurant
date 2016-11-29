@@ -7,7 +7,7 @@ import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.model.Menu;
 
 import java.io.*;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Александр on 12.11.2016.
@@ -31,6 +31,8 @@ public class Controller {
                 event -> addDish((EventAddDish) event));
         this.eventBus.addHandler(EventDeleteCategory.class,
                 event -> deleteCategory((EventDeleteCategory)event));
+        this.eventBus.addHandler(EventDeleteDish.class,
+                event -> deleteDish((EventDeleteDish)event));
     }
 
     private void loadMenuFrom(EventLoad event) {
@@ -61,35 +63,73 @@ public class Controller {
 
     private void addCategory(EventAddCategory event) {
         String categoryName = event.getNameOfCategory();
-        menu.
-        menu.addCategory();
+        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
+        if(!nameCategoryMap.containsKey(categoryName)){
+            Category categoryToAdd = new Category(categoryName);
+            menu.addCategory(categoryToAdd);
+            //TODO: callback onSuccess
+        }
+        else {
+            //TODO: callback категория с таким именем уже существует
+        }
+
     }
 
     private void deleteCategory(EventDeleteCategory event) {
+        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
+        String categoryName = event.getNameOfCategory();
 
-    }
-
-    private void addDish(EventAddDish e) {
-
-    }
-
-    public void onEvent(Event e) {//TODO: проверка на существование зависимостей
-
-        else if(e instanceof EventAddDish) {
-            HashMap<String, Category> map = new HashMap<>();
-            for (Category c: menu.getCategories()){
-                map.put(c.getName(), c);
-            }//TODO: вынести в модель
-
-            EventAddDish dishEvent = (EventAddDish)e;
-            setDish(dishEvent.getNameOfDish(), map.get(dishEvent.getCategory()), dishEvent.getPriceOfDish());
+        if(nameCategoryMap.containsKey(categoryName)){
+            Category category = nameCategoryMap.get(categoryName);
+            menu.deleteCategory(category);
+            //TODO: callback успешно
         }
-        //TODO: создать Callback
+        else {
+            //TODO: callback категории с таким именем не существует
+        }
     }
 
-    private void setDish(String name, Category category, double cost) {
-        menu.addDish(new Dish(name, category, cost));
+    private void addDish(EventAddDish event) {
+        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
+        String categoryName = event.getCategory();
+
+        if(nameCategoryMap.containsKey(categoryName)){
+            Map<String, Dish> nameDishMap = menu.getNameDishMap();
+            String dishName = event.getNameOfDish();
+
+            if(!nameDishMap.containsKey(dishName)){
+                Dish dishToAdd = createDishFromEvent(event);
+                menu.addDish(dishToAdd);
+                //TODO: callback успешно
+            }
+            else {
+                //TODO: callback уже есть блюдо с таким именем
+            }
+        }
+        else{
+            //TODO: callback категории с таким именем не существует
+        }
     }
 
+    private Dish createDishFromEvent(EventAddDish event) {
+        String dishName = event.getNameOfDish();
+        Category category = menu.getNameCategoryMap().get(event.getCategory());
+        double price = event.getPriceOfDish();
 
+        return new Dish(dishName, category, price);
+    }
+
+    private void deleteDish(EventDeleteDish event){
+        Map<String, Dish> nameDishMap = menu.getNameDishMap();
+        String dishName = event.getNameOfDish();
+
+        if(nameDishMap.containsKey(dishName)){
+            Dish dishToDelete = nameDishMap.get(dishName);
+            menu.deleteDish(dishToDelete);
+            //TODO: callback успешно
+        }
+        else{
+            //TODO: callback блюда с таким именем не существует
+        }
+    }
 }

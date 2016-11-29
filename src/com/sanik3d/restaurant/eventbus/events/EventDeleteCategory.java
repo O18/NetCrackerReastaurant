@@ -5,6 +5,7 @@ package com.sanik3d.restaurant.eventbus.events;
  */
 public class EventDeleteCategory implements Event {
     private String nameOfCategory;
+
     public EventDeleteCategory (String nameOfCategory) {
         this.nameOfCategory = nameOfCategory;
     }
@@ -12,4 +13,5 @@ public class EventDeleteCategory implements Event {
     public String getNameOfCategory() {
         return nameOfCategory;
     }
+
 }

@@ -24,6 +24,14 @@ public class Category implements Serializable{
         dishes.add(dish);
     }
 
+    public Set<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void deleteDish(Dish dish){
+        dishes.remove(dish);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

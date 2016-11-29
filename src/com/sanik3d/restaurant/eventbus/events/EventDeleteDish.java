@@ -8,4 +8,8 @@ public class EventDeleteDish implements Event{
     public EventDeleteDish (String nameOfDish) {
         this.nameOfDish = nameOfDish;
     }
+
+    public String getNameOfDish() {
+        return nameOfDish;
+    }
 }
