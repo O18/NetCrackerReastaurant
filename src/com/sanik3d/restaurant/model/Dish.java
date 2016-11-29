@@ -8,9 +8,9 @@ import java.io.Serializable;
 public class Dish implements Serializable{
     private static final long serialVersionUID = 1L;
 
-    private String name;
-    private Category category;//todo
-    private double cost;
+    private final String name;
+    private final Category category;//todo
+    private final double cost;
 
     public Dish(String name, Category category, double cost) {
         this.name = name;
@@ -47,21 +47,10 @@ public class Dish implements Serializable{
     public int hashCode() {
         int result;
         long temp;
-        result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (category != null ? category.hashCode() : 0);
-        temp = Double.doubleToLongBits(cost);
-        result = 31 * result + (int) (temp ^ (temp >>> 32));
-        return result;
-    }
-
-  /*  @Override
-    public int hashCode() {
-        int result;
-        long temp;
         result = name.hashCode();
         result = 31 * result + category.hashCode();
         temp = Double.doubleToLongBits(cost);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
-    }*/
+    }
 }

@@ -1,20 +1,18 @@
 package com.sanik3d.restaurant.controller;
 
 import com.sanik3d.restaurant.eventbus.EventBus;
-import com.sanik3d.restaurant.eventbus.Listener;
-import com.sanik3d.restaurant.eventbus.event.*;
+import com.sanik3d.restaurant.eventbus.events.*;
 import com.sanik3d.restaurant.model.Category;
 import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.model.Menu;
 
-import javax.xml.ws.handler.Handler;
 import java.io.*;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Александр on 12.11.2016.
  */
-public class Controller implements Listener {
+public class Controller {
 
     private Menu menu;
     //TODO: EventBus
@@ -23,64 +21,115 @@ public class Controller implements Listener {
     public Controller(Menu menu, EventBus eventBus) {
         this.menu = menu;
         this.eventBus = eventBus;
-        this.eventBus.addListener(EventLoad.class, new Handler<EventLoad>{
-            void handle(EventLoad event)
-            {
-                loadMenuFrom(((EventLoad) e).getPath());
-            }
-        });
+        this.eventBus.addHandler(EventLoad.class,
+                event -> loadMenuFrom(((EventLoad)event)));
+        this.eventBus.addHandler(EventSave.class,
+                event -> saveMenuTo(((EventSave) event)));
+        this.eventBus.addHandler(EventAddCategory.class,
+                event -> addCategory(((EventAddCategory) event)));
+        this.eventBus.addHandler(EventAddDish.class,
+                event -> addDish((EventAddDish) event));
+        this.eventBus.addHandler(EventDeleteCategory.class,
+                event -> deleteCategory((EventDeleteCategory)event));
+        this.eventBus.addHandler(EventDeleteDish.class,
+                event -> deleteDish((EventDeleteDish)event));
     }
 
-    @Override
-    public void onEvent(Event e) {//TODO: проверка на существование зависимостей
-        if(e instanceof EventLoad)
-
-        else if(e instanceof EventSave)
-            saveMenuTo(((EventSave) e).getPath());
-        else if(e instanceof EventAddCategory)
-            setCategory(((EventAddCategory) e).getNameOfCategory());
-        else if(e instanceof EventAddDish) {
-            HashMap<String, Category> map = new HashMap<>();
-            for (Category c: menu.getCategories()){
-                map.put(c.getName(), c);
-            }//TODO: вынести в модель
-
-            EventAddDish dishEvent = (EventAddDish)e;
-            setDish(dishEvent.getNameOfDish(), map.get(dishEvent.getCategory()), dishEvent.getPriceOfDish());
-        }
-        //TODO: создать Callback
-    }
-
-    private void setDish(String name, Category category, double cost) {
-        menu.addDish(new Dish(name, category, cost));
-    }
-
-    private void setCategory(String name) {
-        menu.addCategory(new Category(name));
-    }
-
-    private void saveMenuTo(String filePath) {
-        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
-            out.writeObject(menu);
-            out.flush();
-            out.close();
-        } catch (FileNotFoundException e) {
-            System.err.println("Сохранение не удалось");
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void loadMenuFrom(String filePath) {
+    private void loadMenuFrom(EventLoad event) {
+        String filePath = event.getPath();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
             Menu loadedMenu = (Menu) in.readObject();
             in.close();
             menu = loadedMenu;
         } catch (FileNotFoundException e) {
-            System.err.println("Файл не найден!");
+            //TODO: Callback - не найден файд;
         } catch (ClassNotFoundException | IOException e) {
-            e.printStackTrace();
+            //TODO: Callback - ошибка чтения
+        }
+    }
+
+    private void saveMenuTo(EventSave event) {
+        String filePath = event.getPath();
+        try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
+            out.writeObject(menu);
+            out.flush();
+            out.close();
+        } catch (FileNotFoundException e) {
+            //TODO: Callback - ошибка создания файла
+        } catch (IOException e) {
+            //TODO: Callback - ошибка записи
+        }
+    }
+
+    private void addCategory(EventAddCategory event) {
+        String categoryName = event.getNameOfCategory();
+        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
+        if(!nameCategoryMap.containsKey(categoryName)){
+            Category categoryToAdd = new Category(categoryName);
+            menu.addCategory(categoryToAdd);
+            //TODO: callback onSuccess
+        }
+        else {
+            //TODO: callback категория с таким именем уже существует
+        }
+
+    }
+
+    private void deleteCategory(EventDeleteCategory event) {
+        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
+        String categoryName = event.getNameOfCategory();
+
+        if(nameCategoryMap.containsKey(categoryName)){
+            Category category = nameCategoryMap.get(categoryName);
+            menu.deleteCategory(category);
+            //TODO: callback успешно
+        }
+        else {
+            //TODO: callback категории с таким именем не существует
+        }
+    }
+
+    private void addDish(EventAddDish event) {
+        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
+        String categoryName = event.getCategory();
+
+        if(nameCategoryMap.containsKey(categoryName)){
+            Map<String, Dish> nameDishMap = menu.getNameDishMap();
+            String dishName = event.getNameOfDish();
+
+            if(!nameDishMap.containsKey(dishName)){
+                Dish dishToAdd = createDishFromEvent(event);
+                menu.addDish(dishToAdd);
+                //TODO: callback успешно
+            }
+            else {
+                //TODO: callback уже есть блюдо с таким именем
+            }
+        }
+        else{
+            //TODO: callback категории с таким именем не существует
+        }
+    }
+
+    private Dish createDishFromEvent(EventAddDish event) {
+        String dishName = event.getNameOfDish();
+        Category category = menu.getNameCategoryMap().get(event.getCategory());
+        double price = event.getPriceOfDish();
+
+        return new Dish(dishName, category, price);
+    }
+
+    private void deleteDish(EventDeleteDish event){
+        Map<String, Dish> nameDishMap = menu.getNameDishMap();
+        String dishName = event.getNameOfDish();
+
+        if(nameDishMap.containsKey(dishName)){
+            Dish dishToDelete = nameDishMap.get(dishName);
+            menu.deleteDish(dishToDelete);
+            //TODO: callback успешно
+        }
+        else{
+            //TODO: callback блюда с таким именем не существует
         }
     }
 }

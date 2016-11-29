@@ -1,6 +1,7 @@
 package com.sanik3d.restaurant.model;
 
 import java.io.Serializable;
+import java.util.Set;
 
 /**
  * Created by Александр on 06.11.2016.
@@ -8,7 +9,8 @@ import java.io.Serializable;
 public class Category implements Serializable{
     private static final long serialVersionUID = 1L;
 
-    private String name;
+    private final String name;
+    private Set<Dish> dishes;
 
     public Category(String name) {
         this.name = name;
@@ -18,9 +20,16 @@ public class Category implements Serializable{
         return name;
     }
 
-    @Override
-    public String toString() {
-        return name;
+    public void addDish(Dish dish){
+        dishes.add(dish);
+    }
+
+    public Set<Dish> getDishes() {
+        return dishes;
+    }
+
+    public void deleteDish(Dish dish){
+        dishes.remove(dish);
     }
 
     @Override

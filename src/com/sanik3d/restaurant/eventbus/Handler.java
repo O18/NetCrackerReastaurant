@@ -3,8 +3,9 @@ package com.sanik3d.restaurant.eventbus;
 import com.sanik3d.restaurant.eventbus.events.Event;
 
 /**
- * Created by Александр on 12.11.2016.
+ * Created by Александр on 24.11.2016.
  */
-public interface Listener {
-    void onEvent(Event e);
+public interface Handler {
+
+    void handle(Event event);
 }
