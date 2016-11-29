@@ -1,7 +1,6 @@
 package com.sanik3d.restaurant.events;
 
 
-import com.sanik3d.restaurant.eventbus.events.Event;
 import com.sanik3d.restaurant.presenter.callbacks.DeleteCategoryCallback;
 
 
@@ -18,5 +17,9 @@ public class DeleteCategoryEvent implements Event {
 
     public String getNameOfCategory() {
         return nameOfCategory;
+    }
+
+    public DeleteCategoryCallback getCallback() {
+        return callback;
     }
 }

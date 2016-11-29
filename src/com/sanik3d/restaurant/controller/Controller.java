@@ -1,7 +1,7 @@
 package com.sanik3d.restaurant.controller;
 
 import com.sanik3d.restaurant.eventbus.EventBus;
-import com.sanik3d.restaurant.eventbus.events.*;
+import com.sanik3d.restaurant.events.*;
 import com.sanik3d.restaurant.model.Category;
 import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.model.Menu;
@@ -21,34 +21,34 @@ public class Controller {
     public Controller(Menu menu, EventBus eventBus) {
         this.menu = menu;
         this.eventBus = eventBus;
-        this.eventBus.addHandler(EventLoad.class,
-                event -> loadMenuFrom(((EventLoad)event)));
-        this.eventBus.addHandler(EventSave.class,
-                event -> saveMenuTo(((EventSave) event)));
-        this.eventBus.addHandler(EventAddCategory.class,
-                event -> addCategory(((EventAddCategory) event)));
-        this.eventBus.addHandler(EventAddDish.class,
-                event -> addDish((EventAddDish) event));
-        this.eventBus.addHandler(EventDeleteCategory.class,
-                event -> deleteCategory((EventDeleteCategory)event));
-        this.eventBus.addHandler(EventDeleteDish.class,
-                event -> deleteDish((EventDeleteDish)event));
+        this.eventBus.addHandler(LoadInMemoryEvent.class,
+                event -> loadMenuFrom(((LoadInMemoryEvent)event)));
+        this.eventBus.addHandler(SaveMenuEvent.class,
+                event -> saveMenuTo(((SaveMenuEvent) event)));
+        this.eventBus.addHandler(AddCategoryEvent.class,
+                event -> addCategory(((AddCategoryEvent) event)));
+        this.eventBus.addHandler(AddDishEvent.class,
+                event -> addDish((AddDishEvent) event));
+        this.eventBus.addHandler(DeleteCategoryEvent.class,
+                event -> deleteCategory((DeleteCategoryEvent)event));
+        this.eventBus.addHandler(DeleteDishEvent.class,
+                event -> deleteDish((DeleteDishEvent)event));
     }
 
-    private void loadMenuFrom(EventLoad event) {
+    private void loadMenuFrom(LoadInMemoryEvent event) {
         String filePath = event.getPath();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
             Menu loadedMenu = (Menu) in.readObject();
             in.close();
             menu = loadedMenu;
         } catch (FileNotFoundException e) {
-            //TODO: Callback - не найден файд;
+            event.
         } catch (ClassNotFoundException | IOException e) {
             //TODO: Callback - ошибка чтения
         }
     }
 
-    private void saveMenuTo(EventSave event) {
+    private void saveMenuTo(SaveMenuEvent event) {
         String filePath = event.getPath();
         try (ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(filePath))) {
             out.writeObject(menu);
@@ -61,7 +61,7 @@ public class Controller {
         }
     }
 
-    private void addCategory(EventAddCategory event) {
+    private void addCategory(AddCategoryEvent event) {
         String categoryName = event.getNameOfCategory();
         Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
         if(!nameCategoryMap.containsKey(categoryName)){
@@ -75,7 +75,7 @@ public class Controller {
 
     }
 
-    private void deleteCategory(EventDeleteCategory event) {
+    private void deleteCategory(DeleteCategoryEvent event) {
         Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
         String categoryName = event.getNameOfCategory();
 
@@ -89,7 +89,7 @@ public class Controller {
         }
     }
 
-    private void addDish(EventAddDish event) {
+    private void addDish(AddDishEvent event) {
         Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
         String categoryName = event.getCategory();
 
@@ -111,7 +111,7 @@ public class Controller {
         }
     }
 
-    private Dish createDishFromEvent(EventAddDish event) {
+    private Dish createDishFromEvent(AddDishEvent event) {
         String dishName = event.getNameOfDish();
         Category category = menu.getNameCategoryMap().get(event.getCategory());
         double price = event.getPriceOfDish();
@@ -119,7 +119,7 @@ public class Controller {
         return new Dish(dishName, category, price);
     }
 
-    private void deleteDish(EventDeleteDish event){
+    private void deleteDish(DeleteDishEvent event){
         Map<String, Dish> nameDishMap = menu.getNameDishMap();
         String dishName = event.getNameOfDish();
 

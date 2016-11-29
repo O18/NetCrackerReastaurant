@@ -3,7 +3,7 @@ package com.sanik3d.restaurant.presenter;
 import com.sanik3d.restaurant.eventbus.EventBus;
 import com.sanik3d.restaurant.eventbus.event.*;
 import com.sanik3d.restaurant.eventbus.events.Event;
-import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
+import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
 import com.sanik3d.restaurant.presenter.callbacks.*;
 import com.sanik3d.restaurant.view.Parser;
 import com.sanik3d.restaurant.view.View;
@@ -20,7 +20,7 @@ public class Presenter {
     private Parser parser;
     private View view;
 
-    public void sendEvent(String inString) throws NotEnoughtDataException {
+    public void sendEvent(String inString) throws NotEnoughDataException {
         try {
             String command = parser.getCommand(inString);
             String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";
@@ -28,9 +28,9 @@ public class Presenter {
             String[] strings = parser.getArgs(inString);
             if (command.equals("add_dish")) ;
             if (strings.length < 3)
-                throw new NotEnoughtDataException(message);
+                throw new NotEnoughDataException(message);
             else if (strings.length < 1)
-                throw new NotEnoughtDataException(message);
+                throw new NotEnoughDataException(message);
             map.put("add_dish", new AddDishEvent(strings[0], Double.valueOf(strings[1]), strings[2], new AddDishCallback() {
                 @Override
                 public void onSuccess() {
@@ -85,7 +85,7 @@ public class Presenter {
                     view.print("Внимание! При удалении категории, удалятся все связанные с ней блюда!");
                 }
             }));
-            map.put("load", new LoadInMemoryEvent(strings[0], new LoadInMemmoryCallback() {
+            map.put("load", new LoadInMemoryEvent(strings[0], new LoadInMemoryCallback() {
                 @Override
                 public void onSuccess() {
                     view.print("Загрузка меню в память прошла успешно!");
@@ -102,7 +102,7 @@ public class Presenter {
 
                 }
             }));
-            map.put("save", new SaveMenuEvent(strings[0], new SaveMunuCallback() {
+            map.put("save", new SaveMenuEvent(strings[0], new SaveMenuCallback() {
                 @Override
                 public void onSuccess() {
 
@@ -138,7 +138,7 @@ public class Presenter {
                 }
             }));
             eventBus.post(map.get(command));
-        } catch (NotEnoughtDataException e) {
+        } catch (NotEnoughDataException e) {
             view.print(e.getMessage());
         }//TODO:разобраться с исключениями
         /* strings = parser.getArrayOfStrings(inString);

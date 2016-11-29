@@ -1,6 +1,6 @@
 package com.sanik3d.restaurant.eventbus;
 
-import com.sanik3d.restaurant.eventbus.events.Event;
+import com.sanik3d.restaurant.events.Event;
 
 import java.util.HashMap;
 import java.util.Map;

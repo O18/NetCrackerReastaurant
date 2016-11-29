@@ -1,6 +1,5 @@
 package com.sanik3d.restaurant.events;
 
-import com.sanik3d.restaurant.eventbus.events.Event;
 import com.sanik3d.restaurant.presenter.callbacks.AddDishCallback;
 
 /**
@@ -29,5 +28,9 @@ public class AddDishEvent implements Event {
 
     public String getCategory() {
         return category;
+    }
+
+    public AddDishCallback getCallback() {
+        return callback;
     }
 }

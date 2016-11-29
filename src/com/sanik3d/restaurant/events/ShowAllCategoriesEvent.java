@@ -1,6 +1,5 @@
 package com.sanik3d.restaurant.events;
 
-import com.sanik3d.restaurant.eventbus.events.Event;
 import com.sanik3d.restaurant.presenter.callbacks.ShowAllCategoriesCallback;
 
 /**
@@ -11,5 +10,9 @@ public class ShowAllCategoriesEvent implements Event {
 
     public ShowAllCategoriesEvent(ShowAllCategoriesCallback callback) {
         this.callback = callback;
+    }
+
+    public ShowAllCategoriesCallback getCallback() {
+        return callback;
     }
 }

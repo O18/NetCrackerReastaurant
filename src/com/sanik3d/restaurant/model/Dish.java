@@ -9,7 +9,7 @@ public class Dish implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private final String name;
-    private final Category category;//todo
+    private final Category category;
     private final double cost;
 
     public Dish(String name, Category category, double cost) {

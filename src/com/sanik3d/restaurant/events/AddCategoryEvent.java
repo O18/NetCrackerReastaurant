@@ -17,4 +17,8 @@ public class AddCategoryEvent implements Event {
     public String getNameOfCategory() {
         return nameOfCategory;
     }
+
+    public AddCategoryCallback getCallback() {
+        return callback;
+    }
 }

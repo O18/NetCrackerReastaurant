@@ -1,6 +1,5 @@
 package com.sanik3d.restaurant.events;
 
-import com.sanik3d.restaurant.eventbus.events.Event;
 import com.sanik3d.restaurant.presenter.callbacks.DeleteDishCallback;
 
 /**
@@ -9,8 +8,17 @@ import com.sanik3d.restaurant.presenter.callbacks.DeleteDishCallback;
 public class DeleteDishEvent implements Event {
     private String nameOfDish;
     private DeleteDishCallback callback;
-    public DeleteDishEvent(String nameOfDish,DeleteDishCallback callback) {
+
+    public DeleteDishEvent(String nameOfDish, DeleteDishCallback callback) {
         this.nameOfDish = nameOfDish;
         this.callback = callback;
+    }
+
+    public String getNameOfDish() {
+        return nameOfDish;
+    }
+
+    public DeleteDishCallback getCallback() {
+        return callback;
     }
 }
