@@ -2,24 +2,146 @@ package com.sanik3d.restaurant.presenter;
 
 import com.sanik3d.restaurant.eventbus.EventBus;
 import com.sanik3d.restaurant.eventbus.event.*;
-import com.sanik3d.restaurant.exceptions.ExceptionAddDish;
-import com.sanik3d.restaurant.exceptions.ExceptionNameCategory;
-import com.sanik3d.restaurant.exceptions.ExceptionNameDish;
-import com.sanik3d.restaurant.exceptions.ExceptionPath;
+import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
+import com.sanik3d.restaurant.presenter.callbacks.*;
 import com.sanik3d.restaurant.view.Parser;
+import com.sanik3d.restaurant.view.View;
+
+import java.util.HashMap;
 
 
 /**
  * Created by 1 on 13.11.2016.
  */
 public class Presenter {
-    private String[] strings;
     private EventBus eventBus;
     private Parser parser;
+    private View view;
+    public void sendEvent(String inString) throws NotEnoughtDataException {
+        try {
+            String command = parser.getCommand(inString);
+            String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";
+            HashMap<String, Event> map = new HashMap<>();
+            String[] strings = parser.getArgs(inString);
+            if (command.equals("add_dish"));
+                if(strings.length<3)
+                    throw new NotEnoughtDataException(message);
+            else
+                if (strings.length<1)
+                    throw new NotEnoughtDataException(message);
+            map.put("add_dish", new AddDishEvent(strings[0], Double.valueOf(strings[1]), strings[2], new AddDishCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Добавление блюда прошло успешно!");
+                }
 
-    public void Present(String string) throws ExceptionPath, ExceptionAddDish, ExceptionNameCategory, ExceptionNameDish {
-        strings = parser.Parse(string);
-        Object[] strAndDig = new Object[string.length()];
+                @Override
+                public void onFailDishAlreadyExists() {
+                    view.print("Неудача! Такое блюдо уже создано.");
+                }
+
+                @Override
+                public void onFailCategoryDontExists() {
+                    view.print("Неудача! Указанной категории не существует.");//TODO:предложить создать такую категорию
+                }
+            }));
+            map.put("add_category", new AddCategoryEvent(strings[0], new AddCategoryCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Добавление категории прошло успешно!");
+                }
+
+                @Override
+                public void onFailCategoryAlreadyExists() {
+                    view.print("Неудача! Такая категория уже создана.");
+                }
+            }));
+            map.put("delete_dish", new DeleteDishEvent(strings[0], new DeleteDishCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Удаление блюда прошло успешно!");
+                }
+
+                @Override
+                public void onFailDishDontExists() {
+                    view.print("Неудача! Указанное блюдо не существует.");
+                }
+            }));
+            map.put("delete_category", new DeleteCategoryEvent(strings[0], new DeleteCategoryCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Удаление категории прошло успешно!");
+                }
+
+                @Override
+                public void onFailCategoryDontExists() {
+                    view.print("Неудача! Указанная категория не существует.");
+                }
+
+                @Override
+                public void onFailRemoveDishesOfCategory() {
+                    view.print("Внимание! При удалении категории, удалятся все связанные с ней блюда!");
+                }
+            }));
+            map.put("load", new LoadInMemoryEvent(strings[0], new LoadInMemmoryCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Загрузка меню в память прошла успешно!");
+                }
+
+                @Override
+                public void onFailFileNotFound() {
+                    view.print("Неудача! Файл не найден.");
+                }
+
+                @Override
+                public void onFailReadError() {
+                    view.print("Неудача! Ошибка чтения.");
+
+                }
+            }));
+            map.put("save", new SaveMenuEvent(strings[0], new SaveMunuCallback() {
+                @Override
+                public void onSuccess() {
+
+                    view.print("Сохранение меню прошло успешно!");
+                }
+
+                @Override
+                public void onFailWriteError() {
+
+                    view.print("Неудача! Ошибка записи");
+                }
+            }));
+            map.put("show_all_dishes",new ShowAllDishesEvent(new ShowAllDishesCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Полный список блюд :");
+                }
+
+                @Override
+                public void onFail() {
+                    view.print("Неудача! Произошла ошибка при выводе списка.");
+                }
+            }));
+            map.put("show_all_categories",new ShowAllCategoriesEvent(new ShowAllCategoriesCallback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Полный список категорий: ");
+                }
+
+                @Override
+                public void onFail() {
+                    view.print("Неудача! Произошла ошибка при выводе списка.");
+                }
+            }));
+            eventBus.post(map.get(command));
+        }
+        catch (NotEnoughtDataException e) {
+            view.print(e.getMessage());
+    }//TODO:разобраться с исключениями
+        /* strings = parser.getArrayOfStrings(inString);
+        Object[] strAndDig = new Object[inString.length()];
         int j = 0;
         for (String str : strings) {
             boolean flag = true;
@@ -36,34 +158,34 @@ public class Presenter {
             case "load": {
                 if (strAndDig.length < (j + 1))
                     throw new ExceptionPath();
-                Event event = new EventLoad(String.valueOf(strAndDig[j]));
+                Event event = new LoadInMemoryEvent(String.valueOf(strAndDig[j]));
                 eventBus.post(event);
             }
             break;
             case "save": {
                 if (strAndDig.length < (j + 1))
                     throw new ExceptionPath();
-                Event event = new EventSave(String.valueOf(strAndDig[j]));
+                Event event = new SaveMenuEvent(String.valueOf(strAndDig[j]));
                 eventBus.post(event);
             }
             break;
             case "add dish": {
                 if (strAndDig.length < (j + 3))
-                    throw new ExceptionAddDish();
-                Event event = new EventAddDish(String.valueOf(strAndDig[j++]), Double.valueOf(String.valueOf(strAndDig[j++])), String.valueOf(strAndDig[j]));
+                    throw new NotEnoughtDataException(message);
+                Event event = new AddDishEvent(String.valueOf(strAndDig[j++]), Double.valueOf(String.valueOf(strAndDig[j++])), String.valueOf(strAndDig[j]));
                 eventBus.post(event);
             }
             break;
             case "add category": {
                 if (strAndDig.length < (j + 1))
                     throw new ExceptionNameCategory();
-                Event event = new EventAddCategory(String.valueOf(strAndDig[j]));
+                Event event = new AddCategoryEvent(String.valueOf(strAndDig[j]));
                 eventBus.post(event);
             }
             case "delete dish": {
                 if (strAndDig.length < (j + 3))
                     throw new ExceptionNameDish();
-                Event event = new EventDeleteDish(String.valueOf(strAndDig[j]));
+                Event event = new DeleteDishEvent(String.valueOf(strAndDig[j]));
                 eventBus.post(event);
             }
             break;
@@ -71,9 +193,9 @@ public class Presenter {
                 if (strAndDig.length < (j + 3))
                     throw new ExceptionNameCategory();
                 //ПРЕДУПРЕДИТЬ, ЧТО УДАЛЯТСЯ ВСЕ БЛЮДА ДАННОЙ КАТЕГОРИИ
-                Event event = new EventDeleteCategory(String.valueOf(strAndDig[j]));
+                Event event = new DeleteCategoryEvent(String.valueOf(strAndDig[j]));
                 eventBus.post(event);
             }
-        }
+        }*/
     }
 }

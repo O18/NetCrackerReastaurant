@@ -1,9 +1,6 @@
 package com.sanik3d.restaurant.view;
 
-import com.sanik3d.restaurant.exceptions.ExceptionAddDish;
-import com.sanik3d.restaurant.exceptions.ExceptionNameCategory;
-import com.sanik3d.restaurant.exceptions.ExceptionNameDish;
-import com.sanik3d.restaurant.exceptions.ExceptionPath;
+import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
 import com.sanik3d.restaurant.presenter.Presenter;
 
 import java.util.Scanner;
@@ -20,19 +17,17 @@ public class View {
         while (true) {
                 System.out.println("Введите команду:");
                 Scanner sc = new Scanner(System.in);
-                String str = sc.nextLine();
+                String inString = sc.nextLine();
             try {
-                presenter.Present(str);//ушли в presenter
-            } catch (ExceptionPath exceptionPath) {
-                exceptionPath.printStackTrace();
-            } catch (ExceptionAddDish exceptionAddDish) {
-                exceptionAddDish.printStackTrace();
-            } catch (ExceptionNameCategory exceptionNameCategory) {
-                exceptionNameCategory.printStackTrace();
-            } catch (ExceptionNameDish exceptionNameDish) {
-                exceptionNameDish.printStackTrace();
+                presenter.sendEvent(inString);//ушли в presenter
+            }
+            catch (NotEnoughtDataException notEnoughtDataException) {
+                notEnoughtDataException.printStackTrace();
             }
 
         }
+    }
+    public void print(String string) {
+        System.out.println(string);
     }
 }
