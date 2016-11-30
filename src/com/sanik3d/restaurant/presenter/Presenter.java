@@ -1,8 +1,7 @@
 package com.sanik3d.restaurant.presenter;
 
 import com.sanik3d.restaurant.eventbus.EventBus;
-import com.sanik3d.restaurant.eventbus.event.*;
-import com.sanik3d.restaurant.eventbus.events.Event;
+import com.sanik3d.restaurant.events.*;
 import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
 import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
 import com.sanik3d.restaurant.presenter.callbacks.*;
@@ -17,13 +16,18 @@ import java.util.HashMap;
  */
 public class Presenter {
     private String[] strings;
-    private EventBus eventBus;
-    private Parser parser;
-    private View view;
+    private final EventBus eventBus;
+    private final Parser parser;
+    private final View view;//TODO: View должна реализовывать интерфейс
+
+    public Presenter(EventBus eventBus, Parser parser, View view) {
+        this.eventBus = eventBus;
+        this.parser = parser;
+        this.view = view;
+    }
+
     public void sendEvent(String inString) throws NotEnoughtDataException {
-        try {
-            parser = new Parser();
-            eventBus = new EventBus();
+        try {//TODO: вынести лишний код из try
             String command = parser.getCommand(inString);
             String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";
             HashMap<String, Event> map = new HashMap<>();
@@ -141,8 +145,9 @@ public class Presenter {
                         view.print("Неудача! Произошла ошибка при выводе списка.");
                     }
                 }));
-            }
-            eventBus.post((com.sanik3d.restaurant.events.Event) map.get(command));//здесь выдает ошибку из-за
+            }//TODO: переделать switch с помощью паттерна Стратегия
+            eventBus.post(map.get(command));//fire
+            //здесь выдает ошибку из-за
             // скобки - преобразования типа, а если ее убрать не собирается проект из-за другой ошибки !
         } catch (NotEnoughDataException e) {
             view.print(e.getMessage());
@@ -161,7 +166,7 @@ public class Presenter {
                 strAndDig[j] = str;
         }
         j = 0;
-        //TODO: переделать switch с помощью паттерна Стратегия
+
         switch (String.valueOf(strAndDig[j++])) {
             case "load": {
                 if (strAndDig.length < (j + 1))

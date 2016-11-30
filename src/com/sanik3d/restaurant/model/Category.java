@@ -1,6 +1,8 @@
 package com.sanik3d.restaurant.model;
 
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -10,10 +12,11 @@ public class Category implements Serializable{
     private static final long serialVersionUID = 1L;
 
     private final String name;
-    private Set<Dish> dishes;
+    private final Set<Dish> dishes;
 
     public Category(String name) {
         this.name = name;
+        dishes = new HashSet<>();
     }
 
     public String getName() {
@@ -25,7 +28,7 @@ public class Category implements Serializable{
     }
 
     public Set<Dish> getDishes() {
-        return dishes;
+        return Collections.unmodifiableSet(dishes);
     }
 
     public void deleteDish(Dish dish){
@@ -33,14 +36,13 @@ public class Category implements Serializable{
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(Object o) {//TODO: dishes
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Category category = (Category) o;
 
         return name.equals(category.name);
-
     }
 
     @Override

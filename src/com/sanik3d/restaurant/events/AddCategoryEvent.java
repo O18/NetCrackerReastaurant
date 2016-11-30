@@ -5,7 +5,7 @@ import com.sanik3d.restaurant.presenter.callbacks.AddCategoryCallback;
 /**
  * Created by 1 on 28.11.2016.
  */
-public class AddCategoryEvent implements Event {
+public class AddCategoryEvent implements Event {//TODO: final поля
     private String nameOfCategory;
     private AddCategoryCallback callback;
 

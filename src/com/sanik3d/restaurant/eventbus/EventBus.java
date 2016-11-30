@@ -10,16 +10,16 @@ import java.util.Map;
  */
 public class EventBus {
 
-    private Map<Class, Handler> handlers = new HashMap<>();
+    private Map<Class, Handler> handlers = new HashMap<>();//TODO: collections Handler and generics
 
     public EventBus() {
     }
 
-    public void addHandler(Class handlerClass, Handler handler) {
+    public <T extends Event> void addHandler(Class<T> handlerClass, Handler<T> handler) {
         handlers.put(handlerClass, handler);
     }
 
-    public void deleteHandler(Class handlerClass) {
+    public void deleteHandler(Class handlerClass) {//TODO: Handler
         handlers.remove(handlerClass);
     }
 
@@ -31,7 +31,7 @@ public class EventBus {
         }
     }*/
 
-    public void post(Event event) {
+    public void post(Event event) {//TODO: handler по EventClass
         for (Class handlerClass : handlers.keySet()) {
             if (handlerClass == event.getClass()) {
                 handlers.get(handlerClass).handle(event);

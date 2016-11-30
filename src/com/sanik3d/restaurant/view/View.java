@@ -11,24 +11,31 @@ import java.util.Scanner;
  */
 public class View {
     private Presenter presenter;
-    public View () {
-        this.presenter = new Presenter();
+
+    public View() {
     }
+
     public void begin() {
         while (true) {
-                System.out.println("Введите команду:");
-                Scanner sc = new Scanner(System.in);
-                String inString = sc.nextLine();
+            System.out.println("Введите команду:");
+            Scanner sc = new Scanner(System.in);//TODO: пересоздание Scanner
+            String inString = sc.nextLine();
             try {
-                presenter.sendEvent(inString);//ушли в presenter
+                presenter.sendEvent(inString);//TODO: переделать название
+                //ушли в presenter
             } catch (NotEnoughtDataException e) {
                 e.printStackTrace();
-            }
+            }//TODO: убрать try-catch
 
 
         }
     }
+
     public void print(String string) {
         System.out.println(string);
+    }
+
+    public void setPresenter(Presenter presenter) {
+        this.presenter = presenter;
     }
 }

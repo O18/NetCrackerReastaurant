@@ -7,7 +7,7 @@ import java.util.Set;
 /**
  * Created by Александр on 29.11.2016.
  */
-class MenuCash {
+class MenuCash {//TODO: make private to Menu
     private final Menu menu;
     private final Map<String, Category> nameCategoryMap;
     private final Map<String, Dish> nameDishMap;

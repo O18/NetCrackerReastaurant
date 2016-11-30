@@ -12,7 +12,7 @@ public class Menu implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Set<Category> categories;
-    private MenuCash cash;
+    private MenuCash cash;//TODO: rename
 
     public Menu() {
         cash = new MenuCash(this);
@@ -22,7 +22,7 @@ public class Menu implements Serializable {
     public Menu(Set<Category> categories) {
         this.categories = categories;
         cash = new MenuCash(this);
-        cash.addSetCategories(categories);
+        cash.addSetCategories(categories);//TODO: rename
     }
 
     public Set<Category> getCategories() {

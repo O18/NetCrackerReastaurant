@@ -5,7 +5,7 @@ import com.sanik3d.restaurant.events.Event;
 /**
  * Created by Александр on 24.11.2016.
  */
-public interface Handler {
+public interface Handler<T extends Event> {
 
-    void handle(Event event);
+    void handle(T event);
 }

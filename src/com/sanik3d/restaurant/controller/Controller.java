@@ -18,11 +18,11 @@ public class Controller {
     private Menu menu;
     private EventBus eventBus;
 
-    public Controller(Menu menu, EventBus eventBus) {
+    public Controller(Menu menu, EventBus eventBus) {//TODO: убрать касты
         this.menu = menu;
         this.eventBus = eventBus;
         this.eventBus.addHandler(LoadInMemoryEvent.class,
-                event -> loadMenuFrom(((LoadInMemoryEvent)event)));
+                event -> loadMenuFrom(event));
         this.eventBus.addHandler(SaveMenuEvent.class,
                 event -> saveMenuTo(((SaveMenuEvent) event)));
         this.eventBus.addHandler(AddCategoryEvent.class,
@@ -47,7 +47,8 @@ public class Controller {
             menu = loadedMenu;
             event.getCallback().onSuccess();
         } catch (FileNotFoundException e) {
-            event.getCallback().onFailFileNotFound();
+            event.getCallback().onFail(new RuntimeException("Файл не существует", e));
+
         } catch (ClassNotFoundException | IOException e) {
             event.getCallback().onFailReadError();
         }
