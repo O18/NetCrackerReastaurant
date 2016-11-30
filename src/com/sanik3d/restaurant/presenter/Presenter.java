@@ -142,7 +142,8 @@ public class Presenter {
                     }
                 }));
             }
-            eventBus.post((com.sanik3d.restaurant.events.Event) map.get(command));
+            eventBus.post((com.sanik3d.restaurant.events.Event) map.get(command));//здесь выдает ошибку из-за
+            // скобки - преобразования типа, а если ее убрать не собирается проект из-за другой ошибки !
         } catch (NotEnoughDataException e) {
             view.print(e.getMessage());
         }//TODO:разобраться с исключениями
