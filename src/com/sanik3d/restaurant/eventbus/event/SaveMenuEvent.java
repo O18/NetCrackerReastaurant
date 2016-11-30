@@ -1,6 +1,8 @@
 package com.sanik3d.restaurant.eventbus.event;
 
+import com.sanik3d.restaurant.eventbus.events.Event;
 import com.sanik3d.restaurant.presenter.callbacks.AddCategoryCallback;
+import com.sanik3d.restaurant.presenter.callbacks.SaveMenuCallback;
 import com.sanik3d.restaurant.presenter.callbacks.SaveMunuCallback;
 
 /**
@@ -8,8 +10,8 @@ import com.sanik3d.restaurant.presenter.callbacks.SaveMunuCallback;
  */
 public class SaveMenuEvent implements Event {
     private String path;
-    private SaveMunuCallback callback;
-    public SaveMenuEvent(String path,SaveMunuCallback callback) {
+    private SaveMenuCallback callback;
+    public SaveMenuEvent(String path, SaveMenuCallback callback) {
         this.path = path;
         this.callback = callback;
     }

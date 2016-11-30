@@ -23,10 +23,18 @@ public class EventBus {
         handlers.remove(handlerClass);
     }
 
-    public void post(Event e) {
+    /*public void post(Event e) {
         for (Class handlerClass : handlers.keySet()) {
             if (handlerClass == e.getClass()) {
                 handlers.get(handlerClass).handle(e);
+            }
+        }
+    }*/
+
+    public void post(Event event) {
+        for (Class handlerClass : handlers.keySet()) {
+            if (handlerClass == event.getClass()) {
+                handlers.get(handlerClass).handle(event);
             }
         }
     }

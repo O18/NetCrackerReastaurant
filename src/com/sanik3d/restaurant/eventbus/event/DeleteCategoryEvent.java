@@ -1,6 +1,7 @@
 package com.sanik3d.restaurant.eventbus.event;
 
 
+import com.sanik3d.restaurant.eventbus.events.Event;
 import com.sanik3d.restaurant.presenter.callbacks.DeleteCategoryCallback;
 
 

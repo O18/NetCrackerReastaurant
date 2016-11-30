@@ -45,6 +45,7 @@ public class Parser {
             return strings;
         }
         String[] strings = new String[1];
+        strings[0] = "";
         for (int i = 1; i<arrayOfStrings.length-1;i++)
             strings[0]+=(arrayOfStrings[i]+' ');
         strings[0] += arrayOfStrings[arrayOfStrings.length-1];

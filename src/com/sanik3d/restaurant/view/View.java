@@ -1,6 +1,7 @@
 package com.sanik3d.restaurant.view;
 
 import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
+import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
 import com.sanik3d.restaurant.presenter.Presenter;
 
 import java.util.Scanner;
@@ -20,10 +21,10 @@ public class View {
                 String inString = sc.nextLine();
             try {
                 presenter.sendEvent(inString);//ушли в presenter
+            } catch (NotEnoughtDataException e) {
+                e.printStackTrace();
             }
-            catch (NotEnoughDataException notEnoughDataException) {
-                notEnoughDataException.printStackTrace();
-            }
+
 
         }
     }

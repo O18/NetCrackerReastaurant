@@ -31,6 +31,8 @@ public class Menu implements Serializable {
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
+        cash = new MenuCash(this);
+        cash.addSetCategories(categories);
     }
 
     public void addDish(Dish dish) {
