@@ -6,5 +6,5 @@ package com.sanik3d.restaurant.presenter.callbacks;
 public interface AddDishCallback {
     void onSuccess();
     void onFailDishAlreadyExists();
-    void onFailCategoryDontExists();
+    void onFailCategoryDoesNotExist();
 }

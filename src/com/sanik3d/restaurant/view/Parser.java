@@ -1,8 +1,5 @@
 package com.sanik3d.restaurant.view;
 
-import com.sanik3d.restaurant.eventbus.event.Event;
-
-import java.util.HashMap;
 
 /**
  * Created by 1 on 13.11.2016.

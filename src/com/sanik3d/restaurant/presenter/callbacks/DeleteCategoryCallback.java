@@ -5,6 +5,6 @@ package com.sanik3d.restaurant.presenter.callbacks;
  */
 public interface DeleteCategoryCallback {
     void onSuccess();
-    void onFailCategoryDontExists();
+    void onFailCategoryDoesNotExist();
     void onFailRemoveDishesOfCategory();
 }
