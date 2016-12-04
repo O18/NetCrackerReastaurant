@@ -7,4 +7,6 @@ public interface AddCategoryCallback {
     void onSuccess();
 
     void onFailCategoryAlreadyExists();
+
+    void onFail(RuntimeException e);
 }

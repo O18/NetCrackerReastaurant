@@ -6,4 +6,6 @@ package com.sanik3d.restaurant.presenter.callbacks;
 public interface SaveMenuCallback {
     void onSuccess();
     void onFailWriteError();
+
+    void onFail(RuntimeException e);
 }

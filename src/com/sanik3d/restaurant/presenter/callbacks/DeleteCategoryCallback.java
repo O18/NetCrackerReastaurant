@@ -7,4 +7,6 @@ public interface DeleteCategoryCallback {
     void onSuccess();
     void onFailCategoryDoesNotExist();
     void onFailRemoveDishesOfCategory();
+
+    void onFail(RuntimeException e);
 }

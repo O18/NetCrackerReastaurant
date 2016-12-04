@@ -7,6 +7,8 @@ import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.model.Menu;
 
 import java.io.*;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,27 +18,27 @@ import java.util.Set;
 public class Controller {
 
     private Menu menu;
-    private EventBus eventBus;
+    private MenuCache cache;
 
-    public Controller(Menu menu, EventBus eventBus) {//TODO: убрать касты
+    public Controller(Menu menu, EventBus eventBus) {
         this.menu = menu;
-        this.eventBus = eventBus;
-        this.eventBus.addHandler(LoadInMemoryEvent.class,
-                event -> loadMenuFrom(event));
-        this.eventBus.addHandler(SaveMenuEvent.class,
-                event -> saveMenuTo(((SaveMenuEvent) event)));
-        this.eventBus.addHandler(AddCategoryEvent.class,
-                event -> addCategory(((AddCategoryEvent) event)));
-        this.eventBus.addHandler(AddDishEvent.class,
-                event -> addDish((AddDishEvent) event));
-        this.eventBus.addHandler(DeleteCategoryEvent.class,
-                event -> deleteCategory((DeleteCategoryEvent)event));
-        this.eventBus.addHandler(DeleteDishEvent.class,
-                event -> deleteDish((DeleteDishEvent)event));
-        this.eventBus.addHandler(ShowAllCategoriesEvent.class,
-                event -> showAllCategories((ShowAllCategoriesEvent)event));
-        this.eventBus.addHandler(ShowAllDishesEvent.class,
-                event -> showAllDishes((ShowAllDishesEvent)event));
+        cache = new MenuCache(menu);
+        eventBus.addHandler(LoadInMemoryEvent.class,
+                this::loadMenuFrom);
+        eventBus.addHandler(SaveMenuEvent.class,
+                this::saveMenuTo);
+        eventBus.addHandler(AddCategoryEvent.class,
+                this::addCategory);
+        eventBus.addHandler(AddDishEvent.class,
+                this::addDish);
+        eventBus.addHandler(DeleteCategoryEvent.class,
+                this::deleteCategory);
+        eventBus.addHandler(DeleteDishEvent.class,
+                this::deleteDish);
+        eventBus.addHandler(ShowAllCategoriesEvent.class,
+                this::showAllCategories);
+        eventBus.addHandler(ShowAllDishesEvent.class,
+                this::showAllDishes);
     }
 
     private void loadMenuFrom(LoadInMemoryEvent event) {
@@ -62,90 +64,135 @@ public class Controller {
             out.close();
             event.getCallback().onSuccess();
         } catch (IOException e) {
-            event.getCallback().onFailWriteError();
+            event.getCallback().onFail(new RuntimeException("Ошибка записи", e));
         }
     }
 
     private void addCategory(AddCategoryEvent event) {
         String categoryName = event.getNameOfCategory();
-        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
-        if(!nameCategoryMap.containsKey(categoryName)){
+
+        if(!cache.namesAndCategories.containsKey(categoryName)){
             Category categoryToAdd = new Category(categoryName);
             menu.addCategory(categoryToAdd);
+            cache.namesAndCategories.put(categoryName, categoryToAdd);
+
             event.getCallback().onSuccess();
         }
         else {
-            event.getCallback().onFailCategoryAlreadyExists();
+            event.getCallback().onFail(new RuntimeException("Категория с таким именем уже существует"));
         }
 
     }
 
     private void deleteCategory(DeleteCategoryEvent event) {
-        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
         String categoryName = event.getNameOfCategory();
 
-        if(nameCategoryMap.containsKey(categoryName)){
-            Category category = nameCategoryMap.get(categoryName);
+        if(cache.namesAndCategories.containsKey(categoryName)){
+            Category category = cache.namesAndCategories.get(categoryName);
             menu.deleteCategory(category);
+            cache.deleteCategory(category);
             event.getCallback().onSuccess();
         }
         else {
-            event.getCallback().onFailCategoryDoesNotExist();
+            event.getCallback().onFail(new RuntimeException("Категории с таким именем не существует"));
         }
     }
 
     private void addDish(AddDishEvent event) {
-        Map<String, Category> nameCategoryMap = menu.getNameCategoryMap();
         String categoryName = event.getCategory();
 
-        if(nameCategoryMap.containsKey(categoryName)){
-            Map<String, Dish> nameDishMap = menu.getNameDishMap();
+        if(cache.namesAndDishes.containsKey(categoryName)){
             String dishName = event.getNameOfDish();
 
-            if(!nameDishMap.containsKey(dishName)){
+            if(!cache.namesAndDishes.containsKey(dishName)){
                 Dish dishToAdd = createDishFromEvent(event);
                 menu.addDish(dishToAdd);
+                cache.addDish(dishToAdd);
                 event.getCallback().onSuccess();
             }
             else {
-                event.getCallback().onFailDishAlreadyExists();
+                event.getCallback().onFail(new RuntimeException(
+                        "Ошибка добавления блюда. Блюдо с таким именем уже существует"));
             }
         }
         else{
-            event.getCallback().onFailCategoryDoesNotExist();
+            event.getCallback().onFail(new RuntimeException(
+                    "Ошибка добавления блюда. Категории с таким именем не существует"));
         }
     }
 
     private Dish createDishFromEvent(AddDishEvent event) {
         String dishName = event.getNameOfDish();
-        Category category = menu.getNameCategoryMap().get(event.getCategory());
+        Category category = cache.namesAndCategories.get(event.getCategory());
         double price = event.getPriceOfDish();
 
         return new Dish(dishName, category, price);
     }
 
     private void deleteDish(DeleteDishEvent event){
-        Map<String, Dish> nameDishMap = menu.getNameDishMap();
         String dishName = event.getNameOfDish();
 
-        if(nameDishMap.containsKey(dishName)){
-            Dish dishToDelete = nameDishMap.get(dishName);
+        if(cache.namesAndDishes.containsKey(dishName)){
+            Dish dishToDelete = cache.namesAndDishes.get(dishName);
             menu.deleteDish(dishToDelete);
+            cache.deleteDish(dishToDelete);
+
             event.getCallback().onSuccess();
         }
         else{
-            event.getCallback().onFailDishDoesNotExist();
+            event.getCallback().onFail(new RuntimeException(
+                    "Ошибка удаления блюда. Блюдо с таким именем не уществует"));
         }
     }
 
-
     private void showAllDishes(ShowAllDishesEvent event) {
         Set<Dish> dishes = menu.getDishes();
-        event.getCallback().onSuccess();//TODO: вернуть блюда
+        event.getCallback().onSuccess(Collections.unmodifiableSet(dishes));
     }
 
     private void showAllCategories(ShowAllCategoriesEvent event) {
         Set<Category> categories = menu.getCategories();
-        event.getCallback().onSuccess();//TODO: вернуть категории блюд
+        event.getCallback().onSuccess(Collections.unmodifiableSet(categories));
+    }
+
+    /**
+     * Created by Александр on 29.11.2016.
+     */
+    static class MenuCache {
+        private final Menu menu;
+        private final Map<String, Category> namesAndCategories;
+        private final Map<String, Dish> namesAndDishes;
+
+        MenuCache(Menu menu) {
+            this.menu = menu;
+            namesAndCategories = new HashMap<>();
+            namesAndDishes = new HashMap<>();
+            addCategories(menu.getCategories());
+        }
+
+        void addCategories(Set<Category> categories){
+            for (Category category : categories) {
+                addCategory(category);
+                for (Dish dish: category.getDishes()) {
+                    addDish(dish);
+                }
+            }
+        }
+
+        void addCategory(Category category){
+            namesAndCategories.put(category.getName(), category);
+        }
+
+        void deleteCategory(Category category){
+            namesAndCategories.remove(category.getName(), category);
+        }
+
+        void addDish(Dish dish){
+            namesAndDishes.put(dish.getName(), dish);
+        }
+
+        void deleteDish(Dish dish){
+            namesAndDishes.remove(dish.getName());
+        }
     }
 }

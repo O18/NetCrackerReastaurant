@@ -3,39 +3,40 @@ package com.sanik3d.restaurant.eventbus;
 import com.sanik3d.restaurant.events.Event;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by Александр on 12.11.2016.
  */
 public class EventBus {
 
-    private Map<Class, Handler> handlers = new HashMap<>();//TODO: collections Handler and generics
+    private Map<Class, Set<Handler>> handlers;
 
     public EventBus() {
+        handlers = new HashMap<>();
     }
 
     public <T extends Event> void addHandler(Class<T> handlerClass, Handler<T> handler) {
-        handlers.put(handlerClass, handler);
-    }
-
-    public void deleteHandler(Class handlerClass) {//TODO: Handler
-        handlers.remove(handlerClass);
-    }
-
-    /*public void post(Event e) {
-        for (Class handlerClass : handlers.keySet()) {
-            if (handlerClass == e.getClass()) {
-                handlers.get(handlerClass).handle(e);
-            }
+        Set<Handler> chosenByClassHandlers = handlers.get(handlerClass);
+        if(chosenByClassHandlers == null){
+            chosenByClassHandlers = new HashSet<>();
         }
-    }*/
+        chosenByClassHandlers.add(handler);
+    }
 
-    public void post(Event event) {//TODO: handler по EventClass
-        for (Class handlerClass : handlers.keySet()) {
-            if (handlerClass == event.getClass()) {
-                handlers.get(handlerClass).handle(event);
-            }
+    public void deleteHandler(Class handlerClass, Handler<Event> handlerToDelete) {
+        Set<Handler> destinationHandlers = handlers.get(handlerClass);
+        if(destinationHandlers != null){
+            destinationHandlers.remove(handlerToDelete);
+        }
+    }
+
+    public void post(Event event) { //TODO: handler по EventClass
+        Set<Handler> handlersToPostOn = handlers.get(event.getClass());
+        if(handlersToPostOn != null){
+            handlersToPostOn.forEach(handler -> post(event));
         }
     }
 }

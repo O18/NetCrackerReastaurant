@@ -23,30 +23,33 @@ public class Category implements Serializable{
         return name;
     }
 
-    public void addDish(Dish dish){
-        dishes.add(dish);
+    public boolean addDish(Dish dish){
+        return dishes.add(dish);
     }
 
     public Set<Dish> getDishes() {
         return Collections.unmodifiableSet(dishes);
     }
 
-    public void deleteDish(Dish dish){
-        dishes.remove(dish);
+    public boolean deleteDish(Dish dish){
+        return dishes.remove(dish);
     }
 
     @Override
-    public boolean equals(Object o) {//TODO: dishes
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
         Category category = (Category) o;
 
-        return name.equals(category.name);
+        if (!name.equals(category.name)) return false;
+        return dishes.equals(category.dishes);
     }
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        int result = name.hashCode();
+        result = 31 * result + dishes.hashCode();
+        return result;
     }
 }

@@ -1,9 +1,7 @@
 package com.sanik3d.restaurant.model;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created by Александр on 05.11.2016.
@@ -12,55 +10,39 @@ public class Menu implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Set<Category> categories;
-    private MenuCash cash;//TODO: rename
 
     public Menu() {
-        cash = new MenuCash(this);
         categories = new HashSet<>();
     }
 
     public Menu(Set<Category> categories) {
         this.categories = categories;
-        cash = new MenuCash(this);
-        cash.addSetCategories(categories);//TODO: rename
     }
 
     public Set<Category> getCategories() {
-        return categories;
+        return Collections.unmodifiableSet(categories);
     }
 
     public void setCategories(Set<Category> categories) {
         this.categories = categories;
-        cash = new MenuCash(this);
-        cash.addSetCategories(categories);
     }
 
-    public void addDish(Dish dish) {
+    public boolean addDish(Dish dish) {
         Category categoryOfAddingDish = dish.getCategory();
-        categoryOfAddingDish.addDish(dish);
+        return categoryOfAddingDish.addDish(dish);
     }
 
-    public void deleteDish(Dish dish) {
+    public boolean deleteDish(Dish dish) {
         Category categoryOfDeletingDish = dish.getCategory();
-        categoryOfDeletingDish.deleteDish(dish);
+        return categoryOfDeletingDish.deleteDish(dish);
     }
 
-    public void addCategory(Category category) {
-        categories.add(category);
-        cash.addCategory(category);
+    public boolean addCategory(Category category) {
+        return categories.add(category);
     }
 
-    public void deleteCategory(Category category) {
-        categories.remove(category);
-        cash.deleteCategory(category);
-    }
-
-    public Map<String, Category> getNameCategoryMap() {
-        return cash.getNameCategoryMap();
-    }
-
-    public Map<String, Dish> getNameDishMap() {
-        return cash.getNameDishMap();
+    public boolean deleteCategory(Category category) {
+        return categories.remove(category);
     }
 
     public Set<Dish> getDishes(){
@@ -69,6 +51,6 @@ public class Menu implements Serializable {
             dishSet.addAll(category.getDishes());
         }
 
-        return dishSet;
+        return Collections.unmodifiableSet(dishSet);
     }
 }

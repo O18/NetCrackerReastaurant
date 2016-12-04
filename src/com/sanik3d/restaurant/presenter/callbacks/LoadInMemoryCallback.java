@@ -7,4 +7,6 @@ public interface LoadInMemoryCallback {
     void onSuccess();
     void onFailFileNotFound();
     void onFailReadError();
+
+    void onFail(RuntimeException e);
 }
