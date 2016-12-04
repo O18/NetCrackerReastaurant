@@ -5,7 +5,6 @@ package com.sanik3d.restaurant.presenter.callbacks;
  */
 public interface DeleteDishCallback {
     void onSuccess();
-    void onFailDishDoesNotExist();
 
     void onFail(RuntimeException e);
 }

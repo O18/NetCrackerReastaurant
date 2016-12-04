@@ -23,14 +23,6 @@ public class Parser {
     }
 
     public String[] getArgs(String inString) {
-        /*HashMap<String,Integer> map = new HashMap<>();
-        map.put("adddish",3);
-        map.put("addcategory", 1);
-        map.put("deletedish",1);
-        map.put("deletecategory",1);
-        map.put("load", 1);
-        map.put("save", 1);
-        String[] strings = new String[map.get(getCommand(inString))];*/
         String[] arrayOfStrings = inString.split(" ");
         if (getCommand(inString) == "adddish") {
             String[] strings = new String[3];

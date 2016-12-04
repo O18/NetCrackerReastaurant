@@ -1,6 +1,5 @@
 package com.sanik3d.restaurant.view;
 
-import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
 import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
 import com.sanik3d.restaurant.presenter.Presenter;
 
@@ -16,12 +15,12 @@ public class View {
     }
 
     public void begin() {
+        Scanner sc = new Scanner(System.in);//TODO: пересоздание Scanner
         while (true) {
             System.out.println("Введите команду:");
-            Scanner sc = new Scanner(System.in);//TODO: пересоздание Scanner
             String inString = sc.nextLine();
             try {
-                presenter.sendEvent(inString);//TODO: переделать название
+                presenter.decodingCommand(inString);//TODO: переделать название
                 //ушли в presenter
             } catch (NotEnoughtDataException e) {
                 e.printStackTrace();

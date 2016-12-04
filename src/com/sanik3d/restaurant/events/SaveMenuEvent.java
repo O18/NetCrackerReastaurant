@@ -6,8 +6,8 @@ import com.sanik3d.restaurant.presenter.callbacks.SaveMenuCallback;
  * Created by 1 on 14.11.2016.
  */
 public class SaveMenuEvent implements Event {
-    private String path;
-    private SaveMenuCallback callback;
+    private final String path;
+    private final SaveMenuCallback callback;
 
     public SaveMenuEvent(String path, SaveMenuCallback callback) {
         this.path = path;
