@@ -52,4 +52,9 @@ public class Category implements Serializable{
         result = 31 * result + dishes.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return name;
+    }
 }

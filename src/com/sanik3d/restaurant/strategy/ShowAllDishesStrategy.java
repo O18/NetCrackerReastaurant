@@ -23,8 +23,13 @@ public class ShowAllDishesStrategy implements Strategy {
             View view = new View();//пока что
 
             @Override
-            public void onSuccess(Set<Dish> ts) {
-                view.print(ts.toString());
+            public void onSuccess(Set<Dish> dishes) {
+                StringBuilder resultString = new StringBuilder();
+                for (Dish dish: dishes) {
+                    resultString.append(dish.toString()).append('\n');
+                }
+
+                view.print(resultString.toString());
             }
 
             @Override

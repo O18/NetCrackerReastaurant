@@ -8,13 +8,13 @@ import com.sanik3d.restaurant.presenter.callbacks.*;
 import com.sanik3d.restaurant.strategy.*;
 import com.sanik3d.restaurant.view.Parser;
 import com.sanik3d.restaurant.view.View;
+import org.junit.Ignore;
 
 
 /**
  * Created by 1 on 13.11.2016.
  */
 public class Presenter {
-    private String[] strings;
     private final EventBus eventBus;
     private final Parser parser;
     private final View view;//TODO: View должна реализовывать интерфейс
@@ -42,13 +42,16 @@ public class Presenter {
                     case "add_category":
                         context.setStrategy(new AddCategoryStrategy(this.view));
                         break;
+                    case "add_dish":
+                        context.setStrategy(new AddDishStrategy(this.view));
+                        break;
                     case "delete_dish":
                         context.setStrategy(new DeleteDishStrategy(this.view));
                         break;
                     case "delete_category":
                         context.setStrategy(new DeleteCategoryStrategy(this.view));
                         break;
-                    case "load_menu_in_memory":
+                    case "load_menu":
                         context.setStrategy(new LoadMenuInMemoryStrategy(this.view));
                         break;
                     case "save_menu":
@@ -56,14 +59,23 @@ public class Presenter {
                         break;
                     case "show_all_categories":
                         context.setStrategy(new ShowAllCategoriesStrategy(this.view));
+                        break;
                     case "show_all_dishes":
                         context.setStrategy(new ShowAllDishesStrategy(this.view));
+                        break;
+                    case "help":
+                        context.setStrategy(new HelpStrategy(this.view));
+                        break;
                 }
-            }//TODO: переделать switch с помощью паттерна Стратегия*/
+            }
         }
         catch(NotEnoughDataException e){
             view.print(e.getMessage());
         }//TODO:разобраться с исключениями
-        eventBus.post(context.executeStrategy(strings));//fire
+        try {
+            eventBus.post(context.executeStrategy(strings));
+        }catch (NullPointerException e){
+            view.print("Неверная команда");
+        }
     }
 }

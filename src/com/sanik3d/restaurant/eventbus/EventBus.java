@@ -22,6 +22,7 @@ public class EventBus {
         Set<Handler> chosenByClassHandlers = handlers.get(handlerClass);
         if(chosenByClassHandlers == null){
             chosenByClassHandlers = new HashSet<>();
+            handlers.put(handlerClass, chosenByClassHandlers);
         }
         chosenByClassHandlers.add(handler);
     }
@@ -33,10 +34,12 @@ public class EventBus {
         }
     }
 
-    public void post(Event event) { //TODO: handler по EventClass
+    public <T extends Event> void post(T event) { //TODO: handler по EventClass
         Set<Handler> handlersToPostOn = handlers.get(event.getClass());
         if(handlersToPostOn != null){
-            handlersToPostOn.forEach(handler -> post(event));
+            for (Handler handler : handlersToPostOn) {
+                handler.handle(event);
+            }
         }
     }
 }

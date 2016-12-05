@@ -17,13 +17,15 @@ import java.util.Set;
  */
 public class Controller {
 
+    private final String HELP_PATH = "help.txt";
+
     private Menu menu;
     private MenuCache cache;
 
     public Controller(Menu menu, EventBus eventBus) {
         this.menu = menu;
         cache = new MenuCache(menu);
-        eventBus.addHandler(LoadInMemoryEvent.class,
+        eventBus.addHandler(LoadMenuInMemoryEvent.class,
                 this::loadMenuFrom);
         eventBus.addHandler(SaveMenuEvent.class,
                 this::saveMenuTo);
@@ -39,9 +41,27 @@ public class Controller {
                 this::showAllCategories);
         eventBus.addHandler(ShowAllDishesEvent.class,
                 this::showAllDishes);
+        eventBus.addHandler(HelpShowEvent.class,
+                this::showHelp);
     }
 
-    private void loadMenuFrom(LoadInMemoryEvent event) {
+    private void showHelp(HelpShowEvent event) {
+        try {
+            BufferedReader reader = new BufferedReader(new FileReader(HELP_PATH));
+            StringBuilder result = new StringBuilder();
+            String currentLine;
+            while ((currentLine = reader.readLine()) != null){
+                result.append(currentLine).append('\n');
+            }
+            reader.close();
+
+            event.getCallback().onSuccess(result.toString());
+        } catch (IOException e) {
+            event.getCallback().onFail(new RuntimeException("Не найден файл", e));
+        }
+    }
+
+    private void loadMenuFrom(LoadMenuInMemoryEvent event) {
         String filePath = event.getPath();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
             Menu loadedMenu = (Menu) in.readObject();
@@ -52,7 +72,7 @@ public class Controller {
             event.getCallback().onFail(new RuntimeException("Файл не существует", e));
 
         } catch (ClassNotFoundException | IOException e) {
-            event.getCallback().onFailReadError();
+            event.getCallback().onFail(new RuntimeException("Ошибка чтения файла", e));
         }
     }
 
@@ -152,7 +172,7 @@ public class Controller {
 
     private void showAllCategories(ShowAllCategoriesEvent event) {
         Set<Category> categories = menu.getCategories();
-        event.getCallback().onSuccess(Collections.unmodifiableSet(categories));
+        event.getCallback().onSuccess(categories);
     }
 
     /**

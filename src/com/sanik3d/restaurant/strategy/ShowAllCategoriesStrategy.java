@@ -3,6 +3,7 @@ package com.sanik3d.restaurant.strategy;
 import com.sanik3d.restaurant.events.Event;
 import com.sanik3d.restaurant.events.ShowAllCategoriesEvent;
 import com.sanik3d.restaurant.model.Category;
+import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.presenter.callbacks.ShowAllCategoriesCallback;
 import com.sanik3d.restaurant.view.View;
 
@@ -23,8 +24,13 @@ public class ShowAllCategoriesStrategy implements Strategy {
             View view = new View();//пока что
 
             @Override
-            public void onSuccess(Set<Category> ts) {
-                view.print(ts.toString());
+            public void onSuccess(Set<Category> categories) {
+                StringBuilder resultString = new StringBuilder();
+                for (Category category: categories) {
+                    resultString.append(category.toString()).append('\n');
+                }
+
+                view.print(resultString.toString());
             }
 
             @Override
