@@ -8,7 +8,7 @@ import com.sanik3d.restaurant.view.View;
 /**
  * Created by 1 on 04.12.2016.
  */
-public class AddCategoryStrategy implements Strategy {
+public class AddCategoryStrategy implements Strategy {//в презенте рперенести  + переделать в креатор.фабрику  todo
     public AddCategoryStrategy(View view) {
         this.view = view;
     }
@@ -17,6 +17,7 @@ public class AddCategoryStrategy implements Strategy {
 
     @Override
     public Event createEvent(String[] commandString) {
+        //добавить проверки с адекватными юзер мессаджами todo
         return new AddCategoryEvent(commandString[0], new AddCategoryCallback() {
 
             @Override

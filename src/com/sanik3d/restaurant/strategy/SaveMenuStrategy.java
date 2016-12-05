@@ -1,7 +1,6 @@
 package com.sanik3d.restaurant.strategy;
 
 import com.sanik3d.restaurant.events.Event;
-import com.sanik3d.restaurant.events.SaveMenuEvent;
 import com.sanik3d.restaurant.presenter.callbacks.SaveMenuCallback;
 import com.sanik3d.restaurant.view.View;
 

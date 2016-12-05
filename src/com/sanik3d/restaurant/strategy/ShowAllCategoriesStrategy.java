@@ -1,9 +1,7 @@
 package com.sanik3d.restaurant.strategy;
 
 import com.sanik3d.restaurant.events.Event;
-import com.sanik3d.restaurant.events.ShowAllCategoriesEvent;
 import com.sanik3d.restaurant.model.Category;
-import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.presenter.callbacks.ShowAllCategoriesCallback;
 import com.sanik3d.restaurant.view.View;
 

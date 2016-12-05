@@ -9,7 +9,7 @@ public class AddCategoryEvent implements Event {//TODO: final поля
     private final String nameOfCategory;
     private final AddCategoryCallback callback;
 
-    public AddCategoryEvent(String nameOfCategory,AddCategoryCallback callback) {
+    public AddCategoryEvent(String nameOfCategory, AddCategoryCallback callback) {
         this.nameOfCategory = nameOfCategory;
         this.callback = callback;
     }

@@ -14,7 +14,7 @@ import org.junit.Ignore;
 /**
  * Created by 1 on 13.11.2016.
  */
-public class Presenter {
+public class Presenter {//todo
     private final EventBus eventBus;
     private final Parser parser;
     private final View view;
@@ -26,19 +26,19 @@ public class Presenter {
     }
 
     public void decodingCommand(String inString) throws NotEnoughtDataException {
-        Context context = new Context(this.view);
+        Context context = new Context(this.view);//todo
         String command = parser.getCommand(inString);
-        String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";
+        String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";//todo
         String[] strings = parser.getArgs(inString);
         try {
-            if (command.equals("add_dish")) {
+            if (command.equals("add_dish")) {//todo перенести в фабрики
                 if (strings.length < 3)
                     throw new NotEnoughDataException(message);
                 context.setStrategy(new AddDishStrategy(this.view));
             } else {
                 if (strings.length < 1)
                     throw new NotEnoughDataException(message);
-                switch (command) {
+                switch (command) {//todo в map
                     case "add_category":
                         context.setStrategy(new AddCategoryStrategy(this.view));
                         break;
@@ -66,6 +66,7 @@ public class Presenter {
                     case "help":
                         context.setStrategy(new HelpStrategy(this.view));
                         break;
+
                 }
             }
         }

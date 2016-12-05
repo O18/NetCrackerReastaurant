@@ -1,6 +1,6 @@
 package com.sanik3d.restaurant;
 
-import com.sanik3d.restaurant.controller.Controller;
+import com.sanik3d.restaurant.controller.MenuController;
 import com.sanik3d.restaurant.eventbus.EventBus;
 import com.sanik3d.restaurant.model.Menu;
 import com.sanik3d.restaurant.presenter.Presenter;
@@ -15,7 +15,7 @@ public class Main {
     public static void main(String[] args) {
         View view = new View();
         EventBus eventBus = new EventBus();
-        Controller controller = new Controller(new Menu(), eventBus);
+        MenuController menuController = new MenuController(new Menu(), eventBus);
         Presenter presenter = new Presenter(eventBus, new Parser(), view);
         view.setPresenter(presenter);
         view.begin();
