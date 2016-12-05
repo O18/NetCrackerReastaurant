@@ -17,7 +17,7 @@ import org.junit.Ignore;
 public class Presenter {
     private final EventBus eventBus;
     private final Parser parser;
-    private final View view;//TODO: View должна реализовывать интерфейс
+    private final View view;
 
     public Presenter(EventBus eventBus, Parser parser, View view) {
         this.eventBus = eventBus;
@@ -30,7 +30,7 @@ public class Presenter {
         String command = parser.getCommand(inString);
         String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";
         String[] strings = parser.getArgs(inString);
-        try {//TODO: вынести лишний код из try
+        try {
             if (command.equals("add_dish")) {
                 if (strings.length < 3)
                     throw new NotEnoughDataException(message);

@@ -67,6 +67,7 @@ public class Controller {
             Menu loadedMenu = (Menu) in.readObject();
             in.close();
             menu = loadedMenu;
+            cache = new MenuCache(menu);
             event.getCallback().onSuccess();
         } catch (FileNotFoundException e) {
             event.getCallback().onFail(new RuntimeException("Файл не существует", e));
@@ -121,7 +122,7 @@ public class Controller {
     private void addDish(AddDishEvent event) {
         String categoryName = event.getCategory();
 
-        if(cache.namesAndDishes.containsKey(categoryName)){
+        if(cache.namesAndCategories.containsKey(categoryName)){
             String dishName = event.getNameOfDish();
 
             if(!cache.namesAndDishes.containsKey(dishName)){
@@ -167,7 +168,7 @@ public class Controller {
 
     private void showAllDishes(ShowAllDishesEvent event) {
         Set<Dish> dishes = menu.getDishes();
-        event.getCallback().onSuccess(Collections.unmodifiableSet(dishes));
+        event.getCallback().onSuccess(dishes);
     }
 
     private void showAllCategories(ShowAllCategoriesEvent event) {
