@@ -14,7 +14,7 @@ import org.junit.Ignore;
 /**
  * Created by 1 on 13.11.2016.
  */
-public class Presenter {//todo
+public class Presenter {//todo сделать унифицированный коллбэк
     private final EventBus eventBus;
     private final Parser parser;
     private final View view;
@@ -26,9 +26,9 @@ public class Presenter {//todo
     }
 
     public void decodingCommand(String inString) throws NotEnoughtDataException {
-        Context context = new Context(this.view);//todo
+        Context context = new Context(this.view);//todo убрать лишний класс context
         String command = parser.getCommand(inString);
-        String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";//todo
+        String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";//todo в константу
         String[] strings = parser.getArgs(inString);
         try {
             if (command.equals("add_dish")) {//todo перенести в фабрики
@@ -77,6 +77,6 @@ public class Presenter {//todo
             eventBus.post(context.executeStrategy(strings));
         }catch (NullPointerException e){
             view.print("Неверная команда");
-        }
+        }//todo переделать исключение
     }
 }

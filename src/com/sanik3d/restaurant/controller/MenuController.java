@@ -5,6 +5,7 @@ import com.sanik3d.restaurant.events.*;
 import com.sanik3d.restaurant.model.Category;
 import com.sanik3d.restaurant.model.Dish;
 import com.sanik3d.restaurant.model.Menu;
+import com.sanik3d.restaurant.model.MenuListener;
 
 import java.io.*;
 import java.util.HashMap;
@@ -153,7 +154,7 @@ public class MenuController {
     /**
      * Created by Александр on 29.11.2016.
      */
-    static class MenuCache {
+    static class MenuCache implements MenuListener{
         private final Menu menu;
         private final Map<String, Category> namesAndCategories;
         private final Map<String, Dish> namesAndDishes;

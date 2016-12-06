@@ -10,9 +10,11 @@ public class Menu implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Set<Category> categories;
+    private Set<MenuListener> listeners;
 
     public Menu() {
         categories = new HashSet<>();
+        listeners = new HashSet<>();
     }
 
     public Menu(Set<Category> categories) {
@@ -52,5 +54,13 @@ public class Menu implements Serializable {
         }
 
         return Collections.unmodifiableSet(dishSet);
+    }
+
+    public void addListener(MenuListener listener){
+        listeners.add(listener);
+    }
+
+    public void deleteListener(MenuListener listener){
+        listeners.remove(listener);
     }
 }
