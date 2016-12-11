@@ -19,11 +19,7 @@ public class EventBus {
     }
 
     public <T extends Event> void addHandler(Class<T> handlerClass, Handler<T> handler) {
-        Set<Handler> chosenByClassHandlers = handlers.get(handlerClass);
-        if(chosenByClassHandlers == null){
-            chosenByClassHandlers = new HashSet<>();
-            handlers.put(handlerClass, chosenByClassHandlers);
-        }
+        Set<Handler> chosenByClassHandlers = handlers.computeIfAbsent(handlerClass, k -> new HashSet<>());
         chosenByClassHandlers.add(handler);
     }
 

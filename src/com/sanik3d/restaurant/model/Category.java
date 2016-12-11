@@ -9,7 +9,7 @@ import java.util.Set;
  * Created by Александр on 06.11.2016.
  */
 public class Category implements Serializable{
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2408931504592493532L;
 
     private final String name;
     private final Set<Dish> dishes;

@@ -16,7 +16,6 @@ import java.util.Set;
  * Created by Александр on 12.11.2016.
  */
 public class MenuController {
-
     private final String HELP_PATH = "help.txt";
 
     private Menu menu;
@@ -31,7 +30,6 @@ public class MenuController {
         eventBus.addHandler(AddDishEvent.class, this::addDish);
         eventBus.addHandler(DeleteCategoryEvent.class, this::deleteCategory);
         eventBus.addHandler(DeleteDishEvent.class, this::deleteDish);
-        eventBus.addHandler(HelpShowEvent.class, this::showHelp);
     }
 
     private void showHelp(HelpShowEvent event) {//todo перенести
@@ -56,7 +54,8 @@ public class MenuController {
             Menu loadedMenu = (Menu) in.readObject();
             in.close();
             menu = loadedMenu;
-            cache = new MenuCache(menu);
+            cache.changeMenu(menu);
+
             event.getCallback().onSuccess();
         } catch (FileNotFoundException e) {
             event.getCallback().onFail(new RuntimeException("Файл не существует", e));
@@ -72,6 +71,7 @@ public class MenuController {
             out.writeObject(menu);
             out.flush();
             out.close();
+
             event.getCallback().onSuccess();
         } catch (IOException e) {
             event.getCallback().onFail(new RuntimeException("Ошибка записи", e));
@@ -84,7 +84,6 @@ public class MenuController {
         if (!cache.namesAndCategories.containsKey(categoryName)) {
             Category categoryToAdd = new Category(categoryName);
             menu.addCategory(categoryToAdd);
-            cache.namesAndCategories.put(categoryName, categoryToAdd);
 
             event.getCallback().onSuccess();
         } else {
@@ -98,7 +97,7 @@ public class MenuController {
         if (cache.namesAndCategories.containsKey(categoryName)) {
             Category category = cache.namesAndCategories.get(categoryName);
             menu.deleteCategory(category);
-            cache.deleteCategory(category);
+
             event.getCallback().onSuccess();
         } else {
             event.getCallback().onFail(new RuntimeException("Категории с таким именем не существует"));
@@ -113,9 +112,8 @@ public class MenuController {
 
             if (!cache.namesAndDishes.containsKey(dishName)) {
                 Dish dishToAdd = createDishFromEvent(event);
-                menu.addDish(dishToAdd);
-                cache.namesAndCategories.get(event.getCategory()).addDish(dishToAdd) ;
-                cache.addDish(dishToAdd);//todo обновление cache как листенер от menu
+                menu.addDishToCategory(dishToAdd, cache.namesAndCategories.get(categoryName));
+
                 event.getCallback().onSuccess();
             } else {
                 event.getCallback().onFail(new RuntimeException(
@@ -129,10 +127,9 @@ public class MenuController {
 
     private Dish createDishFromEvent(AddDishEvent event) {
         String dishName = event.getNameOfDish();
-        Category category = cache.namesAndCategories.get(event.getCategory());
         double price = event.getPriceOfDish();
 
-        return new Dish(dishName, category, price);
+        return new Dish(dishName, event.getCategory(), price);
     }
 
     private void deleteDish(DeleteDishEvent event) {
@@ -140,22 +137,23 @@ public class MenuController {
 
         if (cache.namesAndDishes.containsKey(dishName)) {
             Dish dishToDelete = cache.namesAndDishes.get(dishName);
-            menu.deleteDish(dishToDelete);
-            cache.deleteDish(dishToDelete);
+            Category category = cache.namesAndCategories.get(dishToDelete.getCategoryName());
+
+            menu.deleteDishFromCategory(dishToDelete, category);
 
             event.getCallback().onSuccess();
         } else {
             event.getCallback().onFail(new RuntimeException(
-                    "Ошибка удаления блюда. Блюдо с таким именем не уществует"));
+                    "Ошибка удаления блюда. Блюда с таким именем не существует"));
         }
     }
-
 
     /**
      * Created by Александр on 29.11.2016.
      */
-    static class MenuCache implements MenuListener{
-        private final Menu menu;
+    private static class MenuCache implements MenuListener{
+
+        private Menu menu;
         private final Map<String, Category> namesAndCategories;
         private final Map<String, Dish> namesAndDishes;
 
@@ -163,10 +161,11 @@ public class MenuController {
             this.menu = menu;
             namesAndCategories = new HashMap<>();
             namesAndDishes = new HashMap<>();
-            addCategories(menu.getCategories());
+            addCategoriesAndDishes(menu.getCategories());
+            menu.addListener(this);
         }
 
-        void addCategories(Set<Category> categories) {
+        private void addCategoriesAndDishes(Set<Category> categories) {
             for (Category category : categories) {
                 addCategory(category);
                 for (Dish dish : category.getDishes()) {
@@ -175,20 +174,53 @@ public class MenuController {
             }
         }
 
-        void addCategory(Category category) {
-            namesAndCategories.put(category.getName(), category);
+        @Override
+        public void onAddCategory(Category category) {
+            addCategory(category);
         }
 
-        void deleteCategory(Category category) {
-            namesAndCategories.remove(category.getName(), category);
+        @Override
+        public void onDeleteCategory(Category category) {
+            deleteCategory(category);
         }
 
-        void addDish(Dish dish) {
+        @Override
+        public void onAddDish(Dish dish) {
+            addDish(dish);
+        }
+
+        @Override
+        public void onDeleteDish(Dish dish) {
+            deleteDish(dish);
+        }
+
+        private void addDish(Dish dish) {
             namesAndDishes.put(dish.getName(), dish);
         }
 
-        void deleteDish(Dish dish) {
+        private void deleteDish(Dish dish) {
             namesAndDishes.remove(dish.getName());
+        }
+
+        private void addCategory(Category category){
+            namesAndCategories.put(category.getName(), category);
+            for (Dish dish : category.getDishes()) {
+                addDish(dish);
+            }
+        }
+
+        private void deleteCategory(Category category){
+            namesAndCategories.remove(category.getName(), category);
+            for (Dish dish : category.getDishes()) {
+                deleteDish(dish);
+            }
+        }
+
+        private void changeMenu(Menu newMenu) {
+            menu.deleteListener(this);
+            menu = newMenu;
+            menu.addListener(this);
+            addCategoriesAndDishes(menu.getCategories());
         }
     }
 }

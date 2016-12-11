@@ -7,7 +7,7 @@ import java.util.*;
  * Created by Александр on 05.11.2016.
  */
 public class Menu implements Serializable {
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = -2922673041785815304L;
 
     private Set<Category> categories;
     private Set<MenuListener> listeners;
@@ -17,34 +17,52 @@ public class Menu implements Serializable {
         listeners = new HashSet<>();
     }
 
-    public Menu(Set<Category> categories) {
-        this.categories = categories;
-    }
-
     public Set<Category> getCategories() {
         return Collections.unmodifiableSet(categories);
     }
 
-    public void setCategories(Set<Category> categories) {
-        this.categories = categories;
+    public boolean addDishToCategory(Dish dish, Category category) {
+        if(category.addDish(dish)){
+            for (MenuListener listener : listeners) {
+                listener.onAddDish(dish);
+            }
+            return true;
+        }
+
+        return false;
     }
 
-    public boolean addDish(Dish dish) {
-        Category categoryOfAddingDish = dish.getCategory();
-        return categoryOfAddingDish.addDish(dish);
-    }
+    public boolean deleteDishFromCategory(Dish dish, Category category) {
+        if(category.deleteDish(dish)){
+            for (MenuListener listener : listeners) {
+                listener.onDeleteDish(dish);
+            }
+            return true;
+        }
 
-    public boolean deleteDish(Dish dish) {
-        Category categoryOfDeletingDish = dish.getCategory();
-        return categoryOfDeletingDish.deleteDish(dish);
+        return false;
     }
 
     public boolean addCategory(Category category) {
-        return categories.add(category);
+        if(categories.add(category)) {
+            for (MenuListener listener : listeners) {
+                listener.onAddCategory(category);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public boolean deleteCategory(Category category) {
-        return categories.remove(category);
+        if(categories.remove(category)){
+            for (MenuListener listener : listeners) {
+                listener.onAddCategory(category);
+            }
+            return true;
+        }
+
+        return false;
     }
 
     public Set<Dish> getDishes(){

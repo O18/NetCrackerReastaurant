@@ -6,15 +6,15 @@ import java.io.Serializable;
  * Created by Александр on 06.11.2016.
  */
 public class Dish implements Serializable{
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 4245136608929768391L;
 
     private final String name;
-    private final Category category;
+    private final String categoryName;
     private final double cost;
 
-    public Dish(String name, Category category, double cost) {
+    public Dish(String name, String categoryName, double cost) {
         this.name = name;
-        this.category = category;
+        this.categoryName = categoryName;
         this.cost = cost;
     }
 
@@ -22,8 +22,8 @@ public class Dish implements Serializable{
         return name;
     }
 
-    public Category getCategory() {
-        return category;
+    public String getCategoryName() {
+        return categoryName;
     }
 
     public double getCost() {
@@ -39,8 +39,7 @@ public class Dish implements Serializable{
 
         if (Double.compare(dish.cost, cost) != 0) return false;
         if (!name.equals(dish.name)) return false;
-        return category.equals(dish.category);
-
+        return categoryName.equals(dish.categoryName);
     }
 
     @Override
@@ -48,14 +47,9 @@ public class Dish implements Serializable{
         int result;
         long temp;
         result = name.hashCode();
-        result = 31 * result + category.hashCode();
+        result = 31 * result + categoryName.hashCode();
         temp = Double.doubleToLongBits(cost);
         result = 31 * result + (int) (temp ^ (temp >>> 32));
         return result;
-    }
-
-    @Override
-    public String toString() {
-        return name + " " + cost + " " + category;
     }
 }
