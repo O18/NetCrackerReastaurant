@@ -1,15 +1,15 @@
 package com.sanik3d.restaurant.events;
 
-import com.sanik3d.restaurant.presenter.callbacks.AddCategoryCallback;
+import com.sanik3d.restaurant.presenter.Callback;
 
 /**
  * Created by 1 on 28.11.2016.
  */
 public class AddCategoryEvent implements Event {
     private final String nameOfCategory;
-    private final AddCategoryCallback callback;
+    private final Callback callback;
 
-    public AddCategoryEvent(String nameOfCategory, AddCategoryCallback callback) {
+    public AddCategoryEvent(String nameOfCategory, Callback callback) {
         this.nameOfCategory = nameOfCategory;
         this.callback = callback;
     }
@@ -18,7 +18,7 @@ public class AddCategoryEvent implements Event {
         return nameOfCategory;
     }
 
-    public AddCategoryCallback getCallback() {
+    public Callback getCallback() {
         return callback;
     }
 }

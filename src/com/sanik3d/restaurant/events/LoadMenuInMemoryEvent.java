@@ -1,15 +1,15 @@
 package com.sanik3d.restaurant.events;
 
-import com.sanik3d.restaurant.presenter.callbacks.LoadMenuInMemoryCallback;
+import com.sanik3d.restaurant.presenter.Callback;
 
 /**
  * Created by 1 on 28.11.2016.
  */
 public class LoadMenuInMemoryEvent implements Event {
     private final String path;
-    private final LoadMenuInMemoryCallback callback;
+    private final Callback callback;
 
-    public LoadMenuInMemoryEvent(String path, LoadMenuInMemoryCallback callback) {
+    public LoadMenuInMemoryEvent(String path, Callback callback) {
         this.path = path;
         this.callback = callback;
     }
@@ -18,7 +18,7 @@ public class LoadMenuInMemoryEvent implements Event {
         return path;
     }
 
-    public LoadMenuInMemoryCallback getCallback() {
+    public Callback getCallback() {
         return callback;
     }
 }
