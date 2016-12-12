@@ -1,7 +1,7 @@
 package com.sanik3d.restaurant.events;
 
 
-import com.sanik3d.restaurant.presenter.callbacks.DeleteCategoryCallback;
+import com.sanik3d.restaurant.presenter.Callback;
 
 
 /**
@@ -9,8 +9,8 @@ import com.sanik3d.restaurant.presenter.callbacks.DeleteCategoryCallback;
  */
 public class DeleteCategoryEvent implements Event {
     private final String nameOfCategory;
-    private final DeleteCategoryCallback callback;
-    public DeleteCategoryEvent (String nameOfCategory,DeleteCategoryCallback callback) {
+    private final Callback callback;
+    public DeleteCategoryEvent (String nameOfCategory,Callback callback) {
         this.nameOfCategory = nameOfCategory;
         this.callback = callback;
     }
@@ -19,7 +19,7 @@ public class DeleteCategoryEvent implements Event {
         return nameOfCategory;
     }
 
-    public DeleteCategoryCallback getCallback() {
+    public Callback getCallback() {
         return callback;
     }
 }

@@ -3,80 +3,328 @@ package com.sanik3d.restaurant.presenter;
 import com.sanik3d.restaurant.eventbus.EventBus;
 import com.sanik3d.restaurant.events.*;
 import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
-import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
-import com.sanik3d.restaurant.presenter.callbacks.*;
-import com.sanik3d.restaurant.strategy.*;
+import com.sanik3d.restaurant.model.Category;
+import com.sanik3d.restaurant.model.Dish;
+import com.sanik3d.restaurant.model.Menu;
 import com.sanik3d.restaurant.view.Parser;
 import com.sanik3d.restaurant.view.View;
-import org.junit.Ignore;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
 
 
-/**
- * Created by 1 on 13.11.2016.
- */
-public class Presenter {//todo сделать унифицированный коллбэк
+public class Presenter {
     private final EventBus eventBus;
     private final Parser parser;
     private final View view;
+    private Menu menu;
 
-    public Presenter(EventBus eventBus, Parser parser, View view) {
+    public Presenter(EventBus eventBus, Parser parser, View view, Menu menu) {
         this.eventBus = eventBus;
         this.parser = parser;
         this.view = view;
+        this.menu = menu;
     }
+    //метод выбора креатора
 
-    public void decodingCommand(String inString) throws NotEnoughtDataException {
-        Context context = new Context(this.view);//todo убрать лишний класс context
-        String command = parser.getCommand(inString);
-        String message = "Недостаточно даннных для выполнения команды! Пожалуйста, повторите ввод.";//todo в константу
-        String[] strings = parser.getArgs(inString);
-        try {
-            if (command.equals("add_dish")) {//todo перенести в фабрики
-                if (strings.length < 3)
-                    throw new NotEnoughDataException(message);
-                context.setStrategy(new AddDishStrategy(this.view));
-            } else {
-                if (strings.length < 1)
-                    throw new NotEnoughDataException(message);
-                switch (command) {//todo в map
-                    case "add_category":
-                        context.setStrategy(new AddCategoryStrategy(this.view));
-                        break;
-                    case "add_dish":
-                        context.setStrategy(new AddDishStrategy(this.view));
-                        break;
-                    case "delete_dish":
-                        context.setStrategy(new DeleteDishStrategy(this.view));
-                        break;
-                    case "delete_category":
-                        context.setStrategy(new DeleteCategoryStrategy(this.view));
-                        break;
-                    case "load_menu":
-                        context.setStrategy(new LoadMenuInMemoryStrategy(this.view));
-                        break;
-                    case "save_menu":
-                        context.setStrategy(new SaveMenuStrategy(this.view));
-                        break;
-                    case "show_all_categories":
-                        context.setStrategy(new ShowAllCategoriesStrategy(this.view));
-                        break;
-                    case "show_all_dishes":
-                        context.setStrategy(new ShowAllDishesStrategy(this.view));
-                        break;
-                    case "help":
-                        context.setStrategy(new HelpStrategy(this.view));
-                        break;
+    public static class AddDishCreator implements Creator {
+        private View view;
 
-                }
-            }
+        public AddDishCreator(View view) {
+            this.view = view;
         }
-        catch(NotEnoughDataException e){
-            view.print(e.getMessage());
-        }//TODO:разобраться с исключениями
-        try {
-            eventBus.post(context.executeStrategy(strings));
-        }catch (NullPointerException e){
-            view.print("Неверная команда");
-        }//todo переделать исключение
+
+        @Override
+        public Event createEvent(String[] commandString) throws NotEnoughDataException {
+            if (commandString.length < 3)
+                throw new NotEnoughDataException("Недостаточно данных. Введите название блюда, стоимость " +
+                        "и название категории для добавлеия блюда. Категория уже должна сущестовать.");
+            return new AddDishEvent(commandString[0], Double.valueOf(commandString[1]), commandString[2], new Callback() {
+                @Override
+                public void onSuccess() {
+                    view.print("Добавление блюда прошло успешно!");
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage() + ' ' + e.getCause());
+                }
+            });
+        }
     }
+
+    public static class AddCategoryCreator implements Creator {
+
+        public AddCategoryCreator(View view) {
+            this.view = view;
+        }
+
+        private View view;
+
+        @Override
+        public Event createEvent(String[] commandString) throws NotEnoughDataException {
+            if (commandString.length < 1)
+                throw new NotEnoughDataException("Недостаточно данных. Введите название категории для её добавления.");
+            return new AddCategoryEvent(commandString[0], new Callback() {
+
+                @Override
+                public void onSuccess() {
+                    view.print("Добавление категории прошло успешно!");
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage() + ' ' + e.getCause());
+                }
+            });
+        }
+    }
+
+    public static class DeleteCategoryCreator implements Creator {
+        public DeleteCategoryCreator(View view) {
+            this.view = view;
+        }
+
+        private View view;
+
+        public Event createEvent(String[] commandString) throws NotEnoughDataException {
+            if (commandString.length < 1)
+                throw new NotEnoughDataException("Недостаточно данных. Введите название категории для её удаления. " +
+                        "Категория должна сущестовать");
+            return new DeleteCategoryEvent(commandString[0], new Callback() {
+
+                @Override
+                public void onSuccess() {
+                    view.print("Удаление категории прошло успешно!");
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage() + ' ' + e.getCause());
+                }
+            });
+        }
+    }
+
+
+    public static class DeleteDishCreator implements Creator {
+        private View view;
+
+        public DeleteDishCreator(View view) {
+            this.view = view;
+        }
+
+        public Event createEvent(String[] commandString) throws NotEnoughDataException {
+            if (commandString.length < 1)
+                throw new NotEnoughDataException("Недостаточно данных. Введите название блюда для его удаления. " +
+                        "Блюдо должно существовать");
+            return new DeleteDishEvent(commandString[0], new Callback() {
+                View view = new View();//пока что
+
+                @Override
+                public void onSuccess() {
+                    view.print("Удаление блюда прошло успешно!");
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage() + ' ' + e.getCause());
+                }
+            });
+        }
+    }
+
+
+    public static class LoadMenuInMemoryCreator implements Creator {
+        public LoadMenuInMemoryCreator(View view) {
+            this.view = view;
+        }
+
+        View view;
+
+        public Event createEvent(String[] commandString) throws NotEnoughDataException {
+            if (commandString.length < 1)
+                throw new NotEnoughDataException("Недостаточно данных. Введите полный путь для загрузки меню в память.");
+            return new LoadMenuInMemoryEvent(commandString[0], new Callback() {
+                View view = new View();//пока что
+
+                @Override
+                public void onSuccess() {
+                    view.print("Загрузка меню в память прошла успешно!");
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage() + ' ' + e.getCause());
+                }
+            });
+        }
+    }
+
+
+    public static class SaveMenuCreator implements Creator {
+        View view;
+
+        public SaveMenuCreator(View view) {
+            this.view = view;
+        }
+
+        public Event createEvent(String[] commandString) throws NotEnoughDataException {
+            if (commandString.length < 1)
+                throw new NotEnoughDataException("Недостаточно данных. Введите полный путь для сохранения изменений в меню.");
+            return new SaveMenuEvent(commandString[0], new Callback() {
+                View view = new View();//пока что
+
+                @Override
+                public void onSuccess() {
+                    view.print("Соханение меню прошло успешно!");
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage() + ' ' + e.getCause());
+                }
+            });
+        }
+    }
+
+    public interface Creator {
+        Event createEvent(String[] commandString) throws NotEnoughDataException;
+    }
+
+    public void decodingCommand(String inString){
+        String command = parser.getCommand(inString);
+        String[] args = parser.getArgs(inString);
+        switch (command) {
+            case "help" :
+                try {
+                    BufferedReader reader = new BufferedReader(new FileReader(args[0]));//todo массив переделать
+                    StringBuilder result = new StringBuilder();
+                    String currentLine;
+                    while ((currentLine = reader.readLine()) != null) {
+                        result.append(currentLine).append('\n');
+                    }
+                    reader.close();
+                }
+                catch (IOException e) {
+                    view.print("Не найден файл");
+                }
+                break;
+            case "show_all_dishes" :
+                for (Dish dish : menu.getDishes())
+                    view.print(dish.getName() + ' ' + dish.getCost() + ' ' + dish.getCategory().toString());
+                break;
+            case "show_all_categories" :
+                for (Category category : menu.getCategories())
+                    view.print(category.getName());
+                break;
+            default :
+                HashMap<String, Creator> mapNameCreator = new HashMap<>();
+                mapNameCreator.put("add_category", new AddCategoryCreator(this.view));
+                mapNameCreator.put("add_dish", new AddDishCreator(this.view));
+                mapNameCreator.put("delete_dish", new DeleteDishCreator(this.view));
+                mapNameCreator.put("delete_category", new DeleteCategoryCreator(this.view));
+                mapNameCreator.put("load_menu", new LoadMenuInMemoryCreator(this.view));
+                mapNameCreator.put("save_menu", new SaveMenuCreator(this.view));
+                try {
+                    eventBus.post(mapNameCreator.get(command).createEvent(args));
+                }
+                catch(NotEnoughDataException e) {
+                    view.print(e.getMessage());
+                }
+                catch(NullPointerException e) {
+                    view.print("Неверная команда");
+                }
+                break;
+        }
+}
+
+    /*
+    public static class ShowAllCategoriesCreator implements Creator {
+        View view;
+
+        public ShowAllCategoriesCreator(View view) {
+            this.view = view;
+        }
+
+        public Event createEvent(String[] commandString) {
+            return new ShowAllCategoriesEvent(new ShowAllCategoriesCallback() {
+                View view = new View();//пока что
+
+                @Override
+                public void onSuccess(Set<Category> categories) {
+                    StringBuilder resultString = new StringBuilder();
+                    for (Category category : categories) {
+                        resultString.append(category.toString()).append('\n');
+                    }
+
+                    view.print(resultString.toString());
+                }
+
+                @Override
+                public void onFail() {
+                    view.print("Неудача!");
+                }
+            });
+        }
+    }
+
+
+    public static class ShowAllDishesCreator implements Creator {
+        View view;
+
+        public ShowAllDishesCreator(View view) {
+            this.view = view;
+        }
+
+        public Event createEvent(String[] commandString) {
+            return new ShowAllDishesEvent(new ShowAllDishesCallback() {
+                View view = new View();//пока что
+
+                @Override
+                public void onSuccess(Set<Dish> dishes) {//TODO: опреации получения информации реализовать в Presenter
+                    StringBuilder resultString = new StringBuilder();
+                    for (Dish dish : dishes) {
+                        resultString.append(dish.toString()).append('\n');
+                    }
+
+                    view.print(resultString.toString());
+                }
+
+                @Override
+                public void onFail() {
+                    view.print("Неудача!");
+                }
+            });
+        }
+    }
+
+    public static class HelpCreator implements Creator {    сделать вывод в презентере
+
+        private View view;
+
+        public HelpCreator(View view) {
+            this.view = view;
+        }
+
+        @Override
+        public Event createEvent(String[] commandString) {
+            return new HelpShowEvent(new ShowHelpCallback() {
+                @Override
+                public void onSuccess(String helpInfo) {
+                    view.print(helpInfo);
+                }
+
+                @Override
+                public void onFail(RuntimeException e) {
+                    view.print(e.getMessage());
+                }
+            });
+        }
+    }
+*/
+
+
 }

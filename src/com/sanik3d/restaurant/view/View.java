@@ -1,6 +1,5 @@
 package com.sanik3d.restaurant.view;
 
-import com.sanik3d.restaurant.exceptions.NotEnoughtDataException;
 import com.sanik3d.restaurant.presenter.Presenter;
 
 import java.util.Scanner;
@@ -15,18 +14,11 @@ public class View {
     }
 
     public void begin() {
-        Scanner sc = new Scanner(System.in);//TODO: пересоздание Scanner
+        Scanner sc = new Scanner(System.in);
         while (true) {
             System.out.println("Введите команду:");
             String inString = sc.nextLine();
-            try {
-                presenter.decodingCommand(inString);//TODO: переделать название
-                //ушли в presenter
-            } catch (NotEnoughtDataException e) {
-                e.printStackTrace();
-            }//TODO: убрать try-catch
-
-
+            presenter.decodingCommand(inString);
         }
     }
 

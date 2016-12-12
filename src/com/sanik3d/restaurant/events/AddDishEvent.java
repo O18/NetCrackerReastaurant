@@ -1,7 +1,7 @@
 package com.sanik3d.restaurant.events;
 
 import com.sanik3d.restaurant.events.*;
-import com.sanik3d.restaurant.presenter.callbacks.AddDishCallback;
+import com.sanik3d.restaurant.presenter.Callback;
 
 /**
  * Created by 1 on 29.11.2016.
@@ -10,9 +10,9 @@ public class AddDishEvent implements Event {
     private final String nameOfDish;
     private final double priceOfDish;
     private final String category;
-    private final AddDishCallback callback;
+    private final Callback callback;
 
-    public AddDishEvent(String nameOfDish, double priceOfDish, String category, AddDishCallback callback) {
+    public AddDishEvent(String nameOfDish, double priceOfDish, String category, Callback callback) {
         this.nameOfDish = nameOfDish;
         this.priceOfDish = priceOfDish;
         this.category = category;
@@ -31,7 +31,7 @@ public class AddDishEvent implements Event {
         return category;
     }
 
-    public AddDishCallback getCallback() {
+    public Callback getCallback() {
         return callback;
     }
 }

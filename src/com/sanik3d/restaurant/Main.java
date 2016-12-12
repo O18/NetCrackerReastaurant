@@ -15,8 +15,9 @@ public class Main {
     public static void main(String[] args) {
         View view = new View();
         EventBus eventBus = new EventBus();
-        MenuController menuController = new MenuController(new Menu(), eventBus);
-        Presenter presenter = new Presenter(eventBus, new Parser(), view);
+        Menu menu = new Menu();
+        MenuController menuController = new MenuController(menu, eventBus);
+        Presenter presenter = new Presenter(eventBus, new Parser(), view,menu);
         view.setPresenter(presenter);
         view.begin();
     }
