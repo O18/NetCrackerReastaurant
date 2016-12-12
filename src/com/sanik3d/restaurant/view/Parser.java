@@ -6,7 +6,7 @@ package com.sanik3d.restaurant.view;
  */
 public class Parser {
 
-    StringBuffer sb = new StringBuffer();
+    StringBuffer sb ;
 
     public String getCommand(String inString) {//TODO: регулярные выражения reg exp
         String[] strings = inString.split(" ");
@@ -23,6 +23,7 @@ public class Parser {
     }
 
     public String[] getArgs(String inString) {
+        sb = new StringBuffer();
         String[] arrayOfStrings = inString.split(" ");
         String command = getCommand(inString);
         if (command.equals("add_dish")) {

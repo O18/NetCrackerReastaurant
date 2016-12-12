@@ -20,12 +20,20 @@ public class Presenter {
     private final Parser parser;
     private final View view;
     private Menu menu;
+    private HashMap<String, Creator> mapNameCreator;
 
     public Presenter(EventBus eventBus, Parser parser, View view, Menu menu) {
         this.eventBus = eventBus;
         this.parser = parser;
         this.view = view;
         this.menu = menu;
+        mapNameCreator = new HashMap<>();
+        mapNameCreator.put("add_category", new AddCategoryCreator(this.view));
+        mapNameCreator.put("add_dish", new AddDishCreator(this.view));
+        mapNameCreator.put("delete_dish", new DeleteDishCreator(this.view));
+        mapNameCreator.put("delete_category", new DeleteCategoryCreator(this.view));
+        mapNameCreator.put("load_menu", new LoadMenuInMemoryCreator(this.view));
+        mapNameCreator.put("save_menu", new SaveMenuCreator(this.view));
     }
     //метод выбора креатора
 
@@ -148,7 +156,6 @@ public class Presenter {
             if (commandString.length < 1)
                 throw new NotEnoughDataException("Недостаточно данных. Введите полный путь для загрузки меню в память.");
             return new LoadMenuInMemoryEvent(commandString[0], new Callback() {
-                View view = new View();//пока что
 
                 @Override
                 public void onSuccess() {
@@ -194,52 +201,44 @@ public class Presenter {
         Event createEvent(String[] commandString) throws NotEnoughDataException;
     }
 
-    public void decodingCommand(String inString){
+    public void decodingCommand(String inString) {
         String command = parser.getCommand(inString);
         String[] args = parser.getArgs(inString);
         switch (command) {
-            case "help" :
+            case "help":
                 try {
-                    BufferedReader reader = new BufferedReader(new FileReader(args[0]));//todo массив переделать
+                    BufferedReader reader = new BufferedReader(new FileReader("help.txt"));//todo массив переделать
                     StringBuilder result = new StringBuilder();
                     String currentLine;
                     while ((currentLine = reader.readLine()) != null) {
                         result.append(currentLine).append('\n');
                     }
                     reader.close();
-                }
-                catch (IOException e) {
+                    view.print(result.toString());
+                } catch (IOException e) {
                     view.print("Не найден файл");
                 }
                 break;
-            case "show_all_dishes" :
+            case "show_all_dishes":
                 for (Dish dish : menu.getDishes())
                     view.print(dish.getName() + ' ' + dish.getCost() + ' ' + dish.getCategoryName());
                 break;
-            case "show_all_categories" :
+            case "show_all_categories":
                 for (Category category : menu.getCategories())
                     view.print(category.getName());
                 break;
-            default :
-                HashMap<String, Creator> mapNameCreator = new HashMap<>();
-                mapNameCreator.put("add_category", new AddCategoryCreator(this.view));
-                mapNameCreator.put("add_dish", new AddDishCreator(this.view));
-                mapNameCreator.put("delete_dish", new DeleteDishCreator(this.view));
-                mapNameCreator.put("delete_category", new DeleteCategoryCreator(this.view));
-                mapNameCreator.put("load_menu", new LoadMenuInMemoryCreator(this.view));
-                mapNameCreator.put("save_menu", new SaveMenuCreator(this.view));
+            default:
+
                 try {
                     eventBus.post(mapNameCreator.get(command).createEvent(args));
-                }
-                catch(NotEnoughDataException e) {
+                } catch (NotEnoughDataException e) {
                     view.print(e.getMessage());
-                }
-                catch(NullPointerException e) {
+                } catch (NullPointerException e) {
                     view.print("Неверная команда");
                 }
                 break;
         }
-}
+    }
 
     /*
     public static class ShowAllCategoriesCreator implements Creator {
