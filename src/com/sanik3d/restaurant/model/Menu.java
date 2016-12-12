@@ -1,7 +1,9 @@
 package com.sanik3d.restaurant.model;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Created by Александр on 05.11.2016.
@@ -15,6 +17,10 @@ public class Menu implements Serializable {
     public Menu() {
         categories = new HashSet<>();
         listeners = new HashSet<>();
+    }
+
+    public void setCategories(Set<Category> categories) {
+        this.categories = categories;
     }
 
     public Set<Category> getCategories() {
@@ -81,7 +87,11 @@ public class Menu implements Serializable {
         listeners.add(listener);
     }
 
-    public void deleteListener(MenuListener listener){
+    public void removeListener(MenuListener listener) {
         listeners.remove(listener);
+    }
+
+    public void removeAllListeners() {
+        listeners.clear();
     }
 }

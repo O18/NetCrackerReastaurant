@@ -57,7 +57,7 @@ public class Presenter {
 
                 @Override
                 public void onFail(RuntimeException e) {
-                    view.print(e.getMessage() + ' ' + e.getCause());
+                    view.print(e.getMessage());
                 }
             });
         }
@@ -84,7 +84,7 @@ public class Presenter {
 
                 @Override
                 public void onFail(RuntimeException e) {
-                    view.print(e.getMessage() + ' ' + e.getCause());
+                    view.print(e.getMessage());
                 }
             });
         }
@@ -110,7 +110,7 @@ public class Presenter {
 
                 @Override
                 public void onFail(RuntimeException e) {
-                    view.print(e.getMessage() + ' ' + e.getCause());
+                    view.print(e.getMessage());
                 }
             });
         }
@@ -129,7 +129,6 @@ public class Presenter {
                 throw new NotEnoughDataException("Недостаточно данных. Введите название блюда для его удаления. " +
                         "Блюдо должно существовать");
             return new DeleteDishEvent(commandString[0], new Callback() {
-                View view = new View();//пока что
 
                 @Override
                 public void onSuccess() {
@@ -138,7 +137,7 @@ public class Presenter {
 
                 @Override
                 public void onFail(RuntimeException e) {
-                    view.print(e.getMessage() + ' ' + e.getCause());
+                    view.print(e.getMessage());
                 }
             });
         }
@@ -146,11 +145,11 @@ public class Presenter {
 
 
     public static class LoadMenuInMemoryCreator implements Creator {
+        private View view;
+
         public LoadMenuInMemoryCreator(View view) {
             this.view = view;
         }
-
-        View view;
 
         public Event createEvent(String[] commandString) throws NotEnoughDataException {
             if (commandString.length < 1)
@@ -164,7 +163,7 @@ public class Presenter {
 
                 @Override
                 public void onFail(RuntimeException e) {
-                    view.print(e.getMessage() + ' ' + e.getCause());
+                    view.print(e.getMessage());
                 }
             });
         }
@@ -182,7 +181,6 @@ public class Presenter {
             if (commandString.length < 1)
                 throw new NotEnoughDataException("Недостаточно данных. Введите полный путь для сохранения изменений в меню.");
             return new SaveMenuEvent(commandString[0], new Callback() {
-                View view = new View();//пока что
 
                 @Override
                 public void onSuccess() {
@@ -191,7 +189,7 @@ public class Presenter {
 
                 @Override
                 public void onFail(RuntimeException e) {
-                    view.print(e.getMessage() + ' ' + e.getCause());
+                    view.print(e.getMessage());
                 }
             });
         }
@@ -207,14 +205,14 @@ public class Presenter {
         switch (command) {
             case "help":
                 try {
-                    BufferedReader reader = new BufferedReader(new FileReader("help.txt"));//todo массив переделать
+                    BufferedReader reader = new BufferedReader(new FileReader("help.txt"));
                     StringBuilder result = new StringBuilder();
                     String currentLine;
                     while ((currentLine = reader.readLine()) != null) {
                         result.append(currentLine).append('\n');
                     }
-                    reader.close();
                     view.print(result.toString());
+                    reader.close();
                 } catch (IOException e) {
                     view.print("Не найден файл");
                 }
@@ -239,91 +237,6 @@ public class Presenter {
                 break;
         }
     }
-
-    /*
-    public static class ShowAllCategoriesCreator implements Creator {
-        View view;
-
-        public ShowAllCategoriesCreator(View view) {
-            this.view = view;
-        }
-
-        public Event createEvent(String[] commandString) {
-            return new ShowAllCategoriesEvent(new ShowAllCategoriesCallback() {
-                View view = new View();//пока что
-
-                @Override
-                public void onSuccess(Set<Category> categories) {
-                    StringBuilder resultString = new StringBuilder();
-                    for (Category category : categories) {
-                        resultString.append(category.toString()).append('\n');
-                    }
-
-                    view.print(resultString.toString());
-                }
-
-                @Override
-                public void onFail() {
-                    view.print("Неудача!");
-                }
-            });
-        }
-    }
-
-
-    public static class ShowAllDishesCreator implements Creator {
-        View view;
-
-        public ShowAllDishesCreator(View view) {
-            this.view = view;
-        }
-
-        public Event createEvent(String[] commandString) {
-            return new ShowAllDishesEvent(new ShowAllDishesCallback() {
-                View view = new View();//пока что
-
-                @Override
-                public void onSuccess(Set<Dish> dishes) {//TODO: опреации получения информации реализовать в Presenter
-                    StringBuilder resultString = new StringBuilder();
-                    for (Dish dish : dishes) {
-                        resultString.append(dish.toString()).append('\n');
-                    }
-
-                    view.print(resultString.toString());
-                }
-
-                @Override
-                public void onFail() {
-                    view.print("Неудача!");
-                }
-            });
-        }
-    }
-
-    public static class HelpCreator implements Creator {    сделать вывод в презентере
-
-        private View view;
-
-        public HelpCreator(View view) {
-            this.view = view;
-        }
-
-        @Override
-        public Event createEvent(String[] commandString) {
-            return new HelpShowEvent(new ShowHelpCallback() {
-                @Override
-                public void onSuccess(String helpInfo) {
-                    view.print(helpInfo);
-                }
-
-                @Override
-                public void onFail(RuntimeException e) {
-                    view.print(e.getMessage());
-                }
-            });
-        }
-    }
-*/
 
 
 }

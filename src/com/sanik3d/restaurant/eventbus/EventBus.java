@@ -30,7 +30,7 @@ public class EventBus {
         }
     }
 
-    public <T extends Event> void post(T event) { //TODO: handler по EventClass
+    public <T extends Event> void post(T event) {
         Set<Handler> handlersToPostOn = handlers.get(event.getClass());
         if(handlersToPostOn != null){
             for (Handler handler : handlersToPostOn) {

@@ -9,6 +9,7 @@ import com.sanik3d.restaurant.model.MenuListener;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,10 +17,8 @@ import java.util.Set;
  * Created by Александр on 12.11.2016.
  */
 public class MenuController {
-    private final String HELP_PATH = "help.txt";
-
-    private Menu menu;
-    private MenuCache cache;
+    private final Menu menu;
+    private final MenuCache cache;
 
     public MenuController(Menu menu, EventBus eventBus) {
         this.menu = menu;
@@ -37,7 +36,11 @@ public class MenuController {
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
             Menu loadedMenu = (Menu) in.readObject();
             in.close();
-            menu = loadedMenu;
+            Set<Category> categories = new HashSet<>();
+            for (Category category : loadedMenu.getCategories()) {
+                categories.add(category);
+            }
+            menu.setCategories(categories);
             cache.changeMenu(menu);
 
             event.getCallback().onSuccess();
@@ -135,9 +138,10 @@ public class MenuController {
     /**
      * Created by Александр on 29.11.2016.
      */
-    private static class MenuCache implements MenuListener{
+    private static class MenuCache implements MenuListener, Serializable {
+        private static final long serialVersionUID = -4469390559401629523L;
 
-        private Menu menu;
+        private final Menu menu;
         private final Map<String, Category> namesAndCategories;
         private final Map<String, Dish> namesAndDishes;
 
@@ -152,9 +156,6 @@ public class MenuController {
         private void addCategoriesAndDishes(Set<Category> categories) {
             for (Category category : categories) {
                 addCategory(category);
-                for (Dish dish : category.getDishes()) {
-                    addDish(dish);
-                }
             }
         }
 
@@ -201,10 +202,9 @@ public class MenuController {
         }
 
         private void changeMenu(Menu newMenu) {
-            menu.deleteListener(this);
-            menu = newMenu;
-            menu.addListener(this);
-            addCategoriesAndDishes(menu.getCategories());
+            namesAndCategories.clear();
+            namesAndDishes.clear();
+            addCategoriesAndDishes(newMenu.getCategories());
         }
     }
 }
