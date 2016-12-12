@@ -214,7 +214,7 @@ public class Presenter {
                 break;
             case "show_all_dishes" :
                 for (Dish dish : menu.getDishes())
-                    view.print(dish.getName() + ' ' + dish.getCost() + ' ' + dish.getCategory().toString());
+                    view.print(dish.getName() + ' ' + dish.getCost() + ' ' + dish.getCategoryName());
                 break;
             case "show_all_categories" :
                 for (Category category : menu.getCategories())
