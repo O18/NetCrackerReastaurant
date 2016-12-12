@@ -48,9 +48,7 @@ public class Category implements Serializable{
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
-        result = 31 * result + dishes.hashCode();
-        return result;
+        return name.hashCode();
     }
 
     @Override

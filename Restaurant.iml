@@ -27,5 +27,18 @@
         <SOURCES />
       </library>
     </orderEntry>
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="file://$APPLICATION_HOME_DIR$/plugins/mockito-generator/lib" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="file://$APPLICATION_HOME_DIR$/plugins/mockito-generator/lib" />
+        </SOURCES>
+        <jarDirectory url="file://$APPLICATION_HOME_DIR$/plugins/mockito-generator/lib" recursive="false" />
+        <jarDirectory url="file://$APPLICATION_HOME_DIR$/plugins/mockito-generator/lib" recursive="false" type="SOURCES" />
+      </library>
+    </orderEntry>
   </component>
 </module>

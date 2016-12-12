@@ -22,6 +22,8 @@ public class Menu implements Serializable {
     }
 
     public boolean addDishToCategory(Dish dish, Category category) {
+        if(!categories.contains(category)) return false;
+
         if(category.addDish(dish)){
             for (MenuListener listener : listeners) {
                 listener.onAddDish(dish);
@@ -59,6 +61,7 @@ public class Menu implements Serializable {
             for (MenuListener listener : listeners) {
                 listener.onAddCategory(category);
             }
+
             return true;
         }
 

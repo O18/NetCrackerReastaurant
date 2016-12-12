@@ -32,22 +32,6 @@ public class MenuController {
         eventBus.addHandler(DeleteDishEvent.class, this::deleteDish);
     }
 
-    private void showHelp(HelpShowEvent event) {//todo перенести
-        try {
-            BufferedReader reader = new BufferedReader(new FileReader(HELP_PATH));
-            StringBuilder result = new StringBuilder();
-            String currentLine;
-            while ((currentLine = reader.readLine()) != null) {
-                result.append(currentLine).append('\n');
-            }
-            reader.close();
-
-            event.getCallback().onSuccess(result.toString());
-        } catch (IOException e) {
-            event.getCallback().onFail(new RuntimeException("Не найден файл", e));
-        }
-    }
-
     private void loadMenuFrom(LoadMenuInMemoryEvent event) {
         String filePath = event.getPath();
         try (ObjectInputStream in = new ObjectInputStream(new FileInputStream(filePath))) {
