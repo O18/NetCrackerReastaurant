@@ -26,6 +26,7 @@ public class Presenter {
         this.eventBus = eventBus;
         this.parser = parser;
         this.view = view;
+        view.setPresenter(this);
         this.menu = menu;
         mapNameCreator = new HashMap<>();
         mapNameCreator.put("add_category", new AddCategoryCreator(this.view));

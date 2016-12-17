@@ -1,6 +1,5 @@
 package com.sanik3d.restaurant.events;
 
-import com.sanik3d.restaurant.events.*;
 import com.sanik3d.restaurant.presenter.Callback;
 
 /**
