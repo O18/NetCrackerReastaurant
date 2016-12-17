@@ -16,6 +16,16 @@ import java.util.HashMap;
 
 
 public class Presenter {
+    private static final String ADD_CATEGORY = "add_category";
+    private static final String ADD_DISH = "add_dish";
+    private static final String DELETE_DISH = "delete_dish";
+    private static final String DELETE_CATEGORY = "delete_category";
+    private static final String LOAD_MENU = "load_menu";
+    private static final String SAVE_MENU = "save_menu";
+    private static final String HELP = "help";
+    private static final String SHOW_DISHES = "show_dishes";
+    private static final String SHOW_CATEGORIES = "show_categories";
+
     private final EventBus eventBus;
     private final Parser parser;
     private final View view;
@@ -28,15 +38,27 @@ public class Presenter {
         this.view = view;
         view.setPresenter(this);
         this.menu = menu;
+
         mapNameCreator = new HashMap<>();
-        mapNameCreator.put("add_category", new AddCategoryCreator(this.view));
-        mapNameCreator.put("add_dish", new AddDishCreator(this.view));
-        mapNameCreator.put("delete_dish", new DeleteDishCreator(this.view));
-        mapNameCreator.put("delete_category", new DeleteCategoryCreator(this.view));
-        mapNameCreator.put("load_menu", new LoadMenuInMemoryCreator(this.view));
-        mapNameCreator.put("save_menu", new SaveMenuCreator(this.view));
+        mapNameCreator.put(ADD_CATEGORY, new AddCategoryCreator(this.view));
+        mapNameCreator.put(ADD_DISH, new AddDishCreator(this.view));
+        mapNameCreator.put(DELETE_DISH, new DeleteDishCreator(this.view));
+        mapNameCreator.put(DELETE_CATEGORY, new DeleteCategoryCreator(this.view));
+        mapNameCreator.put(LOAD_MENU, new LoadMenuInMemoryCreator(this.view));
+        mapNameCreator.put(SAVE_MENU, new SaveMenuCreator(this.view));
     }
-    //метод выбора креатора
+
+    EventBus getEventBus() {
+        return eventBus;
+    }
+
+    View getView() {
+        return view;
+    }
+
+    Menu getMenu() {
+        return menu;
+    }
 
     public static class AddDishCreator implements Creator {
         private View view;
@@ -204,7 +226,7 @@ public class Presenter {
         String command = parser.getCommand(inString);
         String[] args = parser.getArgs(inString);
         switch (command) {
-            case "help":
+            case HELP:
                 try {
                     BufferedReader reader = new BufferedReader(new FileReader("help.txt"));
                     StringBuilder result = new StringBuilder();
@@ -218,16 +240,15 @@ public class Presenter {
                     view.print("Не найден файл");
                 }
                 break;
-            case "show_all_dishes":
+            case SHOW_DISHES:
                 for (Dish dish : menu.getDishes())
                     view.print(dish.getName() + ' ' + dish.getCost() + ' ' + dish.getCategoryName());
                 break;
-            case "show_all_categories":
+            case SHOW_CATEGORIES:
                 for (Category category : menu.getCategories())
                     view.print(category.getName());
                 break;
             default:
-
                 try {
                     eventBus.post(mapNameCreator.get(command).createEvent(args));
                 } catch (NotEnoughDataException e) {

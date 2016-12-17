@@ -5,5 +5,6 @@ package com.sanik3d.restaurant.presenter;
  */
 public interface Callback {
     void onSuccess();
+
     void onFail(RuntimeException e);
 }
