@@ -16,7 +16,7 @@ public class View {
     }
 
     public void begin() throws UnsupportedEncodingException {
-        String encoding = System.getProperty("console.encoding", "utf-8");
+        String encoding = System.getProperty("console.encoding", "cp866");
         Scanner sc = new Scanner(System.in, encoding);
         PrintStream out = new PrintStream(System.out, true, encoding);
         while (true) {
