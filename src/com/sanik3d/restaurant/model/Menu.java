@@ -65,7 +65,7 @@ public class Menu implements Serializable {
     public boolean deleteCategory(Category category) {
         if(categories.remove(category)){
             for (MenuListener listener : listeners) {
-                listener.onAddCategory(category);
+                listener.onDeleteCategory(category);
             }
 
             return true;

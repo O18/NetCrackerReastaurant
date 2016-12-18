@@ -9,10 +9,12 @@ import com.sanik3d.restaurant.model.Category;
 class ShowCategoriesStrategy implements PresenterStrategy {
     private Presenter presenter;
 
-    @Override
-    public void performAction(Presenter presenter, String[] actionArgs) throws NotEnoughDataException {
+    ShowCategoriesStrategy(Presenter presenter) {
         this.presenter = presenter;
+    }
 
+    @Override
+    public void performAction(String[] actionArgs) throws NotEnoughDataException {
         if (presenter.getMenu().getCategories().isEmpty()) {
             showNoCategories();
         } else {
@@ -21,11 +23,11 @@ class ShowCategoriesStrategy implements PresenterStrategy {
     }
 
     private void showAllCategories() {
-        StringBuilder stringToPrint = new StringBuilder("    Категории    ");
-        stringToPrint.append("--------------------");
+        StringBuilder stringToPrint = new StringBuilder("      Категории");
+        stringToPrint.append("\n--------------------");
         for (Category category : presenter.getMenu().getCategories())
             stringToPrint.append("\n").append(category.getName());
-        stringToPrint.append("--------------------");
+        stringToPrint.append("\n--------------------");
         presenter.getView().print(stringToPrint.toString());
     }
 

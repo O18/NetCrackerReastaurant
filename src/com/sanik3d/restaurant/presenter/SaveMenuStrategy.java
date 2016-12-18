@@ -8,11 +8,18 @@ import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
  * Created by Александр on 18.12.2016.
  */
 class SaveMenuStrategy implements PresenterStrategy {
+    private Presenter presenter;
+
+    SaveMenuStrategy(Presenter presenter) {
+        this.presenter = presenter;
+    }
     @Override
-    public void performAction(Presenter presenter, String[] actionArgs) throws NotEnoughDataException {
+    public void performAction(String[] actionArgs) throws NotEnoughDataException {
         if (actionArgs.length < 1)
             throw new NotEnoughDataException("Недостаточно данных. Введите имя файла");
-        Event eventToPost = new SaveMenuEvent(actionArgs[0], new Callback() {
+
+        String fileName = actionArgs[0];
+        Event eventToPost = new SaveMenuEvent(fileName, new Callback() {
 
             @Override
             public void onSuccess() {

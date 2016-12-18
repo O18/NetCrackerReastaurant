@@ -9,10 +9,12 @@ import com.sanik3d.restaurant.model.Dish;
 class ShowDishesStrategy implements PresenterStrategy {
     private Presenter presenter;
 
-    @Override
-    public void performAction(Presenter presenter, String[] actionArgs) throws NotEnoughDataException {
+    ShowDishesStrategy(Presenter presenter) {
         this.presenter = presenter;
+    }
 
+    @Override
+    public void performAction(String[] actionArgs) throws NotEnoughDataException {
         if (presenter.getMenu().getDishes().isEmpty()) {
             showNoDishes();
         } else {
@@ -22,16 +24,16 @@ class ShowDishesStrategy implements PresenterStrategy {
 
     private void showAllDishes() {
         StringBuilder stringToPrint = new StringBuilder("      Блюда      ");
-        stringToPrint.append("------------------------");
+        stringToPrint.append("\n------------------------");
         for (Dish dish : presenter.getMenu().getDishes()) {
             stringToPrint.append("\n").append(dish.getName()).append(" ").
                     append(dish.getCost()).append(" ").append(dish.getCategoryName());
         }
-        stringToPrint.append("------------------------");
+        stringToPrint.append("\n------------------------");
         presenter.getView().print(stringToPrint.toString());
     }
 
     private void showNoDishes() {
-        presenter.getView().print("Ни одной категории не существует.");
+        presenter.getView().print("Ни одного блюда не существует.");
     }
 }

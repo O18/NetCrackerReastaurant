@@ -6,6 +6,8 @@ import com.sanik3d.restaurant.model.Menu;
 import com.sanik3d.restaurant.presenter.Presenter;
 import com.sanik3d.restaurant.view.View;
 
+import java.io.UnsupportedEncodingException;
+
 /**
  * Created by Александр on 13.12.2016.
  */
@@ -25,6 +27,11 @@ class LifeCycle {
     }
 
     void start() {
-        view.begin();
+
+        try {
+            view.begin();
+        } catch (UnsupportedEncodingException e) {
+            System.out.println("Error. This encoding is not supported");
+        }
     }
 }

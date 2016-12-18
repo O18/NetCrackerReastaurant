@@ -7,5 +7,5 @@ import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
  */
 interface PresenterStrategy {
 
-    void performAction(Presenter presenter, String[] actionArgs) throws NotEnoughDataException;
+    void performAction(String[] actionArgs) throws NotEnoughDataException;
 }

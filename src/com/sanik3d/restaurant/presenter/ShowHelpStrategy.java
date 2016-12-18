@@ -13,8 +13,14 @@ public class ShowHelpStrategy implements PresenterStrategy {
 
     private static final String HELP_TXT = "help.txt";
 
+    private Presenter presenter;
+
+    ShowHelpStrategy(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Override
-    public void performAction(Presenter presenter, String[] actionArgs) throws NotEnoughDataException {
+    public void performAction(String[] actionArgs) throws NotEnoughDataException {
         try {
             BufferedReader reader = new BufferedReader(new FileReader(HELP_TXT));
             StringBuilder result = new StringBuilder();

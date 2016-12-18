@@ -8,13 +8,20 @@ import com.sanik3d.restaurant.exceptions.NotEnoughDataException;
  * Created by Александр on 17.12.2016.
  */
 class AddCategoryStrategy implements PresenterStrategy {
+    private Presenter presenter;
+
+    AddCategoryStrategy(Presenter presenter) {
+        this.presenter = presenter;
+    }
+
     @Override
-    public void performAction(Presenter presenter, String[] actionArgs) throws NotEnoughDataException {
+    public void performAction(String[] actionArgs) throws NotEnoughDataException {
         if (actionArgs.length < 1) {
             throw new NotEnoughDataException("Недостаточно данных. Введите название категории для её добавления.");
         }
+        ArgumentParser parser = new ArgumentParser(actionArgs);
 
-        String categoryName = actionArgs[0];
+        String categoryName = parser.getNextString();
         Event eventToPost = new AddCategoryEvent(categoryName, new Callback() {
             @Override
             public void onSuccess() {
