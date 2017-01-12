@@ -1,0 +1,11 @@
+package com.o18.restaurant.eventbus;
+
+import com.o18.restaurant.events.Event;
+
+/**
+ * Created by Александр on 24.11.2016.
+ */
+public interface Handler<T extends Event> {
+
+    void handle(T event);
+}
