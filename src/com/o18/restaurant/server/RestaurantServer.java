@@ -1,4 +1,4 @@
-package com.o18.restaurant;
+package com.o18.restaurant.server;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -12,7 +12,7 @@ import org.glassfish.jersey.servlet.ServletContainer;
 public class RestaurantServer {
     public static void main(String[] args) {
         ResourceConfig config = new ResourceConfig();
-        config.packages("com.o18.restaurant");
+        config.packages("com.o18.restaurant.server");
         ServletHolder servlet = new ServletHolder(new ServletContainer(config));
 
         Server server = new Server(2222);
