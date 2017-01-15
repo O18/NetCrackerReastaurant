@@ -19,5 +19,6 @@ public class MenuClient {
         WebTarget target = client.target("http://localhost:2222").path("menus/get");
 
         Menu menu = target.request(MediaType.APPLICATION_JSON_TYPE).get(Menu.class);
+        System.out.println(menu);
     }
 }
