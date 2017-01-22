@@ -11,7 +11,7 @@ import java.util.Set;
 public class Category implements Serializable{
     private static final long serialVersionUID = -2408931504592493532L;
 
-    private final String name;
+    private String name;
     private final Set<Dish> dishes;
 
     public Category(String name) {
@@ -23,7 +23,18 @@ public class Category implements Serializable{
         return name;
     }
 
-    public boolean addDish(Dish dish){
+    boolean setName(String newName){
+        if(name.equals(newName))
+            return false;
+        name = newName;
+
+        for (Dish dish : dishes)
+            dish.setName(newName);
+
+        return true;
+    }
+
+    boolean addDish(Dish dish){
         return dishes.add(dish);
     }
 
@@ -31,7 +42,7 @@ public class Category implements Serializable{
         return Collections.unmodifiableSet(dishes);
     }
 
-    public boolean deleteDish(Dish dish){
+    boolean deleteDish(Dish dish){
         return dishes.remove(dish);
     }
 

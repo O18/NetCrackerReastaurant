@@ -1,12 +1,9 @@
 package com.o18.restaurant.server;
 
-import com.o18.restaurant.model.Category;
 import com.o18.restaurant.model.Menu;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
+import javax.inject.Singleton;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import java.util.Set;
 
@@ -16,22 +13,32 @@ import java.util.Set;
 
 @Path("menus")
 public class MenuRestService {
-    @Context
-    Set<Menu> menus;
+    @Singleton
+    private final ServerData data = new ServerData();
 
     @GET
-    @Path("get")
     @Produces(MediaType.APPLICATION_JSON)
-    public Menu getMenus() {
-        Menu menu = new Menu();
-        menu.addCategory(new Category("Мяско"));
-        return menu;
+    public Set<String> getMenusList(){
+        return data.getNamesOfMenus();
     }
 
     @GET
-    @Path("hello")
+    @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
-    public String hello() {
-        return "Hello";
+    @Path("{menu_name}")
+    public Menu loadMenu(@PathParam("menu_name") String menuName){
+        return data.getMenuWithName(menuName);
+    }
+
+    @POST
+    @Path("{menu_name}")
+    public void saveMenu(@QueryParam("{menu}") Menu menu, @PathParam("menu_name") String menuName){
+        data.saveMenu(menu, menuName);
+    }
+
+    @DELETE
+    @Path("{menu_name}")
+    public void deleteMenu(@PathParam("{menu_name}") String menuName){
+        data.deleteMenu(menuName);
     }
 }

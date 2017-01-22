@@ -1,6 +1,6 @@
 package com.o18.restaurant.presenter;
 
-import com.o18.restaurant.events.Event;
+import com.o18.restaurant.eventbus.Event;
 import com.o18.restaurant.events.LoadMenuInMemoryEvent;
 import com.o18.restaurant.exceptions.NotEnoughDataException;
 

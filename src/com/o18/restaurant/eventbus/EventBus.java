@@ -1,7 +1,5 @@
 package com.o18.restaurant.eventbus;
 
-import com.o18.restaurant.events.Event;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -12,7 +10,7 @@ import java.util.Set;
  */
 public class EventBus {
 
-    private Map<Class, Set<Handler>> handlers;
+    protected Map<Class, Set<Handler>> handlers;
 
     public EventBus() {
         handlers = new HashMap<>();
@@ -23,7 +21,7 @@ public class EventBus {
         chosenByClassHandlers.add(handler);
     }
 
-    public void deleteHandler(Class handlerClass, Handler<Event> handlerToDelete) {
+    public <T extends Event> void deleteHandler(Class<T> handlerClass, Handler<T> handlerToDelete) {
         Set<Handler> destinationHandlers = handlers.get(handlerClass);
         if(destinationHandlers != null){
             destinationHandlers.remove(handlerToDelete);

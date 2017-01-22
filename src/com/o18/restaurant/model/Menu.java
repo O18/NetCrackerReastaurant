@@ -1,22 +1,24 @@
 package com.o18.restaurant.model;
 
+import com.o18.restaurant.eventbus.EventBus;
+
 import java.io.Serializable;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * Created by Александр on 05.11.2016.
  */
-public class Menu implements Serializable {//TODO extends EventBus
+public class Menu extends EventBus implements Serializable {
     private static final long serialVersionUID = -2922673041785815304L;
 
     private Set<Category> categories;
-    private Set<MenuListener> listeners;
 
     public Menu() {
         categories = new HashSet<>();
-        listeners = new HashSet<>();
+        handlers = new HashMap<>();
     }
 
     public void setCategories(Set<Category> categories) {
@@ -31,9 +33,7 @@ public class Menu implements Serializable {//TODO extends EventBus
         if(!categories.contains(category)) return false;
 
         if(category.addDish(dish)){
-            for (MenuListener listener : listeners) {
-                listener.onAddDish(dish);
-            }
+            post(new MenuChangedEvent());
             return true;
         }
 
@@ -42,9 +42,7 @@ public class Menu implements Serializable {//TODO extends EventBus
 
     public boolean deleteDishFromCategory(Dish dish, Category category) {
         if(category.deleteDish(dish)){
-            for (MenuListener listener : listeners) {
-                listener.onDeleteDish(dish);
-            }
+            post(new MenuChangedEvent());
             return true;
         }
 
@@ -53,9 +51,7 @@ public class Menu implements Serializable {//TODO extends EventBus
 
     public boolean addCategory(Category category) {
         if(categories.add(category)) {
-            for (MenuListener listener : listeners) {
-                listener.onAddCategory(category);
-            }
+            post(new MenuChangedEvent());
             return true;
         }
 
@@ -64,10 +60,40 @@ public class Menu implements Serializable {//TODO extends EventBus
 
     public boolean deleteCategory(Category category) {
         if(categories.remove(category)){
-            for (MenuListener listener : listeners) {
-                listener.onDeleteCategory(category);
-            }
+            post(new MenuChangedEvent());
+            return true;
+        }
 
+        return false;
+    }
+
+    public boolean setCategoryName(Category category, String newName){
+        if(category.setName(newName)){
+            post(new MenuChangedEvent());
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean setDishName(Dish dish, Category category, String newName){
+        if(!categories.contains(category)) return false;
+
+        if(category.getDishes().contains(dish)){
+            dish.setName(newName);
+            post(new MenuChangedEvent());
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean setDishCost(Dish dish, Category category, double newCost){
+        if(!categories.contains(category)) return false;
+
+        if(category.getDishes().contains(dish)){
+            dish.setCost(newCost);
+            post(new MenuChangedEvent());
             return true;
         }
 
@@ -81,17 +107,5 @@ public class Menu implements Serializable {//TODO extends EventBus
         }
 
         return Collections.unmodifiableSet(dishSet);
-    }
-
-    public void addListener(MenuListener listener){
-        listeners.add(listener);
-    }
-
-    public void removeListener(MenuListener listener) {
-        listeners.remove(listener);
-    }
-
-    public void removeAllListeners() {
-        listeners.clear();
     }
 }

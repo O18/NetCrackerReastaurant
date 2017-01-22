@@ -1,4 +1,4 @@
-package com.o18.restaurant.events;//todo move to another package
+package com.o18.restaurant.eventbus;
 
 /**
  * Created by 1 on 14.11.2016.

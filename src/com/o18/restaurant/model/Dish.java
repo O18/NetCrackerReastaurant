@@ -8,9 +8,9 @@ import java.io.Serializable;
 public class Dish implements Serializable{
     private static final long serialVersionUID = 4245136608929768391L;
 
-    private final String name;
-    private final String categoryName;
-    private final double cost;
+    private String name;
+    private String categoryName;
+    private double cost;
 
     public Dish(String name, String categoryName, double cost) {
         this.name = name;
@@ -30,6 +30,18 @@ public class Dish implements Serializable{
         return cost;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
+    }
+
+    void setCost(double cost) {
+        this.cost = cost;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -37,9 +49,7 @@ public class Dish implements Serializable{
 
         Dish dish = (Dish) o;
 
-        if (Double.compare(dish.cost, cost) != 0) return false;
-        if (!name.equals(dish.name)) return false;
-        return categoryName.equals(dish.categoryName);
+        return Double.compare(dish.cost, cost) == 0 && name.equals(dish.name) && categoryName.equals(dish.categoryName);
     }
 
     @Override

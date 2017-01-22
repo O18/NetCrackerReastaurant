@@ -1,11 +1,10 @@
 package com.o18.restaurant.controller;
 
+import com.o18.restaurant.eventbus.Event;
 import com.o18.restaurant.eventbus.EventBus;
+import com.o18.restaurant.eventbus.Handler;
 import com.o18.restaurant.events.*;
-import com.o18.restaurant.model.Category;
-import com.o18.restaurant.model.Dish;
-import com.o18.restaurant.model.Menu;
-import com.o18.restaurant.model.MenuListener;
+import com.o18.restaurant.model.*;
 
 import java.io.*;
 import java.util.HashMap;
@@ -121,9 +120,8 @@ public class MenuController {
 
     private void deleteDish(DeleteDishEvent event) {
         String dishName = event.getNameOfDish();
-
-        if (cache.namesAndDishes.containsKey(dishName)) {//todo use get
-            Dish dishToDelete = cache.namesAndDishes.get(dishName);
+        Dish dishToDelete;
+        if ((dishToDelete = cache.namesAndDishes.get(dishName)) != null) {
             Category category = cache.namesAndCategories.get(dishToDelete.getCategoryName());
 
             menu.deleteDishFromCategory(dishToDelete, category);
@@ -138,10 +136,10 @@ public class MenuController {
     /**
      * Created by Александр on 29.11.2016.
      */
-    private static class MenuCache implements MenuListener, Serializable {
+    private static class MenuCache implements Serializable{
         private static final long serialVersionUID = -4469390559401629523L;
 
-        private final Menu menu;//todu
+        private Menu menu;
         private final Map<String, Category> namesAndCategories;
         private final Map<String, Dish> namesAndDishes;
 
@@ -149,34 +147,20 @@ public class MenuController {
             this.menu = menu;
             namesAndCategories = new HashMap<>();
             namesAndDishes = new HashMap<>();
-            addCategoriesAndDishes(menu.getCategories());
-            menu.addListener(this);
+            addCategoriesAndDishes();
+            menu.addHandler(MenuChangedEvent.class, this::menuChanged);
         }
 
-        private void addCategoriesAndDishes(Set<Category> categories) {
-            for (Category category : categories) {
+        private void menuChanged(MenuChangedEvent event) {
+            namesAndCategories.clear();
+            namesAndDishes.clear();
+            addCategoriesAndDishes();
+        }
+
+        private void addCategoriesAndDishes() {
+            for (Category category : menu.getCategories()) {
                 addCategory(category);
             }
-        }
-
-        @Override
-        public void onAddCategory(Category category) {
-            addCategory(category);
-        }
-
-        @Override
-        public void onDeleteCategory(Category category) {
-            deleteCategory(category);
-        }
-
-        @Override
-        public void onAddDish(Dish dish) {
-            addDish(dish);
-        }
-
-        @Override
-        public void onDeleteDish(Dish dish) {
-            deleteDish(dish);
         }
 
         private void addDish(Dish dish) {
@@ -204,7 +188,11 @@ public class MenuController {
         private void changeMenu(Menu newMenu) {
             namesAndCategories.clear();
             namesAndDishes.clear();
-            addCategoriesAndDishes(newMenu.getCategories());
+            menu.deleteHandler(MenuChangedEvent.class, this::menuChanged);
+            menu = newMenu;
+            menu.addHandler(MenuChangedEvent.class, this::menuChanged);
+            addCategoriesAndDishes();
         }
+
     }
 }
