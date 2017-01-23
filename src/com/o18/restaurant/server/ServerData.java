@@ -41,7 +41,9 @@ class ServerData {
         File path = new File(CATALOG_PATH + menuName);
         try {
             if(path.createNewFile()){
-                return new Menu();
+                Menu menu = new Menu();
+                menu.addCategory(new Category("Рыба"));
+                return menu;
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -53,7 +55,10 @@ class ServerData {
 
     private Menu loadMenu(String menuName) {
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(CATALOG_PATH + menuName))){
-            return  (Menu)in.readObject();
+            Menu menu = new Menu();
+            menu.addCategory(new Category("Мясо"));
+            in.readObject();
+            return menu;
         }catch (FileNotFoundException e){
             throw new RuntimeException("Файла с таким именем не существует");
         } catch (IOException | ClassNotFoundException e) {

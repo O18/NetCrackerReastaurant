@@ -14,6 +14,10 @@ public class Category implements Serializable{
     private String name;
     private final Set<Dish> dishes;
 
+    public Category(){
+        dishes = new HashSet<>();
+    }
+
     public Category(String name) {
         this.name = name;
         dishes = new HashSet<>();

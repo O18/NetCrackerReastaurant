@@ -5,6 +5,7 @@ import com.o18.restaurant.model.Menu;
 import javax.inject.Singleton;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import java.util.Set;
 
 /**
@@ -26,11 +27,11 @@ public class MenuRestService {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{menu_name}")
-    public Menu loadMenu(@PathParam("menu_name") String menuName){
+    public Response loadMenu(@PathParam("menu_name") String menuName){
         try {
-            return data.getMenuWithName(menuName);
+            return Response.status(Response.Status.OK).entity(data.getMenuWithName(menuName)).build() ;
         }catch (RuntimeException e){
-            throw new NotAcceptableException(e);
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
 
     }
@@ -38,13 +39,25 @@ public class MenuRestService {
     @POST
     @Path("{menu_name}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void saveMenu(Menu menu, @PathParam("menu_name") String menuName){
-        data.saveMenu(menu, menuName);
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response saveMenu(Menu menu, @PathParam("menu_name") String menuName){
+        try {
+            data.saveMenu(menu, menuName);
+            return Response.status(Response.Status.OK).build();
+        }catch (RuntimeException e){
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+        }
+
     }
 
     @DELETE
     @Path("{menu_name}")
-    public void deleteMenu(@PathParam("{menu_name}") String menuName){
-        data.deleteMenu(menuName);
+    @Produces(MediaType.TEXT_PLAIN)
+    public Response deleteMenu(@PathParam("{menu_name}") String menuName){
+        if(data.deleteMenu(menuName)){
+            return Response.status(Response.Status.OK).build();
+        }else {
+            return Response.status(Response.Status.NOT_FOUND).entity("Не удалось удалить").build();
+        }
     }
 }

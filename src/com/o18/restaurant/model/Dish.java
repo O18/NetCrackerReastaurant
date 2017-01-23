@@ -12,6 +12,10 @@ public class Dish implements Serializable{
     private String categoryName;
     private double cost;
 
+    public Dish(){
+
+    }
+
     public Dish(String name, String categoryName, double cost) {
         this.name = name;
         this.categoryName = categoryName;
