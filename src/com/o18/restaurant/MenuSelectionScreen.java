@@ -1,5 +1,7 @@
 package com.o18.restaurant;
 
+import com.o18.restaurant.model.Menu;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,15 +14,15 @@ public class MenuSelectionScreen extends JFrame {
     private static final String CREATE = "Создать";
 
     private JLabel listOfMenuLabel;
-    private JList<com.o18.restaurant.model.Menu> listOfMenu;
+    private JList<Menu> listOfMenu;
     private JButton openButton;
     private JButton createButton;
 
 
-    private MenuSelectionScreen() {
+    public MenuSelectionScreen() {
         super(SELECTION_OF_MENU);
         this.setSize(450, 220);
-        CreateMenuScreen cms = new CreateMenuScreen();
+        MenuCreateScreen cms = new MenuCreateScreen();
         MenuViewScreen mvs = new MenuViewScreen();
         //корневая панель
         JPanel panel = new JPanel();
@@ -42,26 +44,26 @@ public class MenuSelectionScreen extends JFrame {
         gbc.gridy = 0;
         gbc.insets = new Insets(0,5,0,0);
         //gbc.fill = GridBagConstraints.BOTH;
-        gbl.setConstraints(getLabelListOfMenu(),gbc);
-        panel.add(getLabelListOfMenu());
+        //gbl.setConstraints(getLabelListOfMenu(),gbc);
+        panel.add(getLabelListOfMenu(),gbc);
         gbc.gridy =1;
         gbc.gridheight=2;
         gbc.anchor = GridBagConstraints.SOUTH;
         gbc.insets = new Insets(5,5,0,0);
         JScrollPane jsp = new JScrollPane(getListOfMenu());
-        gbl.setConstraints(jsp,gbc);
-        panel.add(jsp);
+        //gbl.setConstraints(jsp,gbc);
+        panel.add(jsp,gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0,0,0,0);
-        gbl.setConstraints(getOpenButton(),gbc);
-        panel.add(getOpenButton());
+        //gbl.setConstraints(getOpenButton(),gbc);
+        panel.add(getOpenButton(),gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.NORTH;
-        gbl.setConstraints(getCreateButton(),gbc);
-        panel.add(getCreateButton());
+        //gbl.setConstraints(getCreateButton(),gbc);
+        panel.add(getCreateButton(),gbc);
         OpenNextScreenAction createAction = new OpenNextScreenAction(this,cms);
         OpenNextScreenAction openAction = new OpenNextScreenAction(this,mvs);
         createButton.addActionListener(createAction);
@@ -77,9 +79,9 @@ public class MenuSelectionScreen extends JFrame {
         return listOfMenuLabel;
     }
 
-    private JList<com.o18.restaurant.model.Menu> getListOfMenu() {
+    private JList<Menu> getListOfMenu() {
         if (listOfMenu == null) {
-            com.o18.restaurant.model.Menu[] arr = new com.o18.restaurant.model.Menu[]{new com.o18.restaurant.model.Menu(), new com.o18.restaurant.model.Menu(), new com.o18.restaurant.model.Menu(), new com.o18.restaurant.model.Menu(), new com.o18.restaurant.model.Menu(), new com.o18.restaurant.model.Menu(), new com.o18.restaurant.model.Menu()};
+            Menu[] arr = new Menu[]{new Menu(), new Menu(), new Menu(), new Menu(), new Menu(), new Menu(), new Menu()};
             listOfMenu = new JList<>(arr);
             listOfMenu.setVisibleRowCount(5);
             listOfMenu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);

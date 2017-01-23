@@ -8,7 +8,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by 1 on 19.12.2016.
  */
-public class CreateMenuScreen extends JFrame{
+public class MenuCreateScreen extends JFrame{
     private static final String NAME  = "Введите имя :";
     private static final String TITLE = "Создание меню";
     private static final String OK = "OK";
@@ -16,7 +16,7 @@ public class CreateMenuScreen extends JFrame{
     private JTextField nameMenuTextField;
     private JButton okButton;
 
-    public CreateMenuScreen() {
+    public MenuCreateScreen() {
         super(TITLE);
         MenuViewScreen mvs = new MenuViewScreen();
         this.setSize(new Dimension(300,150));
