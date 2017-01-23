@@ -11,7 +11,8 @@ import java.util.Set;
 /**
  * Created by Александр on 05.11.2016.
  */
-public class Menu extends EventBus implements Serializable {
+//todo tdo, которое будет пересылаться
+public class Menu extends EventBus implements Serializable {//todo разнести по 3 артифактам все классы: клиент, сервер, коммон-шаред
     private static final long serialVersionUID = -2922673041785815304L;
 
     private Set<Category> categories;

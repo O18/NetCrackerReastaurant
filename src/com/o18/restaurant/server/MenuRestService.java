@@ -27,10 +27,10 @@ public class MenuRestService {
     @Consumes(MediaType.TEXT_PLAIN)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{menu_name}")
-    public Response loadMenu(@PathParam("menu_name") String menuName){
+    public Response loadMenu(@PathParam("menu_name") String menuName) {//todo dto
         try {
             return Response.status(Response.Status.OK).entity(data.getMenuWithName(menuName)).build() ;
-        }catch (RuntimeException e){
+        } catch (RuntimeException e) {//todo RuntimeEx
             return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
 
@@ -39,7 +39,6 @@ public class MenuRestService {
     @POST
     @Path("{menu_name}")
     @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.TEXT_PLAIN)
     public Response saveMenu(Menu menu, @PathParam("menu_name") String menuName){
         try {
             data.saveMenu(menu, menuName);

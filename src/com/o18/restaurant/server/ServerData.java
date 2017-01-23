@@ -1,7 +1,5 @@
 package com.o18.restaurant.server;
 
-import com.o18.restaurant.model.Category;
-import com.o18.restaurant.model.Dish;
 import com.o18.restaurant.model.Menu;
 
 import java.io.*;
@@ -37,16 +35,14 @@ class ServerData {
         return namesOfMenus;
     }
 
-    Menu getMenuWithName(String menuName) {
+    Menu getMenuWithName(String menuName) {//todo
         File path = new File(CATALOG_PATH + menuName);
         try {
-            if(path.createNewFile()){
-                Menu menu = new Menu();
-                menu.addCategory(new Category("Рыба"));
-                return menu;
+            if (path.createNewFile()) {//todo
+                return new Menu();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace();//todo
         }
 
         return loadMenu(menuName);
@@ -55,14 +51,11 @@ class ServerData {
 
     private Menu loadMenu(String menuName) {
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(CATALOG_PATH + menuName))){
-            Menu menu = new Menu();
-            menu.addCategory(new Category("Мясо"));
-            in.readObject();
-            return menu;
+            return (Menu) in.readObject();
         }catch (FileNotFoundException e){
-            throw new RuntimeException("Файла с таким именем не существует");
+            throw new RuntimeException("Файла с таким именем не существует", e);//todo
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Ошибка чтения");
+            throw new RuntimeException("Ошибка чтения", e);//todo
         }
     }
 
