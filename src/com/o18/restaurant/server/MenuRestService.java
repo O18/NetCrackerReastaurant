@@ -27,12 +27,18 @@ public class MenuRestService {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{menu_name}")
     public Menu loadMenu(@PathParam("menu_name") String menuName){
-        return data.getMenuWithName(menuName);
+        try {
+            return data.getMenuWithName(menuName);
+        }catch (RuntimeException e){
+            throw new NotAcceptableException(e);
+        }
+
     }
 
     @POST
     @Path("{menu_name}")
-    public void saveMenu(@QueryParam("{menu}") Menu menu, @PathParam("menu_name") String menuName){
+    @Consumes(MediaType.APPLICATION_JSON)
+    public void saveMenu(Menu menu, @PathParam("menu_name") String menuName){
         data.saveMenu(menu, menuName);
     }
 

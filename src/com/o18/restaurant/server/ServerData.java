@@ -40,7 +40,7 @@ class ServerData {
     Menu getMenuWithName(String menuName) {
         File path = new File(CATALOG_PATH + menuName);
         try {
-            if(!path.createNewFile()){
+            if(path.createNewFile()){
                 return new Menu();
             }
         } catch (IOException e) {

@@ -108,4 +108,11 @@ public class Menu extends EventBus implements Serializable {
 
         return Collections.unmodifiableSet(dishSet);
     }
+
+    @Override
+    public String toString() {
+        return "Menu{" +
+                "categories=" + categories +
+                '}';
+    }
 }
