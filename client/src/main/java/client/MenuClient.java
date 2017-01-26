@@ -1,7 +1,6 @@
-package com.o18.restaurant.server;
+package client;
 
-import com.o18.restaurant.model.Category;
-import com.o18.restaurant.model.Menu;
+import model.MenuDTO;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.client.Client;
@@ -30,10 +29,10 @@ public class MenuClient {
         return menusNames;
     }
 
-    public Menu loadMenu(String menuFileName){
+    public MenuDTO loadMenu(String menuFileName){
         Response response = target.path(menuFileName).request(MediaType.APPLICATION_JSON_TYPE).get();
         if(response.getStatus() == Response.Status.OK.getStatusCode()){
-            return response.readEntity(Menu.class);
+            return response.readEntity(MenuDTO.class);
         }else {
             throw new RuntimeException( response.readEntity(String.class));
         }
@@ -43,20 +42,11 @@ public class MenuClient {
         target.path(menuFileName).request().delete();
     }
 
-    public void saveMenu(String menuFileName, Menu menu){
+    public void saveMenu(String menuFileName, MenuDTO menu){
         Response response = target.path(menuFileName).request().post(Entity.entity(menu, MediaType.APPLICATION_JSON_TYPE));
         if(response.getStatus() != Response.Status.OK.getStatusCode()){
             System.err.println(response);
             //throw new RuntimeException(response.readEntity(String.class));
         }
-    }
-
-    public static void main(String[] args) {
-        MenuClient client = new MenuClient();
-        Menu menu = new Menu();
-        menu.addCategory(new Category("Мясо"));
-        client.saveMenu("menu1.menu", menu);
-        Menu menu1 = client.loadMenu("menu1.menu");
-        System.out.println(menu1);
     }
 }

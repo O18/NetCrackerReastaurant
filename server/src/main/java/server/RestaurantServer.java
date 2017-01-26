@@ -1,4 +1,4 @@
-package com.o18.restaurant.server;
+package server;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
