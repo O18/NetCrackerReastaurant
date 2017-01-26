@@ -7,7 +7,6 @@ import model.MenuDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
-import java.io.File;
 import java.util.Set;
 
 /**
@@ -32,7 +31,7 @@ public class MenuRest {
         return MenuService.getMenu(CATALOG_PATH + menuName);
     }
 
-    @PUT
+    @GET
     @Path("{menu_name}")
     public void createMenu(@PathParam("menu_name") String menuName){
         MenuService.createMenu(CATALOG_PATH + menuName);
