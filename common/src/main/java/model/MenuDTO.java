@@ -27,4 +27,11 @@ public class MenuDTO implements Serializable{
     public Set<CategoryDTO> getCategories() {
         return categories;
     }
+
+    @Override
+    public String toString() {
+        return "MenuDTO{" +
+                "categories=" + categories +
+                '}';
+    }
 }

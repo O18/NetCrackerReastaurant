@@ -34,4 +34,12 @@ public class DishDTO implements Serializable{
     public void setCost(double cost) {
         this.cost = cost;
     }
+
+    @Override
+    public String toString() {
+        return "DishDTO{" +
+                "dishName='" + dishName + '\'' +
+                ", cost=" + cost +
+                '}';
+    }
 }

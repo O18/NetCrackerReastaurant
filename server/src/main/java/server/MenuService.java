@@ -13,11 +13,16 @@ import java.util.regex.Pattern;
  */
 class MenuService {
 
-    static Set<String> getMenusNames(String catalogPath, String regex){
+    static Set<String> getMenusNames(String catalogPath, String extension){
         Set<String> menusNames = new HashSet<>();
         File path = new File(catalogPath);
-        String[] list = path.list((dir, name) -> Pattern.compile(regex).matcher(name).matches());
+        String[] list = path.list((dir, name) -> Pattern.compile(".*" + extension).matcher(name).matches());
+
         if (list != null) {
+            for (int i = 0; i < list.length; i++) {
+                list[i] = list[i].replace(extension, "");
+            }
+
             Collections.addAll(menusNames, list);
         }
 

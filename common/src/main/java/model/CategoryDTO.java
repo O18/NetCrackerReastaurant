@@ -18,6 +18,11 @@ public class CategoryDTO implements Serializable {
         this.dishes = dishes;
     }
 
+    public CategoryDTO(String name){
+        this.name = name;
+        dishes = new HashSet<>();
+    }
+
     public CategoryDTO() {
         name = null;
         dishes = new HashSet<>();
@@ -37,5 +42,13 @@ public class CategoryDTO implements Serializable {
 
     public void setDishes(Set<DishDTO> dishes) {
         this.dishes = dishes;
+    }
+
+    @Override
+    public String toString() {
+        return "CategoryDTO{" +
+                "name='" + name + '\'' +
+                ", dishes=" + dishes +
+                '}';
     }
 }

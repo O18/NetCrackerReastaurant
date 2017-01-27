@@ -21,10 +21,18 @@ public class MenuClient {
 
     public static void main(String[] args) {
         MenuClient client = new MenuClient();
-        //Set<String> names = client.getMenusNames();
-        //client.createMenu("newMenu.menu");
-        client.getMenu("newMenu.menu");
-        //System.out.println(names);
+        Set<String> names = client.getMenusNames();
+        DishDTO dishDTO = new DishDTO("Кролик", 250);
+        //client.addDish(dishDTO, "Мясо", "newMenu");
+        //client.deleteDish("Кролик", "Мясо", "newMenu");
+        //client.addCategory(new CategoryDTO("Рыба"), "newMenu");
+        //client.addDish(new DishDTO("Форель", 500), "Рыба", "newMenu");
+        client.changeDish(new DishDTO("Форель красная", 550), "Форель", "Рыба", "newMenu");
+        //client.deleteCategory("Рыба", "newMenu");
+        //client.changeCategory(new CategoryDTO("Горячее"), "Мясо", "newMenu");
+
+        MenuDTO menu = client.getMenu("newMenu");
+        System.out.println(menu);
     }
 
     public MenuClient(){
