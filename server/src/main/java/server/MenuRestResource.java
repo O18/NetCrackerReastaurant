@@ -31,7 +31,7 @@ public class MenuRestResource {
         return MenuService.getMenu(CATALOG_PATH + menuName + EXTENSION);
     }
 
-    @GET
+    @POST
     @Path("{menu_name}")
     public void createMenu(@PathParam("menu_name") String menuName) {
         MenuService.createMenu(CATALOG_PATH + menuName + EXTENSION);

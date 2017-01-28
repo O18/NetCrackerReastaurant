@@ -1,4 +1,4 @@
-package com.o18.restaurant;
+package form;
 
 import javax.swing.*;
 import java.awt.*;

@@ -2,6 +2,8 @@ package server;
 
 import model.*;
 
+import javax.ws.rs.WebApplicationException;
+import javax.ws.rs.core.Response;
 import java.io.*;
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,9 +40,9 @@ class MenuService {
         try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))){
             return (Menu) in.readObject();
         }catch (FileNotFoundException e){
-            throw new RuntimeException("Файла с таким именем не существует", e);
+            throw new WebApplicationException("Файла с таким именем не существует", e);
         } catch (IOException | ClassNotFoundException e) {
-            throw new RuntimeException("Ошибка чтения", e);
+            throw new WebApplicationException("Ошибка чтения", e);
         }
     }
 

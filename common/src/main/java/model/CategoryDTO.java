@@ -46,9 +46,6 @@ public class CategoryDTO implements Serializable {
 
     @Override
     public String toString() {
-        return "CategoryDTO{" +
-                "name='" + name + '\'' +
-                ", dishes=" + dishes +
-                '}';
+        return name;
     }
 }

@@ -1,10 +1,10 @@
-package com.o18.restaurant;
+package form.select.view;
 
-import com.o18.restaurant.model.Menu;
+import form.MenuCreateScreen;
+import form.MenuViewScreen;
+import model.MenuDTO;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,7 +16,7 @@ public class MenuSelectionScreen extends JFrame {
     private static final String CREATE = "Создать";
 
     private JLabel listOfMenuLabel;
-    private JList<Menu> menuList;
+    private JList<MenuDTO> menuList;
     private JButton openButton;
     private JButton createButton;
 
@@ -66,9 +66,9 @@ public class MenuSelectionScreen extends JFrame {
         return listOfMenuLabel;
     }
 
-    private JList<Menu> getMenuList() {
+    private JList<MenuDTO> getMenuList() {
         if (menuList == null) {
-            Menu[] arr = new Menu[]{new Menu(), new Menu(), new Menu(), new Menu(), new Menu(), new Menu(), new Menu()};
+            MenuDTO[] arr = new MenuDTO[]{new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO()};
             menuList = new JList<>(arr);
             menuList.setVisibleRowCount(5);
             menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -122,15 +122,16 @@ public class MenuSelectionScreen extends JFrame {
         MenuSelectionScreen mss = new MenuSelectionScreen();
         MenuCreateScreen mcs = new MenuCreateScreen();
         MenuViewScreen mvs = new MenuViewScreen();
-        mss.setVisible(true);
+        mss.setLocationRelativeTo(null);
+        mss.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         mss.createAction(mcs);
         mss.menuList.addListSelectionListener(
-                new ListSelectionListener() {
-                    public void valueChanged(ListSelectionEvent e) {
-                        Object element = mss.menuList.getSelectedValue();//выбранный элемент в списке(понадобится для открытия определенного меню)
-                        mss.openButton.setEnabled(true);
-                        mss.openAction(mvs);
-                    }
+                e -> {
+                    Object element = mss.menuList.getSelectedValue();//выбранный элемент в списке(понадобится для открытия определенного меню)
+                    mss.openButton.setEnabled(true);
+                    mss.openAction(mvs);
                 });
+
+        mss.setVisible(true);
     }
 }
