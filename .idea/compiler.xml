@@ -9,6 +9,7 @@
         <module name="client" />
         <module name="common" />
         <module name="server" />
+        <module name="super" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
@@ -17,6 +18,7 @@
       <module name="Restaurant" target="1.8" />
       <module name="restaurantServer" target="1.5" />
       <module name="server" target="1.8" />
+      <module name="super" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>
