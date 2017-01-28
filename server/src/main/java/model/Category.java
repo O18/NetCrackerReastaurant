@@ -1,4 +1,4 @@
-package com.o18.restaurant.model;
+package model;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -19,9 +19,9 @@ public class Category implements Serializable{
         dishes = new HashSet<>();
     }
 
-    public Category(String name) {
+    public Category(String name, Set<Dish> dishes) {
         this.name = name;
-        dishes = new HashSet<>();
+        this.dishes = dishes;
     }
 
     public String getName() {
