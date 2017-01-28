@@ -3,6 +3,8 @@ package com.o18.restaurant;
 import com.o18.restaurant.model.Menu;
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,7 +16,7 @@ public class MenuSelectionScreen extends JFrame {
     private static final String CREATE = "Создать";
 
     private JLabel listOfMenuLabel;
-    private JList<Menu> listOfMenu;
+    private JList<Menu> menuList;
     private JButton openButton;
     private JButton createButton;
 
@@ -22,20 +24,13 @@ public class MenuSelectionScreen extends JFrame {
     public MenuSelectionScreen() {
         super(SELECTION_OF_MENU);
         this.setSize(450, 220);
-        MenuCreateScreen cms = new MenuCreateScreen();
-        MenuViewScreen mvs = new MenuViewScreen();
+        menuList = getMenuList();
+        listOfMenuLabel = getLabelListOfMenu();
+        openButton = getOpenButton();
+        createButton = getCreateButton();
         //корневая панель
         JPanel panel = new JPanel();
         this.add(panel);
-        /*деление панели на две части
-        JPanel leftPanel = new JPanel();
-        leftPanel.setSize(170,110);
-        JPanel rightPanel = new JPanel();
-        rightPanel.setSize(170,110);
-        panel.setLayout(new BorderLayout());
-        panel.add(leftPanel,BorderLayout.WEST);
-        panel.add(rightPanel,BorderLayout.EAST);*/
-        //левая панель
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         panel.setLayout(gbl);
@@ -44,30 +39,22 @@ public class MenuSelectionScreen extends JFrame {
         gbc.gridy = 0;
         gbc.insets = new Insets(0,5,0,0);
         //gbc.fill = GridBagConstraints.BOTH;
-        //gbl.setConstraints(getLabelListOfMenu(),gbc);
-        panel.add(getLabelListOfMenu(),gbc);
+        panel.add(listOfMenuLabel,gbc);
         gbc.gridy =1;
         gbc.gridheight=2;
         gbc.anchor = GridBagConstraints.SOUTH;
         gbc.insets = new Insets(5,5,0,0);
-        JScrollPane jsp = new JScrollPane(getListOfMenu());
-        //gbl.setConstraints(jsp,gbc);
+        JScrollPane jsp = new JScrollPane(menuList);
         panel.add(jsp,gbc);
         gbc.gridx = 2;
         gbc.gridy = 1;
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.insets = new Insets(0,0,0,0);
-        //gbl.setConstraints(getOpenButton(),gbc);
-        panel.add(getOpenButton(),gbc);
+        panel.add(openButton,gbc);
         gbc.gridx = 2;
         gbc.gridy = 2;
         gbc.anchor = GridBagConstraints.NORTH;
-        //gbl.setConstraints(getCreateButton(),gbc);
-        panel.add(getCreateButton(),gbc);
-        OpenNextScreenAction createAction = new OpenNextScreenAction(this,cms);
-        OpenNextScreenAction openAction = new OpenNextScreenAction(this,mvs);
-        createButton.addActionListener(createAction);
-        openButton.addActionListener(openAction);
+        panel.add(createButton,gbc);
     }
 
     private JLabel getLabelListOfMenu() {
@@ -79,16 +66,16 @@ public class MenuSelectionScreen extends JFrame {
         return listOfMenuLabel;
     }
 
-    private JList<Menu> getListOfMenu() {
-        if (listOfMenu == null) {
+    private JList<Menu> getMenuList() {
+        if (menuList == null) {
             Menu[] arr = new Menu[]{new Menu(), new Menu(), new Menu(), new Menu(), new Menu(), new Menu(), new Menu()};
-            listOfMenu = new JList<>(arr);
-            listOfMenu.setVisibleRowCount(5);
-            listOfMenu.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-            listOfMenu.setSize(300, 180);
-            listOfMenu.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
+            menuList = new JList<>(arr);
+            menuList.setVisibleRowCount(5);
+            menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+            menuList.setSize(300, 180);
+            menuList.setFont(new Font("Comic Sans MS", Font.BOLD, 12));
         }
-        return listOfMenu;
+        return menuList;
     }
 
     private JButton getOpenButton() {
@@ -96,6 +83,7 @@ public class MenuSelectionScreen extends JFrame {
             openButton = new JButton(OPEN);
             //openButton.setSize(50, 30);
             openButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+            openButton.setEnabled(false);
         }
         return openButton;
     }
@@ -121,18 +109,28 @@ public class MenuSelectionScreen extends JFrame {
             newFrame.setVisible(true);
         }
     }
+    private void createAction(MenuCreateScreen mcs) {
+        OpenNextScreenAction createAction = new OpenNextScreenAction(this,mcs);
+        createButton.addActionListener(createAction);
+    }
+    private void openAction (MenuViewScreen mvs) {
+        OpenNextScreenAction openAction = new OpenNextScreenAction(this,mvs);
+        openButton.addActionListener(openAction);
+    }
 
     public static void main(String[] args) {
-        /*JFrame.setDefaultLookAndFeelDecorated(true);
-        javax.swing.SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-                ...
-            }
-        });*/
         MenuSelectionScreen mss = new MenuSelectionScreen();
+        MenuCreateScreen mcs = new MenuCreateScreen();
+        MenuViewScreen mvs = new MenuViewScreen();
         mss.setVisible(true);
-
-        //cms.setVisible(true);
-        //mss.setVisible(true);
+        mss.createAction(mcs);
+        mss.menuList.addListSelectionListener(
+                new ListSelectionListener() {
+                    public void valueChanged(ListSelectionEvent e) {
+                        Object element = mss.menuList.getSelectedValue();//выбранный элемент в списке(понадобится для открытия определенного меню)
+                        mss.openButton.setEnabled(true);
+                        mss.openAction(mvs);
+                    }
+                });
     }
 }
