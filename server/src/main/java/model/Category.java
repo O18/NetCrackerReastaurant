@@ -19,6 +19,11 @@ public class Category implements Serializable{
         dishes = new HashSet<>();
     }
 
+    public Category(String name){
+        this.name = name;
+        dishes = new HashSet<>();
+    }
+
     public Category(String name, Set<Dish> dishes) {
         this.name = name;
         this.dishes = dishes;

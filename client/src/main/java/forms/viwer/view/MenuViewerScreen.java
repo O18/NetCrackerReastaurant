@@ -78,6 +78,7 @@ public class MenuViewerScreen extends JFrame {
         //gbc.gridx = 9;
         panel.add(removeChangeCategoriesButton,gbc);
         this.backToSelectionAction();
+        //todo переделать слушателей в анонимные MenuListener как в других фреймах
         this.visibleTextFieldAction(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
         this.saveChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
         this.removeChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);

@@ -22,10 +22,10 @@ public class Main {
 
         MenuViewerScreen viewScreen = new MenuViewerScreen();
         MenuCreationScreen creationScreen = new MenuCreationScreen(viewScreen);
+        MenuSelectionScreen selectionScreen = new MenuSelectionScreen(viewScreen, creationScreen);
 
         EventBus selectionScreenEventBus = new EventBus();
         SelectionController selectionController = new SelectionController(selectionScreenEventBus, client);
-        MenuSelectionScreen selectionScreen = new MenuSelectionScreen(viewScreen, creationScreen);
         SelectionPresenter selectionPresenter = new SelectionPresenter(selectionScreenEventBus, selectionScreen);
         selectionScreen.setPresenter(selectionPresenter);
         selectionScreen.updateMenusList();

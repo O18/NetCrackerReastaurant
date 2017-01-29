@@ -49,19 +49,9 @@ class MenuService {
     private static MenuDTO convertToDTO(Menu menu) {
         Set<CategoryDTO> categoryDTOS = new HashSet<>();
         for (Category category : menu.getCategories()) {
-            categoryDTOS.add(convertToDTO(category));
+            categoryDTOS.add(new CategoryDTO(category.getName()));
         }
         return new MenuDTO(categoryDTOS);
-    }
-
-    private static CategoryDTO convertToDTO(Category category) {
-        Set<DishDTO> dishDTOS = new HashSet<>();
-        for(Dish dish : category.getDishes()){
-            DishDTO dishDTO = convertToDTO(dish);
-            dishDTOS.add(dishDTO);
-        }
-
-        return new CategoryDTO(category.getName(), dishDTOS);
     }
 
     private static DishDTO convertToDTO(Dish dish) {
@@ -88,7 +78,7 @@ class MenuService {
 
     static void addCategory(CategoryDTO categoryDTO, String menuPath){
         Menu menu = loadMenu(menuPath);
-        menu.addCategory(convertToModel(categoryDTO));
+        menu.addCategory(new Category(categoryDTO.getName()));
 
         saveMenu(menuPath, menu);
     }
@@ -181,17 +171,6 @@ class MenuService {
             throw new RuntimeException("Ошибка записи меню в файл с именем " + menuPath, e);
         }
     }
-
-    private static Category convertToModel(CategoryDTO categoryDTO) {
-        Set<Dish> dishes = new HashSet<>();
-        for(DishDTO dishDTO : categoryDTO.getDishes()){
-            Dish dish = new Dish(dishDTO.getDishName(), dishDTO.getCost());
-            dishes.add(dish);
-        }
-
-        return new Category(categoryDTO.getName(), dishes);
-    }
-
 
     static void deleteMenu(String menuName) {
         File file = new File(menuName);
