@@ -1,4 +1,4 @@
-package form.eventbus;
+package forms.eventbus;
 
 import java.util.HashMap;
 import java.util.HashSet;

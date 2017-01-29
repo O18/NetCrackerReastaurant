@@ -1,9 +1,9 @@
-package form.select.controller;
+package forms.selection.controller;
 
 import client.MenuClient;
-import form.eventbus.EventBus;
-import form.select.events.GetMenuEvent;
-import form.select.events.GetMenuNamesEvent;
+import forms.eventbus.EventBus;
+import forms.selection.events.GetMenuEvent;
+import forms.selection.events.GetMenuNamesEvent;
 import model.MenuDTO;
 
 import java.util.Set;

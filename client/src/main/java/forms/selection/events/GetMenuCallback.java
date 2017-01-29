@@ -1,6 +1,6 @@
-package form.select.events;
+package forms.selection.events;
 
-import form.eventbus.Callback;
+import forms.eventbus.Callback;
 import model.MenuDTO;
 
 /**

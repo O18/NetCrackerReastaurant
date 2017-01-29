@@ -1,6 +1,6 @@
-package form.main;
+package forms.viwer.view;
 
-import form.select.view.MenuSelectionScreen;
+import forms.selection.view.MenuSelectionScreen;
 import model.CategoryDTO;
 import model.MenuDTO;
 
@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by 1 on 27.12.2016.
  */
-public class MenuViewScreen extends JFrame {
+public class MenuViewerScreen extends JFrame {
     private static final String TITLE = "Работа с меню";
     private static final String OPEN = "Открыть";
     private static final String ADD = "+";
@@ -20,6 +20,7 @@ public class MenuViewScreen extends JFrame {
     private static final String EDIT = "Изменить";
     private static final String SAVE_CHANGE = "V";
     private static final String REMOVE_CHANGE = "X";
+    private static final long serialVersionUID = -9135268706317372751L;
 
     private JButton backToSelectionMenuButton;
     private JComboBox<CategoryDTO> selectionCategoryBox;
@@ -34,7 +35,7 @@ public class MenuViewScreen extends JFrame {
 
     private MenuDTO currentMenu;
 
-    public MenuViewScreen() {
+    public MenuViewerScreen() {
         super(TITLE);
         backToSelectionMenuButton = getBackToSelectionMenuButton();
         addCategoryButton = getAddCategoryButton();
@@ -168,12 +169,12 @@ public class MenuViewScreen extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             oldFrame.setVisible(false);
-            //MenuSelectionScreen.main(new String[]{});
+            //MenuSelectionScreen.viwer(new String[]{});
         }
     }
 
     private void backToSelectionAction() {
-        MenuViewScreen.BackToSelectionScreenAction backToSelectionAction = new MenuViewScreen.BackToSelectionScreenAction(this);
+        MenuViewerScreen.BackToSelectionScreenAction backToSelectionAction = new MenuViewerScreen.BackToSelectionScreenAction(this);
         backToSelectionMenuButton.addActionListener(backToSelectionAction);
     }
 
@@ -197,7 +198,7 @@ public class MenuViewScreen extends JFrame {
     }
 
     private void visibleTextFieldAction(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-        MenuViewScreen.VisibleTextFieldAction visibleTextFieldAction = new MenuViewScreen.VisibleTextFieldAction(fieldChanges,buttonSave,buttonRemove);
+        MenuViewerScreen.VisibleTextFieldAction visibleTextFieldAction = new MenuViewerScreen.VisibleTextFieldAction(fieldChanges,buttonSave,buttonRemove);
         addCategoryButton.addActionListener(visibleTextFieldAction);
         editCategoryButton.addActionListener(visibleTextFieldAction);
     }
@@ -221,7 +222,7 @@ public class MenuViewScreen extends JFrame {
     }
 
     private void saveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-        MenuViewScreen.SaveChangeCategory visibleTextFieldAction = new MenuViewScreen.SaveChangeCategory(fieldChanges,buttonSave,buttonRemove);
+        MenuViewerScreen.SaveChangeCategory visibleTextFieldAction = new MenuViewerScreen.SaveChangeCategory(fieldChanges,buttonSave,buttonRemove);
         saveChangeCategoriesButton.addActionListener(visibleTextFieldAction);
     }
     private class RemoveChangeCategory implements ActionListener {
@@ -244,7 +245,7 @@ public class MenuViewScreen extends JFrame {
     }
 
     private void removeChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-        MenuViewScreen.RemoveChangeCategory visibleTextFieldAction = new MenuViewScreen.RemoveChangeCategory(fieldChanges,buttonSave,buttonRemove);
+        MenuViewerScreen.RemoveChangeCategory visibleTextFieldAction = new MenuViewerScreen.RemoveChangeCategory(fieldChanges,buttonSave,buttonRemove);
         removeChangeCategoriesButton.addActionListener(visibleTextFieldAction);
     }
 

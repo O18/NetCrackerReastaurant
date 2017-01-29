@@ -1,10 +1,10 @@
-package form.select.view;
+package forms.selection.view;
 
-import form.eventbus.EventBus;
-import form.select.events.GetMenuCallback;
-import form.select.events.GetMenuEvent;
-import form.select.events.GetMenuNamesCallback;
-import form.select.events.GetMenuNamesEvent;
+import forms.eventbus.EventBus;
+import forms.selection.events.GetMenuCallback;
+import forms.selection.events.GetMenuEvent;
+import forms.selection.events.GetMenuNamesCallback;
+import forms.selection.events.GetMenuNamesEvent;
 import model.MenuDTO;
 
 import java.util.*;
@@ -50,9 +50,5 @@ public class SelectionPresenter {
 
             }
         }));
-    }
-
-    void openCreationScreen() {
-        selectionScreen.openCreationScreen();
     }
 }

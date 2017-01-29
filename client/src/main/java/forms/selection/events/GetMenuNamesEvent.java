@@ -1,6 +1,6 @@
-package form.select.events;
+package forms.selection.events;
 
-import form.eventbus.Event;
+import forms.eventbus.Event;
 
 /**
  * Created by User on 29.01.2017

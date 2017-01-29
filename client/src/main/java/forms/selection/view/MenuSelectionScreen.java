@@ -1,7 +1,7 @@
-package form.select.view;
+package forms.selection.view;
 
-import form.create.MenuCreateScreen;
-import form.main.MenuViewScreen;
+import forms.creation.view.MenuCreationScreen;
+import forms.viwer.view.MenuViewerScreen;
 import model.MenuDTO;
 
 import javax.swing.*;
@@ -19,15 +19,15 @@ public class MenuSelectionScreen extends JFrame {
     private static final long serialVersionUID = 2787597861798675816L;
 
     private SelectionPresenter presenter;
-    private MenuViewScreen viewScreen;
-    private MenuCreateScreen createScreen;
+    private MenuViewerScreen viewScreen;
+    private MenuCreationScreen createScreen;
 
     private JLabel listOfMenuLabel;
     private JList<String> menuList;
     private JButton openButton;
     private JButton createButton;
 
-    public MenuSelectionScreen(MenuViewScreen viewScreen, MenuCreateScreen createScreen) {
+    public MenuSelectionScreen(MenuViewerScreen viewScreen, MenuCreationScreen createScreen) {
         super(SELECTION_OF_MENU);
         this.viewScreen = viewScreen;
         this.createScreen = createScreen;
@@ -102,7 +102,7 @@ public class MenuSelectionScreen extends JFrame {
         createButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                presenter.openCreationScreen();
+                openCreationScreen();
             }
 
             @Override
@@ -188,7 +188,7 @@ public class MenuSelectionScreen extends JFrame {
         menuList.setListData(menuListNames.toArray(arrayMenuNames));
     }
 
-    void openCreationScreen() {
+    private void openCreationScreen() {
         createScreen.setVisible(true);
         this.setVisible(false);
     }
