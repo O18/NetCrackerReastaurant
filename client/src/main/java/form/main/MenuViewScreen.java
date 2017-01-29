@@ -17,12 +17,16 @@ public class MenuViewScreen extends JFrame {
     private static final String ADD = "+";
     private static final String REMOVE = "-";
     private static final String EDIT = "Изменить";
+    private static final String SAVE_CHANGE = "V";
+    private static final String REMOVE_CHANGE = "X";
     private JButton backToSelectionMenuButton;
     private JComboBox<CategoryDTO> selectionCategoryBox;
     private JButton addCategoryButton;
     private JButton removeCategoryButton;
     private JButton editCategoryButton;
     private JTextField addAndEditNameCategory;
+    private JButton saveChangeCategotiesButton;
+    private JButton removeChangeCategoriesButton;
 
 
     public MenuViewScreen() {
@@ -33,6 +37,9 @@ public class MenuViewScreen extends JFrame {
         editCategoryButton = getEditCategoryButton();
         selectionCategoryBox = getSelectionCategoryBox();
         addAndEditNameCategory = getAddAndEditNameCategory();
+        saveChangeCategotiesButton = getSaveChangeCategoriesButton();
+        removeChangeCategoriesButton = getRemoveChangeCategoriesButton();
+
         MenuSelectionScreen mss = new MenuSelectionScreen();
         this.setSize(700, 400);
         JPanel panel = new JPanel();
@@ -60,8 +67,15 @@ public class MenuViewScreen extends JFrame {
         gbc.gridx = 5;
         gbc.gridwidth = 3;
         panel.add(addAndEditNameCategory, gbc);
+        gbc.gridwidth = 1;
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        panel.add(saveChangeCategotiesButton,gbc);
+        //gbc.gridx = 9;
+        panel.add(removeChangeCategoriesButton,gbc);
         this.backToSelectionAction();
-        this.visibleTextFieldAction(addAndEditNameCategory);
+        this.visibleTextFieldAction(addAndEditNameCategory,saveChangeCategotiesButton,removeChangeCategoriesButton);
+        this.saveChangeCategory(addAndEditNameCategory,saveChangeCategotiesButton,removeChangeCategoriesButton);
+        this.removeChangeCategory(addAndEditNameCategory,saveChangeCategotiesButton,removeChangeCategoriesButton);
     }
 
     private JButton getBackToSelectionMenuButton() {
@@ -113,6 +127,22 @@ public class MenuViewScreen extends JFrame {
         }
         return addAndEditNameCategory;
     }
+    private JButton getSaveChangeCategoriesButton() {
+        if(saveChangeCategotiesButton ==null) {
+            saveChangeCategotiesButton = new JButton(SAVE_CHANGE);
+            saveChangeCategotiesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+            saveChangeCategotiesButton.setVisible(false);
+        }
+        return saveChangeCategotiesButton;
+    }
+    private JButton getRemoveChangeCategoriesButton() {
+        if(removeChangeCategoriesButton==null) {
+            removeChangeCategoriesButton = new JButton(REMOVE_CHANGE);
+            removeChangeCategoriesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+            removeChangeCategoriesButton.setVisible(false);
+        }
+        return removeChangeCategoriesButton;
+    }
 
     private class BackToSelectionScreenAction implements ActionListener {
         private JFrame oldFrame;
@@ -134,21 +164,74 @@ public class MenuViewScreen extends JFrame {
     }
 
     private class VisibleTextFieldAction implements ActionListener {
-        private JTextField field;
+        private JTextField fieldChanges;
+        private JButton buttonSave;
+        private JButton buttonRemove;
 
-        public VisibleTextFieldAction(JTextField field) {
-            this.field = field;
+        public VisibleTextFieldAction(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
+            this.fieldChanges = fieldChanges;
+            this.buttonSave = buttonSave;
+            this.buttonRemove = buttonRemove;
         }
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            field.setVisible(true);
+            fieldChanges.setVisible(true);
+            buttonSave.setVisible(true);
+            buttonRemove.setVisible(true);
         }
     }
 
-    private void visibleTextFieldAction(JTextField field) {
-        MenuViewScreen.VisibleTextFieldAction visibleTextFieldAction = new MenuViewScreen.VisibleTextFieldAction(field);
+    private void visibleTextFieldAction(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
+        MenuViewScreen.VisibleTextFieldAction visibleTextFieldAction = new MenuViewScreen.VisibleTextFieldAction(fieldChanges,buttonSave,buttonRemove);
         addCategoryButton.addActionListener(visibleTextFieldAction);
         editCategoryButton.addActionListener(visibleTextFieldAction);
     }
+    private class SaveChangeCategory implements ActionListener {
+        private JTextField fieldChanges;
+        private JButton buttonSave;
+        private JButton buttonRemove;
+
+        public SaveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
+            this.fieldChanges = fieldChanges;
+            this.buttonSave = buttonSave;
+            this.buttonRemove = buttonRemove;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            fieldChanges.setVisible(false);
+            buttonSave.setVisible(false);
+            buttonRemove.setVisible(false);//добавить реализацию
+        }
+    }
+
+    private void saveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
+        MenuViewScreen.SaveChangeCategory visibleTextFieldAction = new MenuViewScreen.SaveChangeCategory(fieldChanges,buttonSave,buttonRemove);
+        saveChangeCategotiesButton.addActionListener(visibleTextFieldAction);
+    }
+    private class RemoveChangeCategory implements ActionListener {
+        private JTextField fieldChanges;
+        private JButton buttonSave;
+        private JButton buttonRemove;
+
+        public RemoveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
+            this.fieldChanges = fieldChanges;
+            this.buttonSave = buttonSave;
+            this.buttonRemove = buttonRemove;
+        }
+
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            fieldChanges.setVisible(false);
+            buttonSave.setVisible(false);
+            buttonRemove.setVisible(false);//добавить реализацию
+        }
+    }
+
+    private void removeChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
+        MenuViewScreen.RemoveChangeCategory visibleTextFieldAction = new MenuViewScreen.RemoveChangeCategory(fieldChanges,buttonSave,buttonRemove);
+        removeChangeCategoriesButton.addActionListener(visibleTextFieldAction);
+    }
+
 }
