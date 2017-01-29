@@ -7,7 +7,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.*;
 import java.util.List;
 
 public class MenuSelectionScreen extends JFrame {
@@ -15,12 +14,14 @@ public class MenuSelectionScreen extends JFrame {
     private static final String LIST_OF_MENU = "Выберите меню из списка для загрузки:";
     private static final String OPEN = "Открыть";
     private static final String CREATE = "Создать";
+    private static final long serialVersionUID = 2787597861798675816L;
+
+    private SelectionPresenter presenter;
 
     private JLabel listOfMenuLabel;
     private JList<String> menuList;
     private JButton openButton;
     private JButton createButton;
-
 
     public MenuSelectionScreen() {
         super(SELECTION_OF_MENU);
@@ -119,6 +120,15 @@ public class MenuSelectionScreen extends JFrame {
         menuList.addListSelectionListener(e -> openButton.setEnabled(true));
     }
 
+    public void setPresenter(SelectionPresenter presenter) {
+        this.presenter = presenter;
+    }
+
+    public void updateMenusList(){
+        if(presenter != null)
+            presenter.getMenuNamesList();
+    }
+
     private JLabel getLabelListOfMenu() {
         if (listOfMenuLabel == null) {
             listOfMenuLabel = new JLabel();
@@ -158,8 +168,9 @@ public class MenuSelectionScreen extends JFrame {
         return createButton;
     }
 
-    public void setMenuList(List<String> menuListNames){
-        menuList.setListData(menuListNames.toArray());
+    void setMenuList(List<String> menuListNames){
+        String[] arrayMenuNames = new String[menuListNames.size()];
+        menuList.setListData(menuListNames.toArray(arrayMenuNames));
     }
 
     private class OpenNextScreenAction implements ActionListener {

@@ -2,8 +2,11 @@ package form.select;
 
 import client.MenuClient;
 import form.create.MenuCreateScreen;
+import form.eventbus.EventBus;
 import form.main.MenuViewScreen;
+import form.select.controller.SelectionController;
 import form.select.view.MenuSelectionScreen;
+import form.select.view.SelectionPresenter;
 
 import javax.swing.*;
 
@@ -15,7 +18,13 @@ public class Main {
     public static void main(String[] args) {
         MenuClient client = new MenuClient();
 
+        EventBus selectionScreenEventBus = new EventBus();
+        SelectionController selectionController = new SelectionController(selectionScreenEventBus, client);
         MenuSelectionScreen selectionScreen = new MenuSelectionScreen();
+        SelectionPresenter selectionPresenter = new SelectionPresenter(selectionScreenEventBus, selectionScreen);
+        selectionScreen.setPresenter(selectionPresenter);
+        selectionScreen.updateMenusList();
+
         MenuCreateScreen createScreen = new MenuCreateScreen();
         MenuViewScreen viewScreen = new MenuViewScreen();
 

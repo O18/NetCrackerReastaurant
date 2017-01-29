@@ -2,9 +2,10 @@ package form.select.view;
 
 import form.eventbus.Callback;
 import form.eventbus.EventBus;
+import form.select.events.GetMenuNamesCallback;
 import form.select.events.GetMenuNamesEvent;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by User on 29.01.2017
@@ -18,11 +19,14 @@ public class SelectionPresenter {
         this.selectionScreen = selectionScreen;
     }
 
-    List<String> getMenuNamesList(){
-        eventBus.post(new GetMenuNamesEvent(new Callback() {
+    void getMenuNamesList(){
+        eventBus.post(new GetMenuNamesEvent(new GetMenuNamesCallback() {
             @Override
-            public void onSuccess() {
-
+            public void onSuccess(Set<String> menuNames) {
+                List<String> menusNamesList = new ArrayList<>();
+                menusNamesList.addAll(menuNames);
+                menusNamesList.sort(String::compareTo);
+                selectionScreen.setMenuList(menusNamesList);
             }
 
             @Override
