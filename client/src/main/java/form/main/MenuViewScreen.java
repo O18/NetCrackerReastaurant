@@ -1,4 +1,4 @@
-package form;
+package form.main;
 
 import form.select.view.MenuSelectionScreen;
 import model.CategoryDTO;
@@ -124,7 +124,7 @@ public class MenuViewScreen extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             oldFrame.setVisible(false);
-            MenuSelectionScreen.main(new String[]{});
+            //MenuSelectionScreen.main(new String[]{});
         }
     }
 

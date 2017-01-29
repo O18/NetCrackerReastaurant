@@ -1,13 +1,14 @@
 package form.select.view;
 
-import form.MenuCreateScreen;
-import form.MenuViewScreen;
-import model.MenuDTO;
-
 import javax.swing.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.*;
+import java.util.List;
 
 public class MenuSelectionScreen extends JFrame {
     private static final String SELECTION_OF_MENU = "Выбор меню";
@@ -16,7 +17,7 @@ public class MenuSelectionScreen extends JFrame {
     private static final String CREATE = "Создать";
 
     private JLabel listOfMenuLabel;
-    private JList<MenuDTO> menuList;
+    private JList<String> menuList;
     private JButton openButton;
     private JButton createButton;
 
@@ -32,29 +33,90 @@ public class MenuSelectionScreen extends JFrame {
         JPanel panel = new JPanel();
         this.add(panel);
         GridBagLayout gbl = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
+        GridBagConstraints constraints = new GridBagConstraints();
         panel.setLayout(gbl);
-        gbc.anchor = GridBagConstraints.NORTH;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.insets = new Insets(0,5,0,0);
-        //gbc.fill = GridBagConstraints.BOTH;
-        panel.add(listOfMenuLabel,gbc);
-        gbc.gridy =1;
-        gbc.gridheight=2;
-        gbc.anchor = GridBagConstraints.SOUTH;
-        gbc.insets = new Insets(5,5,0,0);
-        JScrollPane jsp = new JScrollPane(menuList);
-        panel.add(jsp,gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 1;
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.insets = new Insets(0,0,0,0);
-        panel.add(openButton,gbc);
-        gbc.gridx = 2;
-        gbc.gridy = 2;
-        gbc.anchor = GridBagConstraints.NORTH;
-        panel.add(createButton,gbc);
+
+        constraints.anchor = GridBagConstraints.NORTH;
+        constraints.gridx = 0;
+        constraints.gridy = 0;
+        constraints.insets = new Insets(0, 5, 0, 0);
+        //constraints.fill = GridBagConstraints.BOTH;
+        panel.add(listOfMenuLabel, constraints);
+
+        constraints.gridy = 1;
+        constraints.gridheight = 2;
+        constraints.anchor = GridBagConstraints.SOUTH;
+        constraints.insets = new Insets(5, 5, 0, 0);
+        JScrollPane scrollPane = new JScrollPane(menuList);
+        panel.add(scrollPane, constraints);
+
+        constraints.gridx = 2;
+        constraints.gridy = 1;
+        constraints.anchor = GridBagConstraints.CENTER;
+        constraints.insets = new Insets(0, 0, 0, 0);
+        panel.add(openButton, constraints);
+
+        constraints.gridx = 2;
+        constraints.gridy = 2;
+        constraints.anchor = GridBagConstraints.NORTH;
+        panel.add(createButton, constraints);
+
+        openButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String selectedMenuName = menuList.getSelectedValue();
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        createButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        menuList.addListSelectionListener(e -> openButton.setEnabled(true));
     }
 
     private JLabel getLabelListOfMenu() {
@@ -66,10 +128,9 @@ public class MenuSelectionScreen extends JFrame {
         return listOfMenuLabel;
     }
 
-    private JList<MenuDTO> getMenuList() {
+    private JList<String> getMenuList() {
         if (menuList == null) {
-            MenuDTO[] arr = new MenuDTO[]{new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO(), new MenuDTO()};
-            menuList = new JList<>(arr);
+            menuList = new JList<>();
             menuList.setVisibleRowCount(5);
             menuList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
             menuList.setSize(300, 180);
@@ -96,42 +157,24 @@ public class MenuSelectionScreen extends JFrame {
         }
         return createButton;
     }
+
+    public void setMenuList(List<String> menuListNames){
+        menuList.setListData(menuListNames.toArray());
+    }
+
     private class OpenNextScreenAction implements ActionListener {
         private JFrame newFrame;
         private JFrame oldFrame;
-        public OpenNextScreenAction(JFrame oldFrame, JFrame newFrame) {
+
+        private OpenNextScreenAction(JFrame oldFrame, JFrame newFrame) {
             this.newFrame = newFrame;
             this.oldFrame = oldFrame;
         }
+
         @Override
         public void actionPerformed(ActionEvent e) {
             oldFrame.setVisible(false);
             newFrame.setVisible(true);
         }
-    }
-    private void createAction(MenuCreateScreen mcs) {
-        OpenNextScreenAction createAction = new OpenNextScreenAction(this,mcs);
-        createButton.addActionListener(createAction);
-    }
-    private void openAction (MenuViewScreen mvs) {
-        OpenNextScreenAction openAction = new OpenNextScreenAction(this,mvs);
-        openButton.addActionListener(openAction);
-    }
-
-    public static void main(String[] args) {
-        MenuSelectionScreen mss = new MenuSelectionScreen();
-        MenuCreateScreen mcs = new MenuCreateScreen();
-        MenuViewScreen mvs = new MenuViewScreen();
-        mss.setLocationRelativeTo(null);
-        mss.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        mss.createAction(mcs);
-        mss.menuList.addListSelectionListener(
-                e -> {
-                    Object element = mss.menuList.getSelectedValue();//выбранный элемент в списке(понадобится для открытия определенного меню)
-                    mss.openButton.setEnabled(true);
-                    mss.openAction(mvs);
-                });
-
-        mss.setVisible(true);
     }
 }

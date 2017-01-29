@@ -1,4 +1,4 @@
-package model.eventbus;
+package form.eventbus;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -10,7 +10,7 @@ import java.util.Set;
  */
 public class EventBus {
 
-    protected Map<Class, Set<Handler>> handlers;
+    private Map<Class, Set<Handler>> handlers;
 
     public EventBus() {
         handlers = new HashMap<>();
