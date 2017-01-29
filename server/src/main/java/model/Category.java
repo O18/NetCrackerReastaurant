@@ -28,7 +28,7 @@ public class Category implements Serializable{
         return name;
     }
 
-    boolean setName(String newName){
+    public boolean setName(String newName){
         if (Objects.equals(newName, name))
             return false;
         name = newName;
