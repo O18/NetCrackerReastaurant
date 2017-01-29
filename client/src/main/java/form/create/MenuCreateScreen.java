@@ -1,4 +1,6 @@
-package com.o18.restaurant;
+package form.create;
+
+import form.main.MenuViewScreen;
 
 import javax.swing.*;
 import java.awt.*;

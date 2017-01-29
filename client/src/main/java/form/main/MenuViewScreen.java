@@ -1,6 +1,7 @@
-package com.o18.restaurant;
+package form.main;
 
-import com.o18.restaurant.model.Category;
+import form.select.view.MenuSelectionScreen;
+import model.CategoryDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,7 +20,7 @@ public class MenuViewScreen extends JFrame {
     private static final String SAVE_CHANGE = "V";
     private static final String REMOVE_CHANGE = "X";
     private JButton backToSelectionMenuButton;
-    private JComboBox<Category> selectionCategoryBox;
+    private JComboBox<CategoryDTO> selectionCategoryBox;
     private JButton addCategoryButton;
     private JButton removeCategoryButton;
     private JButton editCategoryButton;
@@ -85,9 +86,9 @@ public class MenuViewScreen extends JFrame {
         return backToSelectionMenuButton;
     }
 
-    private JComboBox<Category> getSelectionCategoryBox() {
+    private JComboBox<CategoryDTO> getSelectionCategoryBox() {
         if (selectionCategoryBox == null) {
-            Category[] arr = new Category[]{new Category("Мясо"), new Category("Рыба"), new Category("Птица")};
+            CategoryDTO[] arr = new CategoryDTO[]{new CategoryDTO("Мясо"), new CategoryDTO("Рыба"), new CategoryDTO("Птица")};
             selectionCategoryBox = new JComboBox<>(arr);
             selectionCategoryBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
@@ -153,7 +154,7 @@ public class MenuViewScreen extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             oldFrame.setVisible(false);
-            MenuSelectionScreen.main(new String[]{});
+            //MenuSelectionScreen.main(new String[]{});
         }
     }
 
