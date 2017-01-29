@@ -1,4 +1,4 @@
-package form.eventbus;
+package forms.eventbus;
 
 /**
  * Created by 1 on 28.11.2016.
