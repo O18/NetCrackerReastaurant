@@ -2,6 +2,7 @@ package form.main;
 
 import form.select.view.MenuSelectionScreen;
 import model.CategoryDTO;
+import model.MenuDTO;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,15 +20,19 @@ public class MenuViewScreen extends JFrame {
     private static final String EDIT = "Изменить";
     private static final String SAVE_CHANGE = "V";
     private static final String REMOVE_CHANGE = "X";
+
     private JButton backToSelectionMenuButton;
     private JComboBox<CategoryDTO> selectionCategoryBox;
     private JButton addCategoryButton;
     private JButton removeCategoryButton;
     private JButton editCategoryButton;
     private JTextField addAndEditNameCategory;
-    private JButton saveChangeCategotiesButton;
+    private JButton saveChangeCategoriesButton;
     private JButton removeChangeCategoriesButton;
 
+    private MenuSelectionScreen selectionScreen;
+
+    private MenuDTO currentMenu;
 
     public MenuViewScreen() {
         super(TITLE);
@@ -37,10 +42,9 @@ public class MenuViewScreen extends JFrame {
         editCategoryButton = getEditCategoryButton();
         selectionCategoryBox = getSelectionCategoryBox();
         addAndEditNameCategory = getAddAndEditNameCategory();
-        saveChangeCategotiesButton = getSaveChangeCategoriesButton();
+        saveChangeCategoriesButton = getSaveChangeCategoriesButton();
         removeChangeCategoriesButton = getRemoveChangeCategoriesButton();
 
-        MenuSelectionScreen mss = new MenuSelectionScreen();
         this.setSize(700, 400);
         JPanel panel = new JPanel();
         this.add(panel);
@@ -69,13 +73,20 @@ public class MenuViewScreen extends JFrame {
         panel.add(addAndEditNameCategory, gbc);
         gbc.gridwidth = 1;
         gbc.gridx = GridBagConstraints.RELATIVE;
-        panel.add(saveChangeCategotiesButton,gbc);
+        panel.add(saveChangeCategoriesButton,gbc);
         //gbc.gridx = 9;
         panel.add(removeChangeCategoriesButton,gbc);
         this.backToSelectionAction();
-        this.visibleTextFieldAction(addAndEditNameCategory,saveChangeCategotiesButton,removeChangeCategoriesButton);
-        this.saveChangeCategory(addAndEditNameCategory,saveChangeCategotiesButton,removeChangeCategoriesButton);
-        this.removeChangeCategory(addAndEditNameCategory,saveChangeCategotiesButton,removeChangeCategoriesButton);
+        this.visibleTextFieldAction(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
+        this.saveChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
+        this.removeChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
+    }
+
+    public void setCurrentMenu(MenuDTO currentMenu) {
+        this.currentMenu = currentMenu;
+        for(CategoryDTO category : currentMenu.getCategories()){
+            selectionCategoryBox.addItem(category);
+        }
     }
 
     private JButton getBackToSelectionMenuButton() {
@@ -88,8 +99,7 @@ public class MenuViewScreen extends JFrame {
 
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
         if (selectionCategoryBox == null) {
-            CategoryDTO[] arr = new CategoryDTO[]{new CategoryDTO("Мясо"), new CategoryDTO("Рыба"), new CategoryDTO("Птица")};
-            selectionCategoryBox = new JComboBox<>(arr);
+            selectionCategoryBox = new JComboBox<>();
             selectionCategoryBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return selectionCategoryBox;
@@ -128,12 +138,12 @@ public class MenuViewScreen extends JFrame {
         return addAndEditNameCategory;
     }
     private JButton getSaveChangeCategoriesButton() {
-        if(saveChangeCategotiesButton ==null) {
-            saveChangeCategotiesButton = new JButton(SAVE_CHANGE);
-            saveChangeCategotiesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-            saveChangeCategotiesButton.setVisible(false);
+        if(saveChangeCategoriesButton ==null) {
+            saveChangeCategoriesButton = new JButton(SAVE_CHANGE);
+            saveChangeCategoriesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+            saveChangeCategoriesButton.setVisible(false);
         }
-        return saveChangeCategotiesButton;
+        return saveChangeCategoriesButton;
     }
     private JButton getRemoveChangeCategoriesButton() {
         if(removeChangeCategoriesButton==null) {
@@ -142,6 +152,10 @@ public class MenuViewScreen extends JFrame {
             removeChangeCategoriesButton.setVisible(false);
         }
         return removeChangeCategoriesButton;
+    }
+
+    public void setSelectionScreen(MenuSelectionScreen selectionScreen) {
+        this.selectionScreen = selectionScreen;
     }
 
     private class BackToSelectionScreenAction implements ActionListener {
@@ -208,7 +222,7 @@ public class MenuViewScreen extends JFrame {
 
     private void saveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
         MenuViewScreen.SaveChangeCategory visibleTextFieldAction = new MenuViewScreen.SaveChangeCategory(fieldChanges,buttonSave,buttonRemove);
-        saveChangeCategotiesButton.addActionListener(visibleTextFieldAction);
+        saveChangeCategoriesButton.addActionListener(visibleTextFieldAction);
     }
     private class RemoveChangeCategory implements ActionListener {
         private JTextField fieldChanges;

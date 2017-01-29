@@ -1,9 +1,11 @@
 package form.select.view;
 
-import form.eventbus.Callback;
 import form.eventbus.EventBus;
+import form.select.events.GetMenuCallback;
+import form.select.events.GetMenuEvent;
 import form.select.events.GetMenuNamesCallback;
 import form.select.events.GetMenuNamesEvent;
+import model.MenuDTO;
 
 import java.util.*;
 
@@ -34,5 +36,23 @@ public class SelectionPresenter {
 
             }
         }));
+    }
+
+    void getMenuByName(String menuName){
+        eventBus.post(new GetMenuEvent(menuName, new GetMenuCallback() {
+            @Override
+            public void onSuccess(MenuDTO menuDTO) {
+                selectionScreen.openMenu(menuDTO);
+            }
+
+            @Override
+            public void onFail(RuntimeException e) {
+
+            }
+        }));
+    }
+
+    void openCreationScreen() {
+        selectionScreen.openCreationScreen();
     }
 }

@@ -1,10 +1,12 @@
 package form.select.view;
 
+import form.create.MenuCreateScreen;
+import form.main.MenuViewScreen;
+import model.MenuDTO;
+
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -17,56 +19,63 @@ public class MenuSelectionScreen extends JFrame {
     private static final long serialVersionUID = 2787597861798675816L;
 
     private SelectionPresenter presenter;
+    private MenuViewScreen viewScreen;
+    private MenuCreateScreen createScreen;
 
     private JLabel listOfMenuLabel;
     private JList<String> menuList;
     private JButton openButton;
     private JButton createButton;
 
-    public MenuSelectionScreen() {
+    public MenuSelectionScreen(MenuViewScreen viewScreen, MenuCreateScreen createScreen) {
         super(SELECTION_OF_MENU);
-        this.setSize(450, 220);
+        this.viewScreen = viewScreen;
+        this.createScreen = createScreen;
+        this.setPreferredSize(new Dimension(450, 450));
+        this.setMinimumSize(new Dimension(450, 300));
         menuList = getMenuList();
         listOfMenuLabel = getLabelListOfMenu();
         openButton = getOpenButton();
         createButton = getCreateButton();
         //корневая панель
-        JPanel panel = new JPanel();
-        this.add(panel);
+        JPanel rootPanel = new JPanel();
+        this.add(rootPanel);
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints constraints = new GridBagConstraints();
-        panel.setLayout(gbl);
+        rootPanel.setLayout(gbl);
 
         constraints.anchor = GridBagConstraints.NORTH;
         constraints.gridx = 0;
         constraints.gridy = 0;
         constraints.insets = new Insets(0, 5, 0, 0);
         //constraints.fill = GridBagConstraints.BOTH;
-        panel.add(listOfMenuLabel, constraints);
+        rootPanel.add(listOfMenuLabel, constraints);
 
         constraints.gridy = 1;
         constraints.gridheight = 2;
         constraints.anchor = GridBagConstraints.SOUTH;
         constraints.insets = new Insets(5, 5, 0, 0);
         JScrollPane scrollPane = new JScrollPane(menuList);
-        panel.add(scrollPane, constraints);
+        scrollPane.setMinimumSize(new Dimension(200, 180));
+        scrollPane.setPreferredSize(new Dimension(200, 180));
+        rootPanel.add(scrollPane, constraints);
 
         constraints.gridx = 2;
         constraints.gridy = 1;
         constraints.anchor = GridBagConstraints.CENTER;
         constraints.insets = new Insets(0, 0, 0, 0);
-        panel.add(openButton, constraints);
+        rootPanel.add(openButton, constraints);
 
         constraints.gridx = 2;
         constraints.gridy = 2;
         constraints.anchor = GridBagConstraints.NORTH;
-        panel.add(createButton, constraints);
+        rootPanel.add(createButton, constraints);
 
         openButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 String selectedMenuName = menuList.getSelectedValue();
-
+                presenter.getMenuByName(selectedMenuName);
             }
 
             @Override
@@ -93,7 +102,7 @@ public class MenuSelectionScreen extends JFrame {
         createButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                presenter.openCreationScreen();
             }
 
             @Override
@@ -129,6 +138,14 @@ public class MenuSelectionScreen extends JFrame {
             presenter.getMenuNamesList();
     }
 
+    void openMenu(MenuDTO menu){
+        if(menu != null){
+            viewScreen.setCurrentMenu(menu);
+            viewScreen.setVisible(true);
+            this.setVisible(false);
+        }
+    }
+
     private JLabel getLabelListOfMenu() {
         if (listOfMenuLabel == null) {
             listOfMenuLabel = new JLabel();
@@ -152,7 +169,6 @@ public class MenuSelectionScreen extends JFrame {
     private JButton getOpenButton() {
         if (openButton == null) {
             openButton = new JButton(OPEN);
-            //openButton.setSize(50, 30);
             openButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
             openButton.setEnabled(false);
         }
@@ -162,7 +178,6 @@ public class MenuSelectionScreen extends JFrame {
     private JButton getCreateButton() {
         if (createButton == null) {
             createButton = new JButton(CREATE);
-            //createButton.setSize(40, 30);
             createButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
         }
         return createButton;
@@ -173,19 +188,8 @@ public class MenuSelectionScreen extends JFrame {
         menuList.setListData(menuListNames.toArray(arrayMenuNames));
     }
 
-    private class OpenNextScreenAction implements ActionListener {
-        private JFrame newFrame;
-        private JFrame oldFrame;
-
-        private OpenNextScreenAction(JFrame oldFrame, JFrame newFrame) {
-            this.newFrame = newFrame;
-            this.oldFrame = oldFrame;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            oldFrame.setVisible(false);
-            newFrame.setVisible(true);
-        }
+    void openCreationScreen() {
+        createScreen.setVisible(true);
+        this.setVisible(false);
     }
 }

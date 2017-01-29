@@ -18,15 +18,17 @@ public class Main {
     public static void main(String[] args) {
         MenuClient client = new MenuClient();
 
+        MenuViewScreen viewScreen = new MenuViewScreen();
+        MenuCreateScreen createScreen = new MenuCreateScreen(viewScreen);
+
         EventBus selectionScreenEventBus = new EventBus();
         SelectionController selectionController = new SelectionController(selectionScreenEventBus, client);
-        MenuSelectionScreen selectionScreen = new MenuSelectionScreen();
+        MenuSelectionScreen selectionScreen = new MenuSelectionScreen(viewScreen, createScreen);
         SelectionPresenter selectionPresenter = new SelectionPresenter(selectionScreenEventBus, selectionScreen);
         selectionScreen.setPresenter(selectionPresenter);
         selectionScreen.updateMenusList();
 
-        MenuCreateScreen createScreen = new MenuCreateScreen();
-        MenuViewScreen viewScreen = new MenuViewScreen();
+        viewScreen.setSelectionScreen(selectionScreen);
 
         selectionScreen.setLocationRelativeTo(null);
         selectionScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

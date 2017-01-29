@@ -2,7 +2,9 @@ package form.select.controller;
 
 import client.MenuClient;
 import form.eventbus.EventBus;
+import form.select.events.GetMenuEvent;
 import form.select.events.GetMenuNamesEvent;
+import model.MenuDTO;
 
 import java.util.Set;
 
@@ -16,16 +18,25 @@ public class SelectionController {
         this.client = client;
 
         eventBus.addHandler(GetMenuNamesEvent.class, this::loadMenuNames);
+        eventBus.addHandler(GetMenuEvent.class, this::loadMenu);
     }
 
     private void loadMenuNames(GetMenuNamesEvent event){
         try {
             Set<String> menuNames = client.getMenusNames();
             event.getCallback().onSuccess(menuNames);
-        } catch (RuntimeException e){
+        } catch (RuntimeException e){//todo
             event.getCallback().onFail(e);
         }
     }
 
+    private void loadMenu(GetMenuEvent event){
+        try{
+            MenuDTO menu = client.getMenu(event.getMenuName());
+            event.getCallback().onSuccess(menu);
+        } catch (RuntimeException e) {//todo
+            event.getCallback().onFail(e);
+        }
+    }
 
 }

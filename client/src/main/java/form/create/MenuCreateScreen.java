@@ -18,8 +18,11 @@ public class MenuCreateScreen extends JFrame{
     private JTextField nameMenuTextField;
     private JButton okButton;
 
-    public MenuCreateScreen() {
+    private final MenuViewScreen viewScreen;
+
+    public MenuCreateScreen(MenuViewScreen viewScreen) {
         super(TITLE);
+        this.viewScreen = viewScreen;
         MenuViewScreen mvs = new MenuViewScreen();
         this.setSize(new Dimension(300,150));
         JPanel panel = new JPanel();
