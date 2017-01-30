@@ -8,5 +8,5 @@ import model.MenuDTO;
  */
 public interface ViewerCallback extends Callback{
 
-    MenuDTO onSuccess();
+    void onSuccess(MenuDTO menu);
 }

@@ -5,10 +5,12 @@ import forms.creation.controller.CreationController;
 import forms.creation.view.CreationPresenter;
 import forms.creation.view.MenuCreationScreen;
 import forms.eventbus.EventBus;
+import forms.viwer.controller.ViewerController;
 import forms.viwer.view.MenuViewerScreen;
 import forms.selection.controller.SelectionController;
 import forms.selection.view.MenuSelectionScreen;
 import forms.selection.view.SelectionPresenter;
+import forms.viwer.view.ViewerPresenter;
 
 import javax.swing.*;
 
@@ -30,12 +32,16 @@ public class Main {
         selectionScreen.setPresenter(selectionPresenter);
         selectionScreen.updateMenusList();
 
-        viewScreen.setSelectionScreen(selectionScreen);
-
         EventBus creationEventBus = new EventBus();
         CreationController creationController = new CreationController(creationEventBus, client);
         CreationPresenter creationPresenter = new CreationPresenter(creationEventBus, creationScreen);
         creationScreen.setPresenter(creationPresenter);
+
+        EventBus viewerEventBus = new EventBus();
+        ViewerController viewerController = new ViewerController(viewerEventBus, client);
+        ViewerPresenter viewerPresenter = new ViewerPresenter(viewScreen, viewerEventBus);
+        viewScreen.setPresenter(viewerPresenter);
+        viewScreen.setSelectionScreen(selectionScreen);
 
         selectionScreen.setLocationRelativeTo(null);
         selectionScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

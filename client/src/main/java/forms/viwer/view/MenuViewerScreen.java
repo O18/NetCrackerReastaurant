@@ -1,15 +1,11 @@
 package forms.viwer.view;
 
-import forms.creation.view.MenuCreationScreen;
-import forms.selection.Main;
 import forms.selection.view.MenuSelectionScreen;
 import model.CategoryDTO;
 import model.MenuDTO;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -36,6 +32,7 @@ public class MenuViewerScreen extends JFrame {
     private JButton removeChangeCategoriesButton;
 
     private MenuSelectionScreen selectionScreen;
+    private ViewerPresenter presenter;
 
     private MenuDTO currentMenu;
 
@@ -220,10 +217,6 @@ public class MenuViewerScreen extends JFrame {
 
             }
         });
-        /*this.backToSelectionAction();
-        this.visibleTextFieldAction(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
-        this.saveChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
-        this.removeChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);*/
     }
 
     public void setCurrentMenu(MenuDTO currentMenu) {
@@ -302,94 +295,7 @@ public class MenuViewerScreen extends JFrame {
         this.selectionScreen = selectionScreen;
     }
 
-    private class BackToSelectionScreenAction implements ActionListener {
-        private JFrame oldFrame;
-
-        public BackToSelectionScreenAction(JFrame oldFrame) {
-            this.oldFrame = oldFrame;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            oldFrame.setVisible(false);
-            //MenuSelectionScreen.viwer(new String[]{});
-        }
+    public void setPresenter(ViewerPresenter presenter) {
+        this.presenter = presenter;
     }
-
-    private void backToSelectionAction() {
-        MenuViewerScreen.BackToSelectionScreenAction backToSelectionAction = new MenuViewerScreen.BackToSelectionScreenAction(this);
-        backToSelectionMenuButton.addActionListener(backToSelectionAction);
-    }
-
-    /*private class VisibleTextFieldAction implements ActionListener {
-        private JTextField fieldChanges;
-        private JButton buttonSave;
-        private JButton buttonRemove;
-
-        public VisibleTextFieldAction(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-            this.fieldChanges = fieldChanges;
-            this.buttonSave = buttonSave;
-            this.buttonRemove = buttonRemove;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            fieldChanges.setVisible(true);
-            buttonSave.setVisible(true);
-            buttonRemove.setVisible(true);
-        }
-    }
-
-    private void visibleTextFieldAction(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-        MenuViewerScreen.VisibleTextFieldAction visibleTextFieldAction = new MenuViewerScreen.VisibleTextFieldAction(fieldChanges,buttonSave,buttonRemove);
-        addCategoryButton.addActionListener(visibleTextFieldAction);
-        editCategoryButton.addActionListener(visibleTextFieldAction);
-    }
-    private class SaveChangeCategory implements ActionListener {
-        private JTextField fieldChanges;
-        private JButton buttonSave;
-        private JButton buttonRemove;
-
-        public SaveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-            this.fieldChanges = fieldChanges;
-            this.buttonSave = buttonSave;
-            this.buttonRemove = buttonRemove;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            fieldChanges.setVisible(false);
-            buttonSave.setVisible(false);
-            buttonRemove.setVisible(false);//добавить реализацию
-        }
-    }
-
-    private void saveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-        MenuViewerScreen.SaveChangeCategory visibleTextFieldAction = new MenuViewerScreen.SaveChangeCategory(fieldChanges,buttonSave,buttonRemove);
-        saveChangeCategoriesButton.addActionListener(visibleTextFieldAction);
-    }
-    private class RemoveChangeCategory implements ActionListener {
-        private JTextField fieldChanges;
-        private JButton buttonSave;
-        private JButton buttonRemove;
-
-        public RemoveChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-            this.fieldChanges = fieldChanges;
-            this.buttonSave = buttonSave;
-            this.buttonRemove = buttonRemove;
-        }
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            fieldChanges.setVisible(false);
-            buttonSave.setVisible(false);
-            buttonRemove.setVisible(false);//добавить реализацию
-        }
-    }
-
-    private void removeChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
-        MenuViewerScreen.RemoveChangeCategory visibleTextFieldAction = new MenuViewerScreen.RemoveChangeCategory(fieldChanges,buttonSave,buttonRemove);
-        removeChangeCategoriesButton.addActionListener(visibleTextFieldAction);
-    }*/
-
 }
