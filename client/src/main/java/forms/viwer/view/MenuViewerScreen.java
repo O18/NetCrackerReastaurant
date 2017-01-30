@@ -1,5 +1,7 @@
 package forms.viwer.view;
 
+import forms.creation.view.MenuCreationScreen;
+import forms.selection.Main;
 import forms.selection.view.MenuSelectionScreen;
 import model.CategoryDTO;
 import model.MenuDTO;
@@ -8,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 /**
  * Created by 1 on 27.12.2016.
@@ -75,13 +79,151 @@ public class MenuViewerScreen extends JFrame {
         gbc.gridwidth = 1;
         gbc.gridx = GridBagConstraints.RELATIVE;
         panel.add(saveChangeCategoriesButton,gbc);
-        //gbc.gridx = 9;
         panel.add(removeChangeCategoriesButton,gbc);
-        this.backToSelectionAction();
-        //todo переделать слушателей в анонимные MenuListener как в других фреймах
+
+        backToSelectionMenuButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                selectionScreen.setVisible(true);
+                MenuViewerScreen.super.setVisible(false);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        addCategoryButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addAndEditNameCategory.setVisible(true);
+                saveChangeCategoriesButton.setVisible(true);
+                removeCategoryButton.setVisible(true);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        editCategoryButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addAndEditNameCategory.setVisible(true);
+                saveChangeCategoriesButton.setVisible(true);
+                removeCategoryButton.setVisible(true);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        saveChangeCategoriesButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addAndEditNameCategory.setVisible(false);
+                saveChangeCategoriesButton.setVisible(false);
+                removeCategoryButton.setVisible(false);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        removeCategoryButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                addAndEditNameCategory.setVisible(false);
+                saveChangeCategoriesButton.setVisible(false);
+                removeCategoryButton.setVisible(false);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        /*this.backToSelectionAction();
         this.visibleTextFieldAction(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
         this.saveChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
-        this.removeChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);
+        this.removeChangeCategory(addAndEditNameCategory, saveChangeCategoriesButton,removeChangeCategoriesButton);*/
     }
 
     public void setCurrentMenu(MenuDTO currentMenu) {
@@ -179,7 +321,7 @@ public class MenuViewerScreen extends JFrame {
         backToSelectionMenuButton.addActionListener(backToSelectionAction);
     }
 
-    private class VisibleTextFieldAction implements ActionListener {
+    /*private class VisibleTextFieldAction implements ActionListener {
         private JTextField fieldChanges;
         private JButton buttonSave;
         private JButton buttonRemove;
@@ -248,6 +390,6 @@ public class MenuViewerScreen extends JFrame {
     private void removeChangeCategory(JTextField fieldChanges, JButton buttonSave, JButton buttonRemove) {
         MenuViewerScreen.RemoveChangeCategory visibleTextFieldAction = new MenuViewerScreen.RemoveChangeCategory(fieldChanges,buttonSave,buttonRemove);
         removeChangeCategoriesButton.addActionListener(visibleTextFieldAction);
-    }
+    }*/
 
 }
