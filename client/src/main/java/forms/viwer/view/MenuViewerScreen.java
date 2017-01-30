@@ -110,7 +110,7 @@ public class MenuViewerScreen extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 addAndEditNameCategory.setVisible(true);
                 saveChangeCategoriesButton.setVisible(true);
-                removeCategoryButton.setVisible(true);
+                removeChangeCategoriesButton.setVisible(true);
             }
 
             @Override
@@ -138,7 +138,7 @@ public class MenuViewerScreen extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 addAndEditNameCategory.setVisible(true);
                 saveChangeCategoriesButton.setVisible(true);
-                removeCategoryButton.setVisible(true);
+                removeChangeCategoriesButton.setVisible(true);
             }
 
             @Override
@@ -166,7 +166,7 @@ public class MenuViewerScreen extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 addAndEditNameCategory.setVisible(false);
                 saveChangeCategoriesButton.setVisible(false);
-                removeCategoryButton.setVisible(false);
+                removeChangeCategoriesButton.setVisible(false);
             }
 
             @Override
@@ -189,12 +189,12 @@ public class MenuViewerScreen extends JFrame {
 
             }
         });
-        removeCategoryButton.addMouseListener(new MouseListener() {
+        removeChangeCategoriesButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 addAndEditNameCategory.setVisible(false);
                 saveChangeCategoriesButton.setVisible(false);
-                removeCategoryButton.setVisible(false);
+                removeChangeCategoriesButton.setVisible(false);
             }
 
             @Override
