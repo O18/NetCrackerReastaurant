@@ -20,6 +20,8 @@ import java.awt.event.MouseListener;
  * Created by 1 on 27.12.2016.
  */
 public class MenuViewerScreen extends JFrame {
+    private boolean addOrEdit;
+
     private static final String TITLE = "Работа с меню";
     private static final String OPEN = "Открыть";
     private static final String ADD = "+";
@@ -52,7 +54,7 @@ public class MenuViewerScreen extends JFrame {
 
     private MenuDTO currentMenu;
 
-    public MenuViewerScreen() {
+    public MenuViewerScreen(String menuName) {
         super(TITLE);
         backToSelectionMenuButton = getBackToSelectionMenuButton();
         addCategoryButton = getAddCategoryButton();
@@ -66,6 +68,7 @@ public class MenuViewerScreen extends JFrame {
         removeDishButton = getRemoveDishButton();
         editDishButton = getEditDishButton();
         dishesTable = getDishesTable();
+
 
         this.setSize(700, 400);
         JPanel panel = new JPanel();
@@ -145,6 +148,33 @@ public class MenuViewerScreen extends JFrame {
                 addAndEditNameCategory.setVisible(true);
                 saveChangeCategoriesButton.setVisible(true);
                 removeChangeCategoriesButton.setVisible(true);
+                addOrEdit = true;
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        removeCategoryButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                presenter.deleteCategoryEvent(selectionCategoryBox.getSelectedItem().toString(),currentMenu.toString());//todo (ниже)
             }
 
             @Override
@@ -173,6 +203,7 @@ public class MenuViewerScreen extends JFrame {
                 addAndEditNameCategory.setVisible(true);
                 saveChangeCategoriesButton.setVisible(true);
                 removeChangeCategoriesButton.setVisible(true);
+                addOrEdit = false;
             }
 
             @Override
@@ -201,6 +232,12 @@ public class MenuViewerScreen extends JFrame {
                 addAndEditNameCategory.setVisible(false);
                 saveChangeCategoriesButton.setVisible(false);
                 removeChangeCategoriesButton.setVisible(false);
+                if(addOrEdit) {
+                    presenter.addCategory(new CategoryDTO(addAndEditNameCategory.getText()),currentMenu.toString());//todo currentMenu.toString() не даст названия меню, а нужно именно оно!!!
+                }
+                else {
+                    presenter.changeCategory(new CategoryDTO(addAndEditNameCategory.getText()),selectionCategoryBox.getSelectedItem().toString(),currentMenu.toString());//todo
+                }
             }
 
             @Override
@@ -271,7 +308,7 @@ public class MenuViewerScreen extends JFrame {
 
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
         if (selectionCategoryBox == null) {
-            selectionCategoryBox = new JComboBox<>();
+            selectionCategoryBox = new JComboBox<CategoryDTO>();
             selectionCategoryBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return selectionCategoryBox;
