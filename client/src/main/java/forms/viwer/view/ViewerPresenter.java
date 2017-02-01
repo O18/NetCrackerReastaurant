@@ -1,11 +1,9 @@
 package forms.viwer.view;
 
 import forms.eventbus.EventBus;
-import forms.viwer.events.AddCategoryEvent;
-import forms.viwer.events.ChangeCategoryEvent;
-import forms.viwer.events.DeleteCategoryEvent;
-import forms.viwer.events.ViewerCallback;
+import forms.viwer.events.*;
 import model.CategoryDTO;
+import model.DishDTO;
 import model.MenuDTO;
 
 /**
@@ -43,5 +41,14 @@ public class ViewerPresenter {
 
     void deleteCategoryEvent(String deletedCategoryName, String menuName){
         eventBus.post(new DeleteCategoryEvent(menuName, deletedCategoryName, callback));
+    }
+    void addDish(String menuName, DishDTO dish, String categoryName){
+        eventBus.post(new AddDishEvent(menuName,dish,categoryName,callback));
+    }
+    void deleteDish(String deletedDishName, String menuName,String categoryName) {
+        eventBus.post(new DeleteDishEvent(menuName,deletedDishName, categoryName, callback));
+    }
+    void changeDish(DishDTO dish, String oldDishName, String menuName,String categoryName) {
+        eventBus.post(new ChangeDishEvent(menuName,dish,oldDishName, categoryName, callback));
     }
 }
