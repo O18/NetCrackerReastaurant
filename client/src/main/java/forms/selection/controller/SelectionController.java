@@ -33,7 +33,7 @@ public class SelectionController {
     private void loadMenu(GetMenuEvent event){
         try{
             MenuDTO menu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(menu);
+            event.getCallback().onSuccess(menu, event.getMenuName());
         } catch (RuntimeException e) {//todo
             event.getCallback().onFail(e);
         }

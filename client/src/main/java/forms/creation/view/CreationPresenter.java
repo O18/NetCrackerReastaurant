@@ -26,8 +26,8 @@ public class CreationPresenter {
             }
 
             @Override
-            public void onSuccess(MenuDTO menu) {
-                creationScreen.openMenu(menu);
+            public void onSuccess(MenuDTO menu, String menuName) {
+                creationScreen.openMenu(menu, menuName);
             }
         }));
     }

@@ -138,9 +138,9 @@ public class MenuSelectionScreen extends JFrame {
             presenter.getMenuNamesList();
     }
 
-    void openMenu(MenuDTO menu){
+    void openMenu(MenuDTO menu, String menuName){
         if(menu != null){
-            viewScreen.setCurrentMenu(menu);
+            viewScreen.setCurrentMenu(menu, menuName);
             viewScreen.setVisible(true);
             this.setVisible(false);
         }

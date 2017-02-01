@@ -41,8 +41,8 @@ public class SelectionPresenter {
     void getMenuByName(String menuName){
         eventBus.post(new GetMenuEvent(menuName, new GetMenuCallback() {
             @Override
-            public void onSuccess(MenuDTO menuDTO) {
-                selectionScreen.openMenu(menuDTO);
+            public void onSuccess(MenuDTO menuDTO, String menuName) {
+                selectionScreen.openMenu(menuDTO, menuName);
             }
 
             @Override

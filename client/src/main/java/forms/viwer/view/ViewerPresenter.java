@@ -22,8 +22,8 @@ public class ViewerPresenter {
         this.eventBus = eventBus;
         callback = new ViewerCallback() {
             @Override
-            public void onSuccess(MenuDTO menu) {
-                viewerScreen.setCurrentMenu(menu);
+            public void onSuccess(MenuDTO menu, String menuName) {
+                viewerScreen.setCurrentMenu(menu, menuName);
             }
 
             @Override

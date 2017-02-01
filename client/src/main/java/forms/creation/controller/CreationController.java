@@ -21,7 +21,7 @@ public class CreationController {
         try{
             client.createMenu(event.getMenuName());
             MenuDTO createdMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(createdMenu);
+            event.getCallback().onSuccess(createdMenu, event.getMenuName());
         } catch (RuntimeException e){
             event.getCallback().onFail(e);
         }

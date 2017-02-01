@@ -25,7 +25,7 @@ public class ViewerController {
         try{
             client.addCategory(event.getCategory(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu);
+            event.getCallback().onSuccess(changedMenu, event.getMenuName());
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }
@@ -35,7 +35,7 @@ public class ViewerController {
         try{
             client.changeCategory(event.getCategory(), event.getOldCategoryName(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu);
+            event.getCallback().onSuccess(changedMenu, event.getMenuName());
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }
@@ -45,7 +45,7 @@ public class ViewerController {
         try{
             client.deleteCategory(event.getDeleteCategoryName(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu);
+            event.getCallback().onSuccess(changedMenu, event.getMenuName());
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }

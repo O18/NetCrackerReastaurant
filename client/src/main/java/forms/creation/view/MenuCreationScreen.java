@@ -27,7 +27,6 @@ public class MenuCreationScreen extends JFrame{
     public MenuCreationScreen(MenuViewerScreen viewScreen) {
         super(TITLE);
         this.viewScreen = viewScreen;
-        MenuViewerScreen mvs = new MenuViewerScreen();
         this.setSize(new Dimension(300,150));
         JPanel panel = new JPanel();
         this.add(panel);
@@ -88,7 +87,6 @@ public class MenuCreationScreen extends JFrame{
     private JButton getOkButton() {
         if (okButton == null) {
             okButton = new JButton(OK);
-            //openButton.setSize(50, 30);
         }
         return okButton;
     }
@@ -101,9 +99,9 @@ public class MenuCreationScreen extends JFrame{
         }
     }
 
-    void openMenu(MenuDTO menu){
+    void openMenu(MenuDTO menu, String menuName){
         if(menu != null){
-            viewScreen.setCurrentMenu(menu);
+            viewScreen.setCurrentMenu(menu, menuName);
             viewScreen.setVisible(true);
             this.setVisible(false);
         }

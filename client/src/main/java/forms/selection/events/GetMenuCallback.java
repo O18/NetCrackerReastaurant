@@ -8,5 +8,5 @@ import model.MenuDTO;
  */
 public abstract class GetMenuCallback implements Callback {
 
-    public abstract void onSuccess(MenuDTO menuDTO);
+    public abstract void onSuccess(MenuDTO menuDTO, String menuName);
 }

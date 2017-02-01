@@ -1,18 +1,11 @@
 package forms.viwer.view;
 
-import forms.creation.view.MenuCreationScreen;
-import forms.selection.Main;
 import forms.selection.view.MenuSelectionScreen;
 import model.CategoryDTO;
-import model.DishDTO;
 import model.MenuDTO;
-import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import javax.swing.*;
-import javax.swing.table.JTableHeader;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -30,14 +23,14 @@ public class MenuViewerScreen extends JFrame {
     private static final String SAVE_CHANGE = "V";
     private static final String REMOVE_CHANGE = "X";
 
-    private String[][] dataAboutDishes = {{"Картофель фри","150"},{"Овощи","200"}};
-    private static final String[] COLUMN_HEADER = {"Название блюда","Цена"};
+    private String[][] dataAboutDishes = {{"Картофель фри", "150"}, {"Овощи", "200"}};
+    private static final String[] COLUMN_HEADER = {"Название блюда", "Цена"};
 
 
     private ViewerPresenter presenter;
     private static final long serialVersionUID = -9135268706317372751L;
 
-    private JButton backToSelectionMenuButton;
+    private JMenu backToSelectionMenuButton;
     private JComboBox<CategoryDTO> selectionCategoryBox;
     private JButton addCategoryButton;
     private JButton removeCategoryButton;
@@ -53,10 +46,10 @@ public class MenuViewerScreen extends JFrame {
     private MenuSelectionScreen selectionScreen;
 
     private MenuDTO currentMenu;
+    private String currentMenuName;
 
-    public MenuViewerScreen(String menuName) {
+    public MenuViewerScreen() {
         super(TITLE);
-        backToSelectionMenuButton = getBackToSelectionMenuButton();
         addCategoryButton = getAddCategoryButton();
         removeCategoryButton = getRemoveCategoryButton();
         editCategoryButton = getEditCategoryButton();
@@ -70,51 +63,46 @@ public class MenuViewerScreen extends JFrame {
         dishesTable = getDishesTable();
 
 
-        this.setSize(700, 400);
-        JPanel panel = new JPanel();
-        this.add(panel);
+        //создание JMenuBar с кнопкой Открыть
+        JMenuBar menuBar = new JMenuBar();
+        backToSelectionMenuButton = new JMenu("Открыть");
+        menuBar.add(backToSelectionMenuButton);
+        this.setJMenuBar(menuBar);
+        //создание JPanel и GridBagLayout
+        JPanel rootPanel = new JPanel();
+        this.add(rootPanel);
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
-        panel.setLayout(gbl);
-        gbc.gridx = 0;
+        rootPanel.setLayout(gbl);
+        //создание JComboBox для категорий блюд
         gbc.gridy = 0;
-        gbc.gridheight = 1;
-        gbc.gridwidth = 1;
-        gbc.anchor = gbc.NORTHWEST;
-        panel.add(backToSelectionMenuButton, gbc);
-        gbc.gridy = 2;
         gbc.gridx = 0;
-        gbc.gridwidth = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.insets = new Insets(10, 5, 0, 0);
-        panel.add(selectionCategoryBox, gbc);
-        gbc.gridwidth = 1;
-        gbc.gridx = 5;
-        panel.add(addCategoryButton, gbc);
-        gbc.gridx = GridBagConstraints.RELATIVE;
-        panel.add(removeCategoryButton, gbc);
-        panel.add(editCategoryButton, gbc);
-        gbc.gridy = 3;
+        rootPanel.add(selectionCategoryBox, gbc);
+        //создание панели с кнопками добавить, удалить, изменить
+        gbc.gridx = 1;
+        JPanel categoryButtonsPanel = new JPanel();
+        categoryButtonsPanel.setLayout(new BoxLayout(categoryButtonsPanel, BoxLayout.X_AXIS));
+        categoryButtonsPanel.add(addCategoryButton);
+        categoryButtonsPanel.add(Box.createHorizontalGlue());
+        categoryButtonsPanel.add(removeCategoryButton);
+        categoryButtonsPanel.add(Box.createHorizontalGlue());
+        categoryButtonsPanel.add(editCategoryButton);
+        rootPanel.add(categoryButtonsPanel);
+        //создание таблицы с блюдами
+        gbc.gridy = 1;
         gbc.gridx = 0;
-        gbc.gridwidth = 3;
-        panel.add(addAndEditNameCategory, gbc);
-        gbc.gridwidth = 1;
-        gbc.gridx = GridBagConstraints.RELATIVE;
-        panel.add(saveChangeCategoriesButton,gbc);
-        panel.add(removeChangeCategoriesButton,gbc);
-        gbc.gridy = 5;
-        gbc.gridx = 0;
-        gbc.gridwidth = 4;
-        gbc.gridy = 4;
-        panel.add(new JScrollPane(dishesTable),gbc);
-        panel.add(dishesTable,gbc);
+        rootPanel.add(new JScrollPane(dishesTable), gbc);
+
         gbc.gridy = 5;
         gbc.gridx = 5;
         gbc.gridwidth = 1;
         gbc.gridheight = 1;
-        panel.add(addDishButton,gbc);
+        rootPanel.add(addDishButton, gbc);
         gbc.gridx = GridBagConstraints.RELATIVE;
-        panel.add(removeDishButton,gbc);
-        panel.add(editDishButton,gbc);
+        rootPanel.add(removeDishButton, gbc);
+        rootPanel.add(editDishButton, gbc);
         backToSelectionMenuButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -174,7 +162,7 @@ public class MenuViewerScreen extends JFrame {
         removeCategoryButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                presenter.deleteCategoryEvent(selectionCategoryBox.getSelectedItem().toString(),currentMenu.toString());//todo (ниже)
+                presenter.deleteCategoryEvent(selectionCategoryBox.getSelectedItem().toString(), currentMenuName);
             }
 
             @Override
@@ -232,11 +220,10 @@ public class MenuViewerScreen extends JFrame {
                 addAndEditNameCategory.setVisible(false);
                 saveChangeCategoriesButton.setVisible(false);
                 removeChangeCategoriesButton.setVisible(false);
-                if(addOrEdit) {
-                    presenter.addCategory(new CategoryDTO(addAndEditNameCategory.getText()),currentMenu.toString());//todo currentMenu.toString() не даст названия меню, а нужно именно оно!!!
-                }
-                else {
-                    presenter.changeCategory(new CategoryDTO(addAndEditNameCategory.getText()),selectionCategoryBox.getSelectedItem().toString(),currentMenu.toString());//todo
+                if (addOrEdit) {
+                    presenter.addCategory(new CategoryDTO(addAndEditNameCategory.getText()), currentMenuName);
+                } else {
+                    presenter.changeCategory(new CategoryDTO(addAndEditNameCategory.getText()), selectionCategoryBox.getSelectedItem().toString(), currentMenuName);
                 }
             }
 
@@ -289,26 +276,21 @@ public class MenuViewerScreen extends JFrame {
             }
         });
 
+        this.pack();
     }
 
-    public void setCurrentMenu(MenuDTO currentMenu) {
+    public void setCurrentMenu(MenuDTO currentMenu, String currentMenuNameName) {
         this.currentMenu = currentMenu;
-        for(CategoryDTO category : currentMenu.getCategories()){
+        this.currentMenuName = currentMenuNameName;
+        selectionCategoryBox.removeAllItems();
+        for (CategoryDTO category : currentMenu.getCategories()) {
             selectionCategoryBox.addItem(category);
         }
     }
 
-    private JButton getBackToSelectionMenuButton() {
-        if (backToSelectionMenuButton == null) {
-            backToSelectionMenuButton = new JButton(OPEN);
-            backToSelectionMenuButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-        }
-        return backToSelectionMenuButton;
-    }
-
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
         if (selectionCategoryBox == null) {
-            selectionCategoryBox = new JComboBox<CategoryDTO>();
+            selectionCategoryBox = new JComboBox<>();
             selectionCategoryBox.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return selectionCategoryBox;
@@ -346,25 +328,28 @@ public class MenuViewerScreen extends JFrame {
         }
         return addAndEditNameCategory;
     }
+
     private JButton getSaveChangeCategoriesButton() {
-        if(saveChangeCategoriesButton ==null) {
+        if (saveChangeCategoriesButton == null) {
             saveChangeCategoriesButton = new JButton(SAVE_CHANGE);
             saveChangeCategoriesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
             saveChangeCategoriesButton.setVisible(false);
         }
         return saveChangeCategoriesButton;
     }
+
     private JButton getRemoveChangeCategoriesButton() {
-        if(removeChangeCategoriesButton==null) {
+        if (removeChangeCategoriesButton == null) {
             removeChangeCategoriesButton = new JButton(REMOVE_CHANGE);
             removeChangeCategoriesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
             removeChangeCategoriesButton.setVisible(false);
         }
         return removeChangeCategoriesButton;
     }
+
     private JTable getDishesTable() {
         if (dishesTable == null) {
-            dishesTable = new JTable(dataAboutDishes,COLUMN_HEADER);
+            dishesTable = new JTable(dataAboutDishes, COLUMN_HEADER);
             dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
             /*JTableHeader header = dishesTable.getTableHeader();
             header.setReorderingAllowed(false);
@@ -382,6 +367,7 @@ public class MenuViewerScreen extends JFrame {
     public void setPresenter(ViewerPresenter presenter) {
         this.presenter = presenter;
     }
+
     private JButton getAddDishButton() {
         if (addDishButton == null) {
             addDishButton = new JButton(ADD);
