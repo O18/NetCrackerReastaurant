@@ -1,11 +1,18 @@
 package forms.viwer.view;
 
+import forms.creation.view.MenuCreationScreen;
+import forms.selection.Main;
 import forms.selection.view.MenuSelectionScreen;
 import model.CategoryDTO;
+import model.DishDTO;
 import model.MenuDTO;
+import sun.swing.table.DefaultTableCellHeaderRenderer;
 
 import javax.swing.*;
+import javax.swing.table.JTableHeader;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -20,6 +27,12 @@ public class MenuViewerScreen extends JFrame {
     private static final String EDIT = "Изменить";
     private static final String SAVE_CHANGE = "V";
     private static final String REMOVE_CHANGE = "X";
+
+    private String[][] dataAboutDishes = {{"Картофель фри","150"},{"Овощи","200"}};
+    private static final String[] COLUMN_HEADER = {"Название блюда","Цена"};
+
+
+    private ViewerPresenter presenter;
     private static final long serialVersionUID = -9135268706317372751L;
 
     private JButton backToSelectionMenuButton;
@@ -30,9 +43,12 @@ public class MenuViewerScreen extends JFrame {
     private JTextField addAndEditNameCategory;
     private JButton saveChangeCategoriesButton;
     private JButton removeChangeCategoriesButton;
+    private JTable dishesTable;
+    private JButton addDishButton;
+    private JButton removeDishButton;
+    private JButton editDishButton;
 
     private MenuSelectionScreen selectionScreen;
-    private ViewerPresenter presenter;
 
     private MenuDTO currentMenu;
 
@@ -46,6 +62,10 @@ public class MenuViewerScreen extends JFrame {
         addAndEditNameCategory = getAddAndEditNameCategory();
         saveChangeCategoriesButton = getSaveChangeCategoriesButton();
         removeChangeCategoriesButton = getRemoveChangeCategoriesButton();
+        addDishButton = getAddDishButton();
+        removeDishButton = getRemoveDishButton();
+        editDishButton = getEditDishButton();
+        dishesTable = getDishesTable();
 
         this.setSize(700, 400);
         JPanel panel = new JPanel();
@@ -53,31 +73,45 @@ public class MenuViewerScreen extends JFrame {
         GridBagLayout gbl = new GridBagLayout();
         GridBagConstraints gbc = new GridBagConstraints();
         panel.setLayout(gbl);
-        gbc.gridx = 1;
-        gbc.gridy = 1;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
         gbc.gridheight = 1;
         gbc.gridwidth = 1;
         gbc.anchor = gbc.NORTHWEST;
         panel.add(backToSelectionMenuButton, gbc);
-        gbc.gridy = 3;
-        gbc.gridx = 5;
+        gbc.gridy = 2;
+        gbc.gridx = 0;
         gbc.gridwidth = 3;
-        gbc.insets = new Insets(10, 10, 0, 0);
+        gbc.insets = new Insets(10, 5, 0, 0);
         panel.add(selectionCategoryBox, gbc);
         gbc.gridwidth = 1;
-        gbc.gridx = GridBagConstraints.RELATIVE;
+        gbc.gridx = 5;
         panel.add(addCategoryButton, gbc);
+        gbc.gridx = GridBagConstraints.RELATIVE;
         panel.add(removeCategoryButton, gbc);
         panel.add(editCategoryButton, gbc);
-        gbc.gridy = 4;
-        gbc.gridx = 5;
+        gbc.gridy = 3;
+        gbc.gridx = 0;
         gbc.gridwidth = 3;
         panel.add(addAndEditNameCategory, gbc);
         gbc.gridwidth = 1;
         gbc.gridx = GridBagConstraints.RELATIVE;
         panel.add(saveChangeCategoriesButton,gbc);
         panel.add(removeChangeCategoriesButton,gbc);
-
+        gbc.gridy = 5;
+        gbc.gridx = 0;
+        gbc.gridwidth = 4;
+        gbc.gridy = 4;
+        panel.add(new JScrollPane(dishesTable),gbc);
+        panel.add(dishesTable,gbc);
+        gbc.gridy = 5;
+        gbc.gridx = 5;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        panel.add(addDishButton,gbc);
+        gbc.gridx = GridBagConstraints.RELATIVE;
+        panel.add(removeDishButton,gbc);
+        panel.add(editDishButton,gbc);
         backToSelectionMenuButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -217,6 +251,7 @@ public class MenuViewerScreen extends JFrame {
 
             }
         });
+
     }
 
     public void setCurrentMenu(MenuDTO currentMenu) {
@@ -290,6 +325,18 @@ public class MenuViewerScreen extends JFrame {
         }
         return removeChangeCategoriesButton;
     }
+    private JTable getDishesTable() {
+        if (dishesTable == null) {
+            dishesTable = new JTable(dataAboutDishes,COLUMN_HEADER);
+            dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+            /*JTableHeader header = dishesTable.getTableHeader();
+            header.setReorderingAllowed(false);
+            header.setResizingAllowed(false);*/
+
+        }
+        return dishesTable;
+    }
+
 
     public void setSelectionScreen(MenuSelectionScreen selectionScreen) {
         this.selectionScreen = selectionScreen;
@@ -298,4 +345,29 @@ public class MenuViewerScreen extends JFrame {
     public void setPresenter(ViewerPresenter presenter) {
         this.presenter = presenter;
     }
+    private JButton getAddDishButton() {
+        if (addDishButton == null) {
+            addDishButton = new JButton(ADD);
+            addDishButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 22));
+        }
+        return addDishButton;
+    }
+
+    private JButton getRemoveDishButton() {
+        if (removeDishButton == null) {
+            removeDishButton = new JButton(REMOVE);
+            removeDishButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 22));
+        }
+        return removeDishButton;
+    }
+
+    private JButton getEditDishButton() {
+        if (editDishButton == null) {
+            editDishButton = new JButton(EDIT);
+            editDishButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        }
+        return editDishButton;
+    }
+
+
 }
