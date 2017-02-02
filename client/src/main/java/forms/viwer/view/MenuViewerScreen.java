@@ -5,7 +5,6 @@ import model.CategoryDTO;
 import model.MenuDTO;
 
 import javax.swing.*;
-import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.*;
 
@@ -30,12 +29,11 @@ public class MenuViewerScreen extends JFrame {
     private ViewerPresenter presenter;
     private static final long serialVersionUID = -9135268706317372751L;
 
-    private JMenu backToSelectionMenuButton;
     private JComboBox<CategoryDTO> selectionCategoryBox;
     private JButton addCategoryButton;
     private JButton removeCategoryButton;
     private JButton editCategoryButton;
-    private JTextField addAndEditNameCategory;
+    private JTextField categoryNameField;
     private JButton saveChangeCategoriesButton;
     private JButton removeChangeCategoriesButton;
     private JTable dishesTable;
@@ -54,7 +52,7 @@ public class MenuViewerScreen extends JFrame {
         removeCategoryButton = getRemoveCategoryButton();
         editCategoryButton = getEditCategoryButton();
         selectionCategoryBox = getSelectionCategoryBox();
-        addAndEditNameCategory = getAddAndEditNameCategory();
+        categoryNameField = getCategoryNameField();
         saveChangeCategoriesButton = getSaveChangeCategoriesButton();
         removeChangeCategoriesButton = getRemoveChangeCategoriesButton();
         addDishButton = getAddDishButton();
@@ -65,7 +63,7 @@ public class MenuViewerScreen extends JFrame {
 
         //создание JMenuBar с кнопкой Открыть
         JMenuBar menuBar = new JMenuBar();
-        backToSelectionMenuButton = new JMenu(OPEN);
+        JMenu backToSelectionMenuButton = new JMenu(OPEN);
         menuBar.add(backToSelectionMenuButton);
         this.setJMenuBar(menuBar);
         //создание JPanel и GridBagLayout
@@ -147,8 +145,7 @@ public class MenuViewerScreen extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectionCategoryBox.setEditable(true);
-                selectionCategoryBox.addItem(new CategoryDTO(""));
-                selectionCategoryBox.setSelectedIndex(selectionCategoryBox.getItemCount() - 1);
+                selectionCategoryBox.setSelectedIndex(-1);
             }
 
             @Override
@@ -200,10 +197,12 @@ public class MenuViewerScreen extends JFrame {
         editCategoryButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                addAndEditNameCategory.setVisible(true);
-                saveChangeCategoriesButton.setVisible(true);
-                removeChangeCategoriesButton.setVisible(true);
-                addOrEdit = false;
+                if(selectionCategoryBox.getSelectedIndex() != -1){
+                    selectionCategoryBox.setEditable(true);
+
+                } else{
+                    JOptionPane.showMessageDialog(MenuViewerScreen.this, "Не выбрана категория");
+                }
             }
 
             @Override
@@ -229,13 +228,13 @@ public class MenuViewerScreen extends JFrame {
         saveChangeCategoriesButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                addAndEditNameCategory.setVisible(false);
+                categoryNameField.setVisible(false);
                 saveChangeCategoriesButton.setVisible(false);
                 removeChangeCategoriesButton.setVisible(false);
                 if (addOrEdit) {
-                    presenter.addCategory(new CategoryDTO(addAndEditNameCategory.getText()), currentMenuName);
+                    presenter.addCategory(new CategoryDTO(categoryNameField.getText()), currentMenuName);
                 } else {
-                    presenter.changeCategory(new CategoryDTO(addAndEditNameCategory.getText()), selectionCategoryBox.getSelectedItem().toString(), currentMenuName);
+                    presenter.changeCategory(new CategoryDTO(categoryNameField.getText()), selectionCategoryBox.getSelectedItem().toString(), currentMenuName);
                 }
             }
 
@@ -262,7 +261,7 @@ public class MenuViewerScreen extends JFrame {
         removeChangeCategoriesButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                addAndEditNameCategory.setVisible(false);
+                categoryNameField.setVisible(false);
                 saveChangeCategoriesButton.setVisible(false);
                 removeChangeCategoriesButton.setVisible(false);
             }
@@ -292,28 +291,31 @@ public class MenuViewerScreen extends JFrame {
             if(e.getActionCommand().equals("comboBoxEdited")){
                 if(selectionCategoryBox.getSelectedIndex() == -1){
                     String newCategoryName = (String) selectionCategoryBox.getSelectedItem();
-                    CategoryDTO newCategory = new CategoryDTO(newCategoryName);
-                    presenter.addCategory(newCategory, currentMenuName);
+                    if(newCategoryName.equals("")){
+                        JOptionPane.showMessageDialog(this, "Имя категории не может быть пустым");
+                        selectionCategoryBox.setSelectedIndex(selectionCategoryBox.getItemCount() - 1);
+                    } else {
+                        CategoryDTO newCategory = new CategoryDTO(newCategoryName);
+                        presenter.addCategory(newCategory, currentMenuName);
+                    }
                 }else {
                     CategoryDTO newCategory = (CategoryDTO) selectionCategoryBox.getSelectedItem();
                     String oldName = selectionCategoryBox.getItemAt(selectionCategoryBox.getSelectedIndex()).getName();
                     presenter.changeCategory(newCategory, oldName, currentMenuName);
                 }
+                selectionCategoryBox.setEditable(false);
             }
+        });
+
+
+        selectionCategoryBox.addItemListener(e -> {
 
         });
 
-        selectionCategoryBox.addItemListener(new ItemListener() {
-            @Override
-            public void itemStateChanged(ItemEvent e) {
-
-            }
-        });
-        //упакуем
         addDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//todo
+                //todo
             }
 
             @Override
@@ -365,7 +367,7 @@ public class MenuViewerScreen extends JFrame {
         editDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-//todo
+                //todo
             }
 
             @Override
@@ -388,6 +390,8 @@ public class MenuViewerScreen extends JFrame {
 
             }
         });
+
+        //упакуем
         this.pack();
         this.setMinimumSize(getSize());
     }
@@ -433,13 +437,13 @@ public class MenuViewerScreen extends JFrame {
         return editCategoryButton;
     }
 
-    private JTextField getAddAndEditNameCategory() {
-        if (addAndEditNameCategory == null) {
-            addAndEditNameCategory = new JTextField(20);
-            addAndEditNameCategory.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-            addAndEditNameCategory.setVisible(false);
+    private JTextField getCategoryNameField() {
+        if (categoryNameField == null) {
+            categoryNameField = new JTextField(20);
+            categoryNameField.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+            categoryNameField.setVisible(false);
         }
-        return addAndEditNameCategory;
+        return categoryNameField;
     }
 
     private JButton getSaveChangeCategoriesButton() {
@@ -501,6 +505,4 @@ public class MenuViewerScreen extends JFrame {
         }
         return editDishButton;
     }
-
-
 }
