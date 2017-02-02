@@ -476,7 +476,7 @@ public class MenuViewerScreen extends JFrame {
             categoryNameField.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
             categoryNameField.setVisible(false);
         }
-        return addAndEditNameCategory;
+        return categoryNameField;
     }
 
     private JButton getSaveChangeCategoriesButton() {
