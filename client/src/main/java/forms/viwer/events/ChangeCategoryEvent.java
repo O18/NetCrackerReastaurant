@@ -8,19 +8,19 @@ import model.CategoryDTO;
  */
 public class ChangeCategoryEvent implements Event {
     private final String menuName;
-    private final CategoryDTO category;
+    private final String newCategoryName;
     private final String oldCategoryName;
     private final ViewerCallback callback;
 
-    public ChangeCategoryEvent(String menuName, CategoryDTO category, String oldCategoryName, ViewerCallback callback) {
+    public ChangeCategoryEvent(String menuName, String newCategoryName, String oldCategoryName, ViewerCallback callback) {
         this.menuName = menuName;
-        this.category = category;
+        this.newCategoryName = newCategoryName;
         this.oldCategoryName = oldCategoryName;
         this.callback = callback;
     }
 
-    public CategoryDTO getCategory() {
-        return category;
+    public String getNewCategoryName() {
+        return newCategoryName;
     }
 
     public ViewerCallback getCallback() {

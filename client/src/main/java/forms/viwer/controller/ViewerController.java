@@ -26,7 +26,7 @@ public class ViewerController {
         try{
             client.addCategory(event.getCategory(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu, event.getMenuName());
+            event.getCallback().onSuccess(changedMenu);
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }
@@ -34,9 +34,9 @@ public class ViewerController {
 
     private void changeCategory(ChangeCategoryEvent event){
         try{
-            client.changeCategory(event.getCategory(), event.getOldCategoryName(), event.getMenuName());
+            client.changeCategory(event.getNewCategoryName(), event.getOldCategoryName(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu, event.getMenuName());
+            event.getCallback().onSuccess(changedMenu);
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }
@@ -46,7 +46,7 @@ public class ViewerController {
         try{
             client.deleteCategory(event.getDeleteCategoryName(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu, event.getMenuName());
+            event.getCallback().onSuccess(changedMenu);
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }
@@ -55,7 +55,7 @@ public class ViewerController {
         try{
             client.addDish(event.getDish(),event.getCategoryName(),event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu, event.getMenuName());
+            event.getCallback().onSuccess(changedMenu);
         }catch (RuntimeException e){
             event.getCallback().onFail(e);
         }
@@ -64,7 +64,7 @@ public class ViewerController {
         try{
             client.changeDish(event.getDish(),event.getOldDishName(),event.getCategoryName(),event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu, event.getMenuName());
+            event.getCallback().onSuccess(changedMenu);
         }catch (RuntimeException e) {
             event.getCallback().onFail(e);
         }
@@ -73,7 +73,7 @@ public class ViewerController {
         try{
             client.deleteDish(event.getDeleteDishName(),event.getCategoryName(),event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
-            event.getCallback().onSuccess(changedMenu, event.getMenuName());
+            event.getCallback().onSuccess(changedMenu);
         }catch (RuntimeException e) {
             event.getCallback().onFail(e);
         }

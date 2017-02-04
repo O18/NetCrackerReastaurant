@@ -49,8 +49,8 @@ public class MenuClient {
         target.path(menuName).path(categoryName).request().put(Entity.entity(dishDTO, MediaType.APPLICATION_JSON_TYPE));
     }
 
-    public void changeCategory(CategoryDTO newCategoryDTO, String oldCategoryName,  String menuName){
-        target.path(menuName).path(oldCategoryName).request().post(Entity.entity(newCategoryDTO, MediaType.APPLICATION_JSON_TYPE));
+    public void changeCategory(String newCategoryName, String oldCategoryName,  String menuName){
+        target.path(menuName).path(oldCategoryName).request().post(Entity.entity(newCategoryName, MediaType.TEXT_PLAIN_TYPE));
     }
 
     public void changeDish(DishDTO dishDTO, String oldDishName, String categoryName, String menuName){

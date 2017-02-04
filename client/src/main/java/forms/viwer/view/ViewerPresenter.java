@@ -20,8 +20,8 @@ public class ViewerPresenter {
         this.eventBus = eventBus;
         callback = new ViewerCallback() {
             @Override
-            public void onSuccess(MenuDTO menu, String menuName) {
-                viewerScreen.setCurrentMenu(menu, menuName);
+            public void onSuccess(MenuDTO menu) {
+                viewerScreen.updateMenu(menu);
             }
 
             @Override
@@ -35,8 +35,8 @@ public class ViewerPresenter {
         eventBus.post(new AddCategoryEvent(menuName, categoryDTO, callback));
     }
 
-    void changeCategory(CategoryDTO categoryDTO, String oldCategoryName, String menuName){
-        eventBus.post(new ChangeCategoryEvent(menuName, categoryDTO, oldCategoryName, callback));
+    void changeCategory(String newCategoryName, String oldCategoryName, String menuName){
+        eventBus.post(new ChangeCategoryEvent(menuName, newCategoryName, oldCategoryName, callback));
     }
 
     void deleteCategoryEvent(String deletedCategoryName, String menuName){

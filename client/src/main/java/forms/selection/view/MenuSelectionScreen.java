@@ -74,8 +74,10 @@ public class MenuSelectionScreen extends JFrame {
         openButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                String selectedMenuName = menuList.getSelectedValue();
-                presenter.getMenuByName(selectedMenuName);
+                if(openButton.isEnabled()) {
+                    String selectedMenuName = menuList.getSelectedValue();
+                    presenter.getMenuByName(selectedMenuName);
+                }
             }
 
             @Override

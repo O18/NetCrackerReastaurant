@@ -111,11 +111,11 @@ class MenuService {
         saveMenu(menuPath, menu);
     }
 
-    static void changeCategory(CategoryDTO newCategoryDTO, String oldCategoryName, String menuPath){
+    static void changeCategory(String newCategoryName, String oldCategoryName, String menuPath){
         Menu menu = loadMenu(menuPath);
         Category oldCategory = getCategoryByName(oldCategoryName, menu);
         if(menu.getCategories().contains(oldCategory)){
-            oldCategory.setName(newCategoryDTO.getName());
+            oldCategory.setName(newCategoryName);
         }
         else {
             throw new RuntimeException("Категории с именем " + oldCategoryName + " не существует в меню в файле " + menuPath);

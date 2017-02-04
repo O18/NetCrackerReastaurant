@@ -47,7 +47,7 @@ public class MenuRestResource {
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{menu_name}")
-    public void addCategoryToMenu(CategoryDTO categoryDTO, @PathParam("menu_name") String menuName) {
+    public void addCategory(CategoryDTO categoryDTO, @PathParam("menu_name") String menuName) {
         MenuService.addCategory(categoryDTO, CATALOG_PATH + menuName + EXTENSION);
     }
 
@@ -55,15 +55,15 @@ public class MenuRestResource {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{menu_name}/{category_name}")
-    public void addDishToMenu(DishDTO dishDTO, @PathParam("category_name") String categoryName, @PathParam("menu_name") String menuName) {
+    public void addDish(DishDTO dishDTO, @PathParam("category_name") String categoryName, @PathParam("menu_name") String menuName) {
         MenuService.addDish(dishDTO, categoryName, CATALOG_PATH + menuName + EXTENSION);
     }
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.TEXT_PLAIN)
     @Path("{menu_name}/{category_name}")
-    public void changeCategory(CategoryDTO newCategoryDTO, @PathParam("category_name") String oldCategoryName, @PathParam("menu_name") String menuName) {
-        MenuService.changeCategory(newCategoryDTO, oldCategoryName, CATALOG_PATH + menuName + EXTENSION);
+    public void changeCategory(String newCategoryName, @PathParam("category_name") String oldCategoryName, @PathParam("menu_name") String menuName) {
+        MenuService.changeCategory(newCategoryName, oldCategoryName, CATALOG_PATH + menuName + EXTENSION);
     }
 
     @POST
