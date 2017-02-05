@@ -54,7 +54,7 @@ public class MenuViewerScreen extends JFrame {
         removeDishButton = getRemoveDishButton();
         editDishButton = getEditDishButton();
         dishesTable = getDishesTable();
-        //dishesTableModel = new DefaultTableModel(dataAboutDishes, COLUMN_HEADER);
+        dishesTableModel = new DefaultTableModel();//(dataAboutDishes, COLUMN_HEADER);
         columnHeader.add(NAME_DISH);
         columnHeader.add(PRICE_DISH);
 
@@ -110,12 +110,14 @@ public class MenuViewerScreen extends JFrame {
         dishButtonsPanel.add(Box.createHorizontalStrut(10));
         dishButtonsPanel.add(editDishButton);
         rootPanel.add(dishButtonsPanel, gbc);
+        dataAboutDishes = new Vector<DishDTO>();
+
 
         //обновление таблицы при перемене категории
-//        selectionCategoryBox.addItemListener(e ->{
-//            if(selectionCategoryBox.getSelectedIndex() != -1)
-//                setDishesTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
-//        });
+        selectionCategoryBox.addItemListener(e ->{
+            if(selectionCategoryBox.getSelectedIndex() != -1)
+                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+        });
 
         //создание слушателей для кнопок изменения списка категорий
         backToSelectionMenuButton.addMouseListener(new MouseListener() {
@@ -359,14 +361,6 @@ public class MenuViewerScreen extends JFrame {
             selectionCategoryBox.addItem(category);
         }
     }
-    //изменение таблицы
-    void setDishesTable(CategoryDTO category){
-        dataAboutDishes.removeAllElements();
-        for (DishDTO dish : category.getDishes()) {
-            dataAboutDishes.add(dish);
-        }
-    }
-
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
         if (selectionCategoryBox == null) {
             selectionCategoryBox = new JComboBox<>();
@@ -401,11 +395,29 @@ public class MenuViewerScreen extends JFrame {
 
     private JTable getDishesTable() {
         if (dishesTable == null) {
-            dishesTable = new JTable();
+            dishesTable = new JTable(dishesTableModel);
             dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return dishesTable;
+    }
+    //изменение таблицы
+    void setDataAboutDishes (CategoryDTO category) {
+        dataAboutDishes.removeAllElements();
+        for (DishDTO dish : category.getDishes()) {
+            dataAboutDishes.add(dish);
+        }
+        setDishesTable();
+        dishesTable.revalidate();
+    }
+    void setDishesTable(){
+        dishesTableModel = new DefaultTableModel(null,columnHeader);
+        for(DishDTO dish : dataAboutDishes ) {
+            Vector<String> newRow = new Vector<>();
+            newRow.add(dish.getDishName());
+            newRow.add(Double.toString(dish.getCost()));
+            dishesTableModel.addRow(newRow);
+        }
     }
 
     public void setSelectionScreen(MenuSelectionScreen selectionScreen) {
