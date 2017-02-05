@@ -40,7 +40,7 @@ public class MenuRestResource {
 
     @DELETE
     @Path("{menu_name}")
-    public void deleteMenu(@PathParam("{menu_name}") String menuName) {
+    public void deleteMenu(@PathParam("menu_name") String menuName) {
         MenuService.deleteMenu(CATALOG_PATH + menuName + EXTENSION);
     }
 
