@@ -10,7 +10,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * Created by 1 on 27.12.2016.
@@ -179,7 +179,11 @@ public class MenuViewerScreen extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(selectionCategoryBox.getSelectedIndex() != -1) {
-                    presenter.deleteCategoryEvent( ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName(), currentMenuName);
+                    String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
+                    int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить категорию " + categoryName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
+                    if(choice == JOptionPane.YES_OPTION) {
+                        presenter.deleteCategoryEvent(((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName(), currentMenuName);
+                    }
                     selectionCategoryBox.setEditable(false);
                 } else {
                     JOptionPane.showMessageDialog(MenuViewerScreen.this, "Не выбрана категория");
@@ -241,15 +245,10 @@ public class MenuViewerScreen extends JFrame {
 
         selectionCategoryBox.addActionListener(e -> {
             if(e.getActionCommand().equals("comboBoxEdited")){
-                if(categoryToEdit == null){
+                if(categoryToEdit == null && selectionCategoryBox.getSelectedIndex() == -1){
                     String newCategoryName = (String) selectionCategoryBox.getSelectedItem();
-                    if(newCategoryName.equals("")){
-                        JOptionPane.showMessageDialog(this, "Имя категории не может быть пустым");
-                        selectionCategoryBox.setSelectedIndex(selectionCategoryBox.getItemCount() - 1);
-                    } else {
-                        CategoryDTO newCategory = new CategoryDTO(newCategoryName);
-                        presenter.addCategory(newCategory, currentMenuName);
-                    }
+                    CategoryDTO newCategory = new CategoryDTO(newCategoryName);
+                    presenter.addCategory(newCategory, currentMenuName);
                 }
                 else {
                     if(selectionCategoryBox.getSelectedIndex() == -1) {
@@ -261,7 +260,6 @@ public class MenuViewerScreen extends JFrame {
             }
         });
 
-        //упакуем
         addDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {

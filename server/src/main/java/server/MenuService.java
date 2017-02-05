@@ -43,7 +43,7 @@ class MenuService {
         }catch (FileNotFoundException e){
             throw new WebApplicationException("Файла с таким именем не существует", e);
         } catch (IOException | ClassNotFoundException e) {
-            throw new WebApplicationException("Ошибка чтения", e);
+            throw new WebApplicationException("Ошибка чтения. Невозможно открыть файл", e);
         }
     }
 
@@ -74,10 +74,14 @@ class MenuService {
     }
 
     static void addCategory(CategoryDTO categoryDTO, String menuPath){
+        if(categoryDTO.getName().equals(""))
+            throw new WebApplicationException("Нельзя добавить категорию без имени");
         Menu menu = loadMenu(menuPath);
-        menu.addCategory(new Category(categoryDTO.getName()));
-
-        saveMenu(menuPath, menu);
+        if(menu.addCategory(new Category(categoryDTO.getName()))) {
+            saveMenu(menuPath, menu);
+        }else {
+            throw new WebApplicationException("Категория с именем " + categoryDTO.getName() + " уже существует");
+        }
     }
 
     static void addDish(DishDTO dishDTO, String categoryName, String menuPath){
