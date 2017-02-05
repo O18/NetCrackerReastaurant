@@ -481,4 +481,8 @@ public class MenuViewerScreen extends JFrame {
         }
         return editDishButton;
     }
+
+    void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
 }

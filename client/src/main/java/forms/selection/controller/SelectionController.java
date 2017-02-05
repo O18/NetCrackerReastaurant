@@ -1,6 +1,7 @@
 package forms.selection.controller;
 
 import client.MenuClient;
+import client.ServerException;
 import forms.eventbus.EventBus;
 import forms.selection.events.GetMenuEvent;
 import forms.selection.events.GetMenuNamesEvent;
@@ -25,7 +26,7 @@ public class SelectionController {
         try {
             Set<String> menuNames = client.getMenusNames();
             event.getCallback().onSuccess(menuNames);
-        } catch (RuntimeException e){//todo
+        } catch (ServerException e){
             event.getCallback().onFail(e);
         }
     }
@@ -34,7 +35,7 @@ public class SelectionController {
         try{
             MenuDTO menu = client.getMenu(event.getMenuName());
             event.getCallback().onSuccess(menu, event.getMenuName());
-        } catch (RuntimeException e) {//todo
+        } catch (ServerException e) {
             event.getCallback().onFail(e);
         }
     }

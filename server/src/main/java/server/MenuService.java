@@ -2,6 +2,7 @@ package server;
 
 import model.*;
 
+import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import java.io.*;
@@ -54,25 +55,21 @@ class MenuService {
         return new MenuDTO(categoryDTOS);
     }
 
-    private static DishDTO convertToDTO(Dish dish) {
-        return new DishDTO(dish.getName(), dish.getCost());
-    }
-
     static void createMenu(String menuPath) {
         File file = new File(menuPath);
         try{
             //noinspection ResultOfMethodCallIgnored
             file.createNewFile();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка при создании файла", e);
+            throw new WebApplicationException("Ошибка при создании файла", e);
         }
 
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(menuPath))) {
             out.writeObject(new Menu());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Файл не найден", e);
+            throw new WebApplicationException("Файл не найден", e);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка записи меню в файл с именем " + menuPath, e);
+            throw new WebApplicationException("Ошибка записи меню в файл с именем " + menuPath, e);
         }
     }
 
@@ -94,7 +91,7 @@ class MenuService {
     static void deleteCategory(String categoryName, String menuPath){
         Menu menu = loadMenu(menuPath);
         if(!menu.deleteCategory(getCategoryByName(categoryName, menu))){
-            throw new RuntimeException("Категории с именем " + categoryName + " не существует в меню в файле " + menuPath);
+            throw new WebApplicationException("Категории с именем " + categoryName + " не существует в меню в файле " + menuPath);
         }
 
         saveMenu(menuPath, menu);
@@ -105,7 +102,7 @@ class MenuService {
         Category category = getCategoryByName(categoryName, menu);
         Dish dish = getDishByName(dishName, category);
         if(!menu.deleteDishFromCategory(dish, category)){
-            throw new RuntimeException("Блюда с именем " + dishName + " не существует в категории " + categoryName + " в файле " + menuPath);
+            throw new WebApplicationException("Блюда с именем " + dishName + " не существует в категории " + categoryName + " в файле " + menuPath);
         }
 
         saveMenu(menuPath, menu);
@@ -118,7 +115,7 @@ class MenuService {
             oldCategory.setName(newCategoryName);
         }
         else {
-            throw new RuntimeException("Категории с именем " + oldCategoryName + " не существует в меню в файле " + menuPath);
+            throw new WebApplicationException("Категории с именем " + oldCategoryName + " не существует в меню в файле " + menuPath);
         }
 
         saveMenu(menuPath, menu);
@@ -132,7 +129,7 @@ class MenuService {
             menu.addDishToCategory(convertToModel(newDishDTO), category);
         }
         else {
-            throw new RuntimeException("Блюда с именем " + oldDishName + " не существует в категории " + categoryName + " в файле " + menuPath);
+            throw new WebApplicationException("Блюда с именем " + oldDishName + " не существует в категории " + categoryName + " в файле " + menuPath);
         }
 
         saveMenu(menuPath, menu);
@@ -145,7 +142,7 @@ class MenuService {
             }
         }
 
-        throw new RuntimeException("Блюдо с именем " + dishName + " не найдено в категории " + category);
+        throw new WebApplicationException("Блюдо с именем " + dishName + " не найдено в категории " + category);
     }
 
     private static Category getCategoryByName(String categoryName, Menu menu) {
@@ -155,7 +152,7 @@ class MenuService {
             }
         }
 
-        throw new RuntimeException("Категории с именем " + categoryName + " не найдено в меню " + menu);
+        throw new WebApplicationException("Категории с именем " + categoryName + " не найдено в меню " + menu);
     }
 
     private static Dish convertToModel(DishDTO dishDTO) {
@@ -166,16 +163,16 @@ class MenuService {
         try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(menuPath))) {
             out.writeObject(menu);
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Файл не найден", e);
+            throw new WebApplicationException("Файл не найден", e);
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка записи меню в файл с именем " + menuPath, e);
+            throw new WebApplicationException("Ошибка записи меню в файл с именем " + menuPath, e);
         }
     }
 
     static void deleteMenu(String menuName) {
         File file = new File(menuName);
         if(!file.delete()){
-            throw new RuntimeException("Удаление несуществующего файла " + menuName);
+            throw new WebApplicationException("Удаление несуществующего файла " + menuName);
         }
     }
 }

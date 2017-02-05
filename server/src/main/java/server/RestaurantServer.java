@@ -3,9 +3,12 @@ package server;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
+import org.glassfish.jersey.internal.ExceptionMapperFactory;
 import org.glassfish.jersey.jackson.JacksonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.servlet.ServletContainer;
+
+import javax.ws.rs.ext.ExceptionMapper;
 
 /**
  * Created by Александр on 13.01.2017.

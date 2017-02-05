@@ -106,4 +106,8 @@ public class MenuCreationScreen extends JFrame{
             this.setVisible(false);
         }
     }
+
+    void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
 }

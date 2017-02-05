@@ -22,7 +22,7 @@ public class CreationPresenter {
         eventBus.post(new CreateMenuEvent(menuName, new CreateMenuCallback() {
             @Override
             public void onFail(RuntimeException e) {
-
+                creationScreen.showErrorMessage(e.getMessage());
             }
 
             @Override

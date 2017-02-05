@@ -1,6 +1,7 @@
 package forms.creation.controller;
 
 import client.MenuClient;
+import client.ServerException;
 import forms.creation.events.CreateMenuEvent;
 import forms.eventbus.EventBus;
 import model.MenuDTO;
@@ -22,7 +23,7 @@ public class CreationController {
             client.createMenu(event.getMenuName());
             MenuDTO createdMenu = client.getMenu(event.getMenuName());
             event.getCallback().onSuccess(createdMenu, event.getMenuName());
-        } catch (RuntimeException e){
+        } catch (ServerException e){
             event.getCallback().onFail(e);
         }
     }

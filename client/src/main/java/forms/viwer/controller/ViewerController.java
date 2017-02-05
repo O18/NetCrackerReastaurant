@@ -1,6 +1,7 @@
 package forms.viwer.controller;
 
 import client.MenuClient;
+import client.ServerException;
 import forms.eventbus.EventBus;
 import forms.viwer.events.*;
 import model.MenuDTO;
@@ -37,7 +38,7 @@ public class ViewerController {
             client.changeCategory(event.getNewCategoryName(), event.getOldCategoryName(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
             event.getCallback().onSuccess(changedMenu);
-        }catch (RuntimeException e){
+        }catch (ServerException e){
             event.getCallback().onFail(e);
         }
     }
@@ -47,7 +48,7 @@ public class ViewerController {
             client.deleteCategory(event.getDeleteCategoryName(), event.getMenuName());
             MenuDTO changedMenu = client.getMenu(event.getMenuName());
             event.getCallback().onSuccess(changedMenu);
-        }catch (RuntimeException e){
+        }catch (ServerException e){
             event.getCallback().onFail(e);
         }
     }

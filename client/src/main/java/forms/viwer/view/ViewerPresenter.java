@@ -26,7 +26,7 @@ public class ViewerPresenter {
 
             @Override
             public void onFail(RuntimeException e) {
-
+                viewerScreen.showErrorMessage(e.getMessage());
             }
         };
     }

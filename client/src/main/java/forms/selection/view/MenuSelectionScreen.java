@@ -194,4 +194,8 @@ public class MenuSelectionScreen extends JFrame {
         createScreen.setVisible(true);
         this.setVisible(false);
     }
+
+    void showErrorMessage(String message) {
+        JOptionPane.showMessageDialog(this, message);
+    }
 }
