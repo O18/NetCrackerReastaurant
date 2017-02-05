@@ -1,10 +1,7 @@
 package forms.selection.view;
 
 import forms.eventbus.EventBus;
-import forms.selection.events.GetMenuCallback;
-import forms.selection.events.GetMenuEvent;
-import forms.selection.events.GetMenuNamesCallback;
-import forms.selection.events.GetMenuNamesEvent;
+import forms.selection.events.*;
 import model.MenuDTO;
 
 import java.util.*;
@@ -43,6 +40,19 @@ public class SelectionPresenter {
             @Override
             public void onSuccess(MenuDTO menuDTO, String menuName) {
                 selectionScreen.openMenu(menuDTO, menuName);
+            }
+
+            @Override
+            public void onFail(RuntimeException e) {
+                selectionScreen.showErrorMessage(e.getMessage());
+            }
+        }));
+    }
+
+    void deleteMenu(String menuName) {
+        eventBus.post(new DeleteMenuEvent(menuName, new DeleteMenuCallback() {
+            @Override
+            public void onSuccess() {
             }
 
             @Override

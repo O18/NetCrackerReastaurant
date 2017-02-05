@@ -16,6 +16,7 @@ public class MenuSelectionScreen extends JFrame {
     private static final String LIST_OF_MENU = "Выберите меню из списка для загрузки:";
     private static final String OPEN = "Открыть";
     private static final String CREATE = "Создать";
+    private static final String DELETE = "Удалить";
     private static final long serialVersionUID = 2787597861798675816L;
 
     private SelectionPresenter presenter;
@@ -26,6 +27,7 @@ public class MenuSelectionScreen extends JFrame {
     private JList<String> menuList;
     private JButton openButton;
     private JButton createButton;
+    private JButton deleteButton;
 
     public MenuSelectionScreen(MenuViewerScreen viewScreen, MenuCreationScreen createScreen) {
         super(SELECTION_OF_MENU);
@@ -44,39 +46,45 @@ public class MenuSelectionScreen extends JFrame {
         GridBagConstraints constraints = new GridBagConstraints();
         rootPanel.setLayout(gbl);
 
-        constraints.anchor = GridBagConstraints.NORTH;
         constraints.gridx = 0;
         constraints.gridy = 0;
+        constraints.gridwidth = 3;
         constraints.insets = new Insets(0, 5, 0, 0);
-        //constraints.fill = GridBagConstraints.BOTH;
         rootPanel.add(listOfMenuLabel, constraints);
 
+        constraints.gridx = 0;
         constraints.gridy = 1;
-        constraints.gridheight = 2;
-        constraints.anchor = GridBagConstraints.SOUTH;
-        constraints.insets = new Insets(5, 5, 0, 0);
+        constraints.gridwidth = 3;
+        constraints.weightx = 1.0;
+        constraints.insets = new Insets(5, 20, 0, 20);
+        constraints.fill = GridBagConstraints.HORIZONTAL;
         JScrollPane scrollPane = new JScrollPane(menuList);
-        scrollPane.setMinimumSize(new Dimension(200, 180));
+        //scrollPane.setMinimumSize(new Dimension(200, 180));
         scrollPane.setPreferredSize(new Dimension(200, 180));
         rootPanel.add(scrollPane, constraints);
 
-        constraints.gridx = 2;
-        constraints.gridy = 1;
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.insets = new Insets(0, 0, 0, 0);
-        rootPanel.add(openButton, constraints);
-
-        constraints.gridx = 2;
+        constraints.gridx = 0;
         constraints.gridy = 2;
-        constraints.anchor = GridBagConstraints.NORTH;
-        rootPanel.add(createButton, constraints);
+        constraints.gridwidth = 1;
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+        deleteButton = new JButton(DELETE);
+        deleteButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
+        deleteButton.setEnabled(false);
+        buttonsPanel.add(createButton);
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(openButton);
+        buttonsPanel.add(Box.createHorizontalGlue());
+        buttonsPanel.add(deleteButton);
+        rootPanel.add(buttonsPanel, constraints);
 
         openButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if(openButton.isEnabled()) {
                     String selectedMenuName = menuList.getSelectedValue();
-                    presenter.getMenuByName(selectedMenuName);
+                    if(selectedMenuName != null)
+                        presenter.getMenuByName(selectedMenuName);
                 }
             }
 
@@ -100,7 +108,6 @@ public class MenuSelectionScreen extends JFrame {
 
             }
         });
-
         createButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -127,8 +134,46 @@ public class MenuSelectionScreen extends JFrame {
 
             }
         });
+        deleteButton.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if(deleteButton.isEnabled()) {
+                    String selectedMenuName = menuList.getSelectedValue();
+                    int choice = JOptionPane.showConfirmDialog(MenuSelectionScreen.this, "Удалить меню " + selectedMenuName, "Подтвердите удаление", JOptionPane.YES_NO_OPTION);
+                    if(choice == JOptionPane.YES_OPTION) {
+                        presenter.deleteMenu(selectedMenuName);
+                        presenter.getMenuNamesList();
+                        openButton.setEnabled(false);
+                        deleteButton.setEnabled(false);
+                    }
+                }
+            }
 
-        menuList.addListSelectionListener(e -> openButton.setEnabled(true));
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+
+        menuList.addListSelectionListener(e ->{
+            openButton.setEnabled(true);
+            deleteButton.setEnabled(true);
+        } );
     }
 
     public void setPresenter(SelectionPresenter presenter) {

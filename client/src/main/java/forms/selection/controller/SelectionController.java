@@ -3,6 +3,7 @@ package forms.selection.controller;
 import client.MenuClient;
 import client.ServerException;
 import forms.eventbus.EventBus;
+import forms.selection.events.DeleteMenuEvent;
 import forms.selection.events.GetMenuEvent;
 import forms.selection.events.GetMenuNamesEvent;
 import model.MenuDTO;
@@ -20,6 +21,7 @@ public class SelectionController {
 
         eventBus.addHandler(GetMenuNamesEvent.class, this::loadMenuNames);
         eventBus.addHandler(GetMenuEvent.class, this::loadMenu);
+        eventBus.addHandler(DeleteMenuEvent.class, this::deleteMenu);
     }
 
     private void loadMenuNames(GetMenuNamesEvent event){
@@ -40,4 +42,12 @@ public class SelectionController {
         }
     }
 
+    private void deleteMenu(DeleteMenuEvent event){
+        try {
+            client.deleteMenu(event.getMenuName());
+            event.getCallback().onSuccess();
+        } catch (ServerException e){
+            event.getCallback().onFail(e);
+        }
+    }
 }
