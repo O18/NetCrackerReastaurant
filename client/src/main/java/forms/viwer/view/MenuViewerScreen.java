@@ -6,6 +6,7 @@ import model.DishDTO;
 import model.MenuDTO;
 
 import javax.swing.*;
+import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -20,8 +21,6 @@ public class MenuViewerScreen extends JFrame {
     private static final String ADD = "+";
     private static final String REMOVE = "-";
     private static final String EDIT = "Изменить";
-    private static final String SAVE_CHANGE = "V";
-    private static final String REMOVE_CHANGE = "X";
     private static final String NAME_DISH = "Название блюда";
     private static final String PRICE_DISH = "Цена";
 
@@ -33,9 +32,6 @@ public class MenuViewerScreen extends JFrame {
     private JButton addCategoryButton;
     private JButton deleteCategoryButton;
     private JButton editCategoryButton;
-    private JTextField categoryNameField;
-    private JButton saveChangeCategoriesButton;
-    private JButton removeChangeCategoriesButton;
     private JTable dishesTable;
     private JButton addDishButton;
     private JButton removeDishButton;
@@ -47,7 +43,6 @@ public class MenuViewerScreen extends JFrame {
 
     private String currentMenuName;
     private CategoryDTO categoryToEdit;
-    private CategoryDTO currentCategory;
 
     public MenuViewerScreen() {
         super(TITLE);
@@ -55,9 +50,6 @@ public class MenuViewerScreen extends JFrame {
         deleteCategoryButton = getDeleteCategoryButton();
         editCategoryButton = getEditCategoryButton();
         selectionCategoryBox = getSelectionCategoryBox();
-        categoryNameField = getCategoryNameField();
-        saveChangeCategoriesButton = getSaveChangeCategoriesButton();
-        removeChangeCategoriesButton = getRemoveChangeCategoriesButton();
         addDishButton = getAddDishButton();
         removeDishButton = getRemoveDishButton();
         editDishButton = getEditDishButton();
@@ -92,9 +84,9 @@ public class MenuViewerScreen extends JFrame {
         JPanel categoryButtonsPanel = new JPanel();
         categoryButtonsPanel.setLayout(new BoxLayout(categoryButtonsPanel, BoxLayout.X_AXIS));
         categoryButtonsPanel.add(addCategoryButton);
-        categoryButtonsPanel.add(Box.createHorizontalGlue());
+        categoryButtonsPanel.add(Box.createHorizontalBox());
         categoryButtonsPanel.add(deleteCategoryButton);
-        categoryButtonsPanel.add(Box.createHorizontalGlue());
+        categoryButtonsPanel.add(Box.createHorizontalBox());
         categoryButtonsPanel.add(editCategoryButton);
         rootPanel.add(categoryButtonsPanel, gbc);
         //создание панели со скроллом и таблицей с блюдами
@@ -113,16 +105,19 @@ public class MenuViewerScreen extends JFrame {
         JPanel dishButtonsPanel = new JPanel();
         dishButtonsPanel.setLayout(new BoxLayout(dishButtonsPanel, BoxLayout.X_AXIS));
         dishButtonsPanel.add(addDishButton);
-        dishButtonsPanel.add(Box.createHorizontalGlue());
+        dishButtonsPanel.add(Box.createHorizontalStrut(10));
         dishButtonsPanel.add(removeDishButton);
-        dishButtonsPanel.add(Box.createHorizontalGlue());
+        dishButtonsPanel.add(Box.createHorizontalStrut(10));
         dishButtonsPanel.add(editDishButton);
         rootPanel.add(dishButtonsPanel, gbc);
 
         //обновление таблицы при перемене категории
-        //selectionCategoryBox.addItemListener(e -> setDishesTable((CategoryDTO) selectionCategoryBox.getSelectedItem()));
+        selectionCategoryBox.addItemListener(e ->{
+            if(selectionCategoryBox.getSelectedIndex() != -1)
+                setDishesTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
+        });
 
-        //создание слушателей для кнопок
+        //создание слушателей для кнопок изменения списка категорий
         backToSelectionMenuButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -264,11 +259,6 @@ public class MenuViewerScreen extends JFrame {
             }
         });
 
-
-        selectionCategoryBox.addItemListener(e -> {
-
-        });
-
         //упакуем
         addDishButton.addMouseListener(new MouseListener() {
             @Override
@@ -370,15 +360,11 @@ public class MenuViewerScreen extends JFrame {
         }
     }
     //изменение таблицы
-    public void setDishesTable(CategoryDTO category){
-        this.currentCategory = category;
+    void setDishesTable(CategoryDTO category){
         dataAboutDishes.removeAllElements();
         for (DishDTO dish : category.getDishes()) {
             dataAboutDishes.add(dish);
         }
-        dishesTable.revalidate();
-        /*this.dishesTableModel = new DefaultTableModel(dataAboutDishes,columnHeader);
-        dishesTable.setModel(dishesTableModel);*/
     }
 
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
@@ -413,42 +399,14 @@ public class MenuViewerScreen extends JFrame {
         return editCategoryButton;
     }
 
-    private JTextField getCategoryNameField() {
-        if (categoryNameField == null) {
-            categoryNameField = new JTextField(20);
-            categoryNameField.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-            categoryNameField.setVisible(false);
-        }
-        return categoryNameField;
-    }
-
-    private JButton getSaveChangeCategoriesButton() {
-        if (saveChangeCategoriesButton == null) {
-            saveChangeCategoriesButton = new JButton(SAVE_CHANGE);
-            saveChangeCategoriesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-            saveChangeCategoriesButton.setVisible(false);
-        }
-        return saveChangeCategoriesButton;
-    }
-
-    private JButton getRemoveChangeCategoriesButton() {
-        if (removeChangeCategoriesButton == null) {
-            removeChangeCategoriesButton = new JButton(REMOVE_CHANGE);
-            removeChangeCategoriesButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-            removeChangeCategoriesButton.setVisible(false);
-        }
-        return removeChangeCategoriesButton;
-    }
-
     private JTable getDishesTable() {
         if (dishesTable == null) {
-            dishesTable = new JTable(dishesTableModel);
+            dishesTable = new JTable();
             dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return dishesTable;
     }
-
 
     public void setSelectionScreen(MenuSelectionScreen selectionScreen) {
         this.selectionScreen = selectionScreen;

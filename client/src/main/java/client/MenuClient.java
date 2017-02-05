@@ -6,11 +6,14 @@ import model.MenuDTO;
 import org.glassfish.jersey.jackson.JacksonFeature;
 
 import javax.ws.rs.InternalServerErrorException;
+import javax.ws.rs.ProcessingException;
+import javax.ws.rs.ServerErrorException;
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
+import java.net.ConnectException;
 import java.util.Set;
 import java.util.StringJoiner;
 
@@ -30,8 +33,10 @@ public class MenuClient {
         try {
             //noinspection unchecked
             return (Set<String>) target.request(MediaType.APPLICATION_JSON_TYPE).get(Set.class);
-        } catch (InternalServerErrorException e){
+        } catch (ServerErrorException e){
             throw new ServerException(e.getResponse().readEntity(String.class));
+        } catch (ProcessingException e){
+            throw new ServerException("Ошибка подключения к серверу. Попробуйте подключится позже");
         }
     }
 

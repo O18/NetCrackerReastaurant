@@ -33,7 +33,7 @@ public class SelectionPresenter {
 
             @Override
             public void onFail(RuntimeException e) {
-
+                selectionScreen.showErrorMessage(e.getMessage());
             }
         }));
     }
