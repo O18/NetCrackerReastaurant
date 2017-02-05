@@ -112,10 +112,10 @@ public class MenuViewerScreen extends JFrame {
         rootPanel.add(dishButtonsPanel, gbc);
 
         //обновление таблицы при перемене категории
-        selectionCategoryBox.addItemListener(e ->{
-            if(selectionCategoryBox.getSelectedIndex() != -1)
-                setDishesTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
-        });
+//        selectionCategoryBox.addItemListener(e ->{
+//            if(selectionCategoryBox.getSelectedIndex() != -1)
+//                setDishesTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
+//        });
 
         //создание слушателей для кнопок изменения списка категорий
         backToSelectionMenuButton.addMouseListener(new MouseListener() {
