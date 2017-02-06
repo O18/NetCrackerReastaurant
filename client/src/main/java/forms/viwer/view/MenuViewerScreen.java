@@ -42,6 +42,7 @@ public class MenuViewerScreen extends JFrame {
 
     private String currentMenuName;
     private CategoryDTO categoryToEdit;
+    private DishDTO dishToEdit;
 
     public MenuViewerScreen() {
         super(TITLE);
@@ -284,13 +285,11 @@ public class MenuViewerScreen extends JFrame {
         addDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //presenter.addDish(currentMenuName,selectionCategoryBox.getSelectedItem().toString());
                 Vector newRow = new Vector(2);
                 dishesTableModel.insertRow(dishesTableModel.getRowCount(), newRow);
-                dishesTable.setEnabled(true);
-                //dishesTable.setRowSelectionInterval(dishesTableModel.getRowCount()-1,dishesTableModel.getRowCount()-1);
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
+
 //todo
             }
 
@@ -317,7 +316,8 @@ public class MenuViewerScreen extends JFrame {
         removeDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                //todo presenter.deleteDish(dishesTable.getSelectedRow(),currentMenuName,selectionCategoryBox.getSelectedItem().toString());
+                presenter.deleteDish(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),currentMenuName,selectionCategoryBox.getSelectedItem().toString());
+                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
             }
 
             @Override
@@ -343,6 +343,9 @@ public class MenuViewerScreen extends JFrame {
         editDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                saveChangeButton.setVisible(true);
+                removeChangeButton.setVisible(true);
+                dishToEdit =
                 //todo
             }
 
@@ -372,7 +375,6 @@ public class MenuViewerScreen extends JFrame {
                 DishDTO dish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(),1).toString()));
                 presenter.addDish(currentMenuName,dish, ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName());
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
-                dishesTable.setEnabled(false);
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
             }
@@ -458,7 +460,6 @@ public class MenuViewerScreen extends JFrame {
             dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
             dishesTable.setRowHeight(20);
-            dishesTable.setEnabled(false);
         }
         return dishesTable;
     }
