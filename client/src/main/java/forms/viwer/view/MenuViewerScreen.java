@@ -42,10 +42,11 @@ public class MenuViewerScreen extends JFrame {
 
     private String currentMenuName;
     private CategoryDTO categoryToEdit;
-    private DishDTO dishToEdit;
+    private String nameDishToEdit;
+    private boolean addOrChangeDish;
 
     public MenuViewerScreen() {
-        super(TITLE);
+            super(TITLE);
         addCategoryButton = getAddCategoryButton();
         deleteCategoryButton = getDeleteCategoryButton();
         editCategoryButton = getEditCategoryButton();
@@ -289,8 +290,7 @@ public class MenuViewerScreen extends JFrame {
                 dishesTableModel.insertRow(dishesTableModel.getRowCount(), newRow);
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
-
-//todo
+                addOrChangeDish = true;
             }
 
             @Override
@@ -345,8 +345,8 @@ public class MenuViewerScreen extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
-                dishToEdit =
-                //todo
+                nameDishToEdit = dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString();
+                addOrChangeDish = false;
             }
 
             @Override
@@ -372,8 +372,14 @@ public class MenuViewerScreen extends JFrame {
         saveChangeButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                DishDTO dish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(),1).toString()));
-                presenter.addDish(currentMenuName,dish, ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName());
+                if(addOrChangeDish) {
+                    DishDTO dish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(), 1).toString()));
+                    presenter.addDish(currentMenuName, dish, ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName());
+                }
+                else {
+                    DishDTO newDish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(),1).toString()));
+                    presenter.changeDish(newDish, nameDishToEdit,currentMenuName,selectionCategoryBox.getSelectedItem().toString());
+                }
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
