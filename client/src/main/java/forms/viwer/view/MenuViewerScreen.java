@@ -56,7 +56,7 @@ public class MenuViewerScreen extends JFrame {
         removeChangeButton = getRemoveChangeButton();
 
         dishesTable = getDishesTable();
-        dishesTableModel =(DefaultTableModel) dishesTable.getModel(); //new DefaultTableModel();
+        dishesTableModel =(DefaultTableModel) dishesTable.getModel();
         columnHeader.add(NAME_DISH);
         columnHeader.add(PRICE_DISH);
         dishesTableModel.setColumnIdentifiers(columnHeader);
@@ -101,6 +101,8 @@ public class MenuViewerScreen extends JFrame {
         JScrollPane dishesScrollPane = new JScrollPane(dishesTable);
         dishesTable.setFillsViewportHeight(true);
         rootPanel.add(dishesScrollPane, gbc);
+        dishesTable.setMinimumSize(dishesTable.getSize());
+        dishesScrollPane.setMinimumSize(dishesScrollPane.getSize());
         //создание панели с кнопками добавить, удалить, изменить для БЛЮДА
         gbc.weightx = 0;
         gbc.weighty = 0;
@@ -122,7 +124,7 @@ public class MenuViewerScreen extends JFrame {
         changePanel.add(removeChangeButton);
         rootPanel.add(changePanel,gbc);
 
-        dataAboutDishes = new Vector<DishDTO>();
+        dataAboutDishes = new Vector<>();
         dishesTableModel.addTableModelListener(dishesTable);
 
 
@@ -273,14 +275,20 @@ public class MenuViewerScreen extends JFrame {
             }
         });
 
+        selectionCategoryBox.addItemListener(e -> {
+            if(selectionCategoryBox.getSelectedIndex() != -1){
+                setDataAboutDishes( (CategoryDTO) selectionCategoryBox.getSelectedItem());
+            }
+        });
+
         addDishButton.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 //presenter.addDish(currentMenuName,selectionCategoryBox.getSelectedItem().toString());
                 Vector newRow = new Vector(2);
-                dishesTableModel.insertRow(dishesTableModel.getRowCount(),newRow);
+                dishesTableModel.insertRow(dishesTableModel.getRowCount(), newRow);
                 dishesTable.setEnabled(true);
-                dishesTable.setRowSelectionInterval(dishesTableModel.getRowCount()-1,dishesTableModel.getRowCount()-1);
+                //dishesTable.setRowSelectionInterval(dishesTableModel.getRowCount()-1,dishesTableModel.getRowCount()-1);
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
 //todo
@@ -362,7 +370,7 @@ public class MenuViewerScreen extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 DishDTO dish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(),1).toString()));
-                presenter.addDish(currentMenuName,dish,selectionCategoryBox.getSelectedItem().toString());
+                presenter.addDish(currentMenuName,dish, ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName());
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
                 dishesTable.setEnabled(false);
                 saveChangeButton.setVisible(false);
@@ -449,6 +457,7 @@ public class MenuViewerScreen extends JFrame {
             dishesTable = new JTable();
             dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+            dishesTable.setRowHeight(20);
             dishesTable.setEnabled(false);
         }
         return dishesTable;
@@ -460,7 +469,7 @@ public class MenuViewerScreen extends JFrame {
             dataAboutDishes.add(dish);
         }
         setDishesTable();
-        dishesTable.revalidate();
+        //dishesTable.revalidate();
     }
     void setDishesTable(){
         dishesTableModel = new DefaultTableModel();

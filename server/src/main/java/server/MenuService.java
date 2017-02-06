@@ -50,9 +50,17 @@ class MenuService {
     private static MenuDTO convertToDTO(Menu menu) {
         Set<CategoryDTO> categoryDTOS = new HashSet<>();
         for (Category category : menu.getCategories()) {
-            categoryDTOS.add(new CategoryDTO(category.getName()));
+            Set<DishDTO> dishDTOS = new HashSet<>();
+            for(Dish dish : category.getDishes()){
+                dishDTOS.add(convertToDTO(dish));
+            }
+            categoryDTOS.add(new CategoryDTO(category.getName(), dishDTOS));
         }
         return new MenuDTO(categoryDTOS);
+    }
+
+    private static DishDTO convertToDTO(Dish dish) {
+        return new DishDTO(dish.getName(), dish.getCost());
     }
 
     static void createMenu(String menuPath) {
