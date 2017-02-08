@@ -23,7 +23,7 @@ public class MenuViewerScreen extends JFrame {
     private static final String NAME_DISH = "Название блюда";
     private static final String PRICE_DISH = "Цена";
 
-    private Vector<DishDTO> dataAboutDishes ;
+    private Vector<DishDTO> dataAboutDishes;
     private Vector<String> columnHeader = new Vector<>(2);
     private static final long serialVersionUID = -9135268706317372751L;
 
@@ -60,7 +60,7 @@ public class MenuViewerScreen extends JFrame {
         removeChangeButton = getRemoveChangeButton();
 
         dishesTable = getDishesTable();
-        dishesTableModel =(DefaultTableModel) dishesTable.getModel();
+        dishesTableModel = (DefaultTableModel) dishesTable.getModel();
         columnHeader.add(NAME_DISH);
         columnHeader.add(PRICE_DISH);
         dishesTableModel.setColumnIdentifiers(columnHeader);
@@ -122,86 +122,46 @@ public class MenuViewerScreen extends JFrame {
         rootPanel.add(dishButtonsPanel, gbc);
         //создание панели с кнопками для сохранения и удаления изменений в блюдах
         gbc.gridx = 0;
-        gbc.gridy  = 2;
+        gbc.gridy = 2;
         JPanel changePanel = new JPanel();
         changePanel.setLayout(new FlowLayout());
         changePanel.add(saveChangeButton);
         changePanel.add(removeChangeButton);
-        rootPanel.add(changePanel,gbc);
+        rootPanel.add(changePanel, gbc);
 
         dataAboutDishes = new Vector<>();
         dishesTableModel.addTableModelListener(dishesTable);
 
 
         //обновление таблицы при перемене категории
-        selectionCategoryBox.addItemListener(e ->{
-            if(selectionCategoryBox.getSelectedIndex() != -1)
+        selectionCategoryBox.addItemListener(e -> {
+            if (selectionCategoryBox.getSelectedIndex() != -1)
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
         });
 
         //создание слушателей для кнопок изменения списка категорий
-        backToSelectionMenuButton.addMouseListener(new MouseListener() {
+        backToSelectionMenuButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectionScreen.setVisible(true);
                 MenuViewerScreen.super.setVisible(false);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        addCategoryButton.addMouseListener(new MouseListener() {
+        addCategoryButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 selectionCategoryBox.setEditable(true);
                 selectionCategoryBox.setSelectedIndex(-1);
                 categoryToEdit = null;
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        deleteCategoryButton.addMouseListener(new MouseListener() {
+        deleteCategoryButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(selectionCategoryBox.getSelectedIndex() != -1) {
-                    String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
+                if (selectionCategoryBox.getSelectedIndex() != -1) {
+                    String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
                     int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить категорию " + categoryName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
-                    if(choice == JOptionPane.YES_OPTION) {
+                    if (choice == JOptionPane.YES_OPTION) {
                         presenter.deleteCategoryEvent(((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName(), currentMenuName);
                     }
                     selectionCategoryBox.setEditable(false);
@@ -209,69 +169,28 @@ public class MenuViewerScreen extends JFrame {
                     JOptionPane.showMessageDialog(MenuViewerScreen.this, "Не выбрана категория");
                 }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        editCategoryButton.addMouseListener(new MouseListener() {
+        editCategoryButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(selectionCategoryBox.getSelectedIndex() != -1){
+                if (selectionCategoryBox.getSelectedIndex() != -1) {
                     selectionCategoryBox.setEditable(true);
                     categoryToEdit = (CategoryDTO) selectionCategoryBox.getSelectedItem();
 
-                } else{
+                } else {
                     JOptionPane.showMessageDialog(MenuViewerScreen.this, "Не выбрана категория");
                 }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
             }
         });
 
         selectionCategoryBox.addActionListener(e -> {
-            if(e.getActionCommand().equals("comboBoxEdited")){
-                if(categoryToEdit == null && selectionCategoryBox.getSelectedIndex() == -1){
+            if (e.getActionCommand().equals("comboBoxEdited")) {
+                if (categoryToEdit == null && selectionCategoryBox.getSelectedIndex() == -1) {
                     String newCategoryName = (String) selectionCategoryBox.getSelectedItem();
                     CategoryDTO newCategory = new CategoryDTO(newCategoryName);
                     presenter.addCategory(newCategory, currentMenuName);
-                }
-                else {
-                    if(selectionCategoryBox.getSelectedIndex() == -1) {
+                } else {
+                    if (selectionCategoryBox.getSelectedIndex() == -1) {
                         String newCategoryName = (String) selectionCategoryBox.getSelectedItem();
                         presenter.changeCategory(newCategoryName, categoryToEdit.getName(), currentMenuName);
                     }
@@ -281,12 +200,12 @@ public class MenuViewerScreen extends JFrame {
         });
 
         selectionCategoryBox.addItemListener(e -> {
-            if(selectionCategoryBox.getSelectedIndex() != -1){
-                setDataAboutDishes( (CategoryDTO) selectionCategoryBox.getSelectedItem());
+            if (selectionCategoryBox.getSelectedIndex() != -1) {
+                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
             }
         });
 
-        addDishButton.addMouseListener(new MouseListener() {
+        addDishButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Vector newRow = new Vector(2);
@@ -295,60 +214,21 @@ public class MenuViewerScreen extends JFrame {
                 removeChangeButton.setVisible(true);
                 addOrChangeDish = true;
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        removeDishButton.addMouseListener(new MouseListener() {
+        removeDishButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                presenter.deleteDish(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),currentMenuName,selectionCategoryBox.getSelectedItem().toString());
+                presenter.deleteDish(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), currentMenuName, selectionCategoryBox.getSelectedItem().toString());
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        editDishButton.addMouseListener(new MouseListener() {
+
+        editDishButton.addMouseListener(new MouseListener() {//todo заменить на событие таблицы
             @Override
             public void mouseClicked(MouseEvent e) {
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
-                nameDishToEdit = dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString();
+                nameDishToEdit = dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString();
                 addOrChangeDish = false;
             }
 
@@ -372,73 +252,32 @@ public class MenuViewerScreen extends JFrame {
 
             }
         });
-        saveChangeButton.addMouseListener(new MouseListener() {
+        saveChangeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(addOrChangeDish) {
+                if (addOrChangeDish) {
                     DishDTO dish = new DishDTO(dishesTable.getValueAt(dishesTable.getRowCount() - 1, 0).toString(), Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(), 1).toString()));
                     presenter.addDish(currentMenuName, dish, ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName());
-                }
-                else {
-                    DishDTO newDish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString(),Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(),1).toString()));
-                    presenter.changeDish(newDish, nameDishToEdit,currentMenuName,selectionCategoryBox.getSelectedItem().toString());
+                } else {
+                    DishDTO newDish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(), 1).toString()));
+                    presenter.changeDish(newDish, nameDishToEdit, currentMenuName, selectionCategoryBox.getSelectedItem().toString());
                 }
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        removeChangeButton.addMouseListener(new MouseListener() {
+        removeChangeButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(addOrChangeDish){
+                if (addOrChangeDish) {
                     dishesTableModel.removeRow(dishesTableModel.getRowCount() - 1);
                 }
-
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
+
 
         //упакуем
         this.pack();
@@ -452,7 +291,7 @@ public class MenuViewerScreen extends JFrame {
         updateMenu(currentMenu);
     }
 
-    void updateMenu(MenuDTO currentMenu){
+    void updateMenu(MenuDTO currentMenu) {
         int lastSelectedIndex = selectionCategoryBox.getSelectedIndex();
         selectionCategoryBox.removeAllItems();
         List<CategoryDTO> sortedList = new ArrayList<>(currentMenu.getCategories());
@@ -461,10 +300,11 @@ public class MenuViewerScreen extends JFrame {
             selectionCategoryBox.addItem(category);
         }
 
-        if(lastSelectedIndex != -1){
+        if (lastSelectedIndex != -1) {
             selectionCategoryBox.setSelectedIndex(lastSelectedIndex);
         }
     }
+
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
         if (selectionCategoryBox == null) {
             selectionCategoryBox = new JComboBox<>();
@@ -506,19 +346,21 @@ public class MenuViewerScreen extends JFrame {
         }
         return dishesTable;
     }
+
     //изменение таблицы
-    void setDataAboutDishes (CategoryDTO category) {
+    void setDataAboutDishes(CategoryDTO category) {
         dataAboutDishes.removeAllElements();
         for (DishDTO dish : category.getDishes()) {
             dataAboutDishes.add(dish);
         }
         setDishesTable();
     }
-    void setDishesTable(){
+
+    void setDishesTable() {
         dishesTableModel = new DefaultTableModel();
         dishesTable.setModel(dishesTableModel);
         dishesTableModel.setColumnIdentifiers(columnHeader);
-        for(DishDTO dish : dataAboutDishes ) {
+        for (DishDTO dish : dataAboutDishes) {
             Vector<String> newRow = new Vector<>(2);
             newRow.add(dish.getDishName());
             newRow.add(Double.toString(dish.getCost()));
@@ -557,15 +399,17 @@ public class MenuViewerScreen extends JFrame {
         }
         return editDishButton;
     }
+
     private JButton getSaveChangeButton() {
-        if(saveChangeButton == null) {
+        if (saveChangeButton == null) {
             saveChangeButton = new JButton("V");
             saveChangeButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return saveChangeButton;
     }
+
     private JButton getRemoveChangeButton() {
-        if(removeChangeButton == null) {
+        if (removeChangeButton == null) {
             removeChangeButton = new JButton("X");
             removeChangeButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }

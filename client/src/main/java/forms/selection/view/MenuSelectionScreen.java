@@ -7,6 +7,7 @@ import model.MenuDTO;
 import javax.swing.*;
 
 import java.awt.*;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.List;
@@ -74,69 +75,29 @@ public class MenuSelectionScreen extends JFrame {
         buttonsPanel.add(deleteButton);
         rootPanel.add(buttonsPanel, constraints);
 
-        openButton.addMouseListener(new MouseListener() {
+        openButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(openButton.isEnabled()) {
+                if (openButton.isEnabled()) {
                     String selectedMenuName = menuList.getSelectedValue();
-                    if(selectedMenuName != null)
+                    if (selectedMenuName != null)
                         presenter.getMenuByName(selectedMenuName);
                 }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        createButton.addMouseListener(new MouseListener() {
+        createButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 openCreationScreen();
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        deleteButton.addMouseListener(new MouseListener() {
+        createButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if(deleteButton.isEnabled()) {
+                if (deleteButton.isEnabled()) {
                     String selectedMenuName = menuList.getSelectedValue();
                     int choice = JOptionPane.showConfirmDialog(MenuSelectionScreen.this, "Удалить меню " + selectedMenuName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
-                    if(choice == JOptionPane.YES_OPTION) {
+                    if (choice == JOptionPane.YES_OPTION) {
                         presenter.deleteMenu(selectedMenuName);
                         presenter.getMenuNamesList();
                         openButton.setEnabled(false);
@@ -144,32 +105,11 @@ public class MenuSelectionScreen extends JFrame {
                     }
                 }
             }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
-
-            }
         });
-        menuList.addListSelectionListener(e ->{
+        menuList.addListSelectionListener(e -> {
             openButton.setEnabled(true);
             deleteButton.setEnabled(true);
-        } );
-
+        });
         this.pack();
         this.setMinimumSize(getSize());
     }
@@ -178,13 +118,13 @@ public class MenuSelectionScreen extends JFrame {
         this.presenter = presenter;
     }
 
-    public void updateMenusList(){
-        if(presenter != null)
+    public void updateMenusList() {
+        if (presenter != null)
             presenter.getMenuNamesList();
     }
 
-    void openMenu(MenuDTO menu, String menuName){
-        if(menu != null){
+    void openMenu(MenuDTO menu, String menuName) {
+        if (menu != null) {
             viewScreen.setCurrentMenu(menu, menuName);
             viewScreen.setVisible(true);
             this.setVisible(false);
@@ -208,7 +148,7 @@ public class MenuSelectionScreen extends JFrame {
         return menuList;
     }
 
-    void setMenuList(List<String> menuListNames){
+    void setMenuList(List<String> menuListNames) {
         String[] arrayMenuNames = new String[menuListNames.size()];
         menuList.setListData(menuListNames.toArray(arrayMenuNames));
     }
@@ -222,7 +162,7 @@ public class MenuSelectionScreen extends JFrame {
         JOptionPane.showMessageDialog(this, message);
     }
 
-    private JButton createButton(String text, boolean enable){
+    private JButton createButton(String text, boolean enable) {
         JButton button = new JButton(text);
         button.setFont(new Font("Comic Sans MS", Font.PLAIN, 12));
         button.setEnabled(enable);

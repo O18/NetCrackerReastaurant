@@ -12,8 +12,8 @@ import java.awt.event.MouseEvent;
 /**
  * Created by 1 on 19.12.2016.
  */
-public class MenuCreationScreen extends JFrame{
-    private static final String NAME  = "Введите имя :";
+public class MenuCreationScreen extends JFrame {
+    private static final String NAME = "Введите имя :";
     private static final String TITLE = "Создание меню";
     private static final String OK = "OK";
     private static final String RETURN = "Вернуться к выбору меню";
@@ -31,7 +31,7 @@ public class MenuCreationScreen extends JFrame{
     public MenuCreationScreen(MenuViewerScreen viewScreen) {
         super(TITLE);
         this.viewScreen = viewScreen;
-        this.setSize(new Dimension(320,150));
+        this.setSize(new Dimension(320, 150));
         this.setJMenuBar(getMenuCreationBar());
         JPanel panel = new JPanel();
         this.add(panel);
@@ -71,7 +71,7 @@ public class MenuCreationScreen extends JFrame{
     private JTextField getNameMenuTextField() {
         if (nameMenuTextField == null) {
             nameMenuTextField = new JTextField(20);
-            nameMenuTextField.setSize(70,20);
+            nameMenuTextField.setSize(70, 20);
             nameMenuTextField.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
         }
         return nameMenuTextField;
@@ -84,6 +84,7 @@ public class MenuCreationScreen extends JFrame{
         }
         return okButton;
     }
+
     public JMenuBar getMenuCreationBar() {
         menuCreationBar = new JMenuBar();
         JMenu returnToSelectionMenu = new JMenu(RETURN);
@@ -93,15 +94,15 @@ public class MenuCreationScreen extends JFrame{
     }
 
     private void createMenu() {
-        if(nameMenuTextField.getText().length() > 0){
+        if (nameMenuTextField.getText().length() > 0) {
             presenter.createMenu(nameMenuTextField.getText());
-        } else{
+        } else {
             JOptionPane.showMessageDialog(this, "Длина названия должна быть больше нуля!", "Ошибка ввода названия", JOptionPane.ERROR_MESSAGE);
         }
     }
 
-    void openMenu(MenuDTO menu, String menuName){
-        if(menu != null){
+    void openMenu(MenuDTO menu, String menuName) {
+        if (menu != null) {
             viewScreen.setCurrentMenu(menu, menuName);
             viewScreen.setVisible(true);
             this.setVisible(false);
