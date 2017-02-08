@@ -35,7 +35,7 @@ public class Main {
         EventBus creationEventBus = new EventBus();
         CreationController creationController = new CreationController(creationEventBus, client);
         CreationPresenter creationPresenter = new CreationPresenter(creationEventBus, creationScreen);
-        creationScreen.setPresenter(creationPresenter);
+        creationScreen.setSelectionScreen(selectionScreen);
 
         EventBus viewerEventBus = new EventBus();
         ViewerController viewerController = new ViewerController(viewerEventBus, client);
