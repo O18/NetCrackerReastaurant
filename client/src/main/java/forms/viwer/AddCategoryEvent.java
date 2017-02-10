@@ -1,4 +1,4 @@
-package forms.viwer.events;
+package forms.viwer;
 
 import forms.eventbus.Event;
 import model.CategoryDTO;

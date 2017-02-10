@@ -1,16 +1,13 @@
 package forms.selection;
 
 import client.MenuClient;
-import forms.creation.controller.CreationController;
-import forms.creation.view.CreationPresenter;
-import forms.creation.view.MenuCreationScreen;
+import forms.creation.CreationController;
+import forms.creation.CreationPresenter;
+import forms.creation.MenuCreationScreen;
 import forms.eventbus.EventBus;
-import forms.viwer.controller.ViewerController;
-import forms.viwer.view.MenuViewerScreen;
-import forms.selection.controller.SelectionController;
-import forms.selection.view.MenuSelectionScreen;
-import forms.selection.view.SelectionPresenter;
-import forms.viwer.view.ViewerPresenter;
+import forms.viwer.ViewerController;
+import forms.viwer.MenuViewerScreen;
+import forms.viwer.ViewerPresenter;
 
 import javax.swing.*;
 
@@ -36,6 +33,7 @@ public class Main {
         CreationController creationController = new CreationController(creationEventBus, client);
         CreationPresenter creationPresenter = new CreationPresenter(creationEventBus, creationScreen);
         creationScreen.setSelectionScreen(selectionScreen);
+        creationScreen.setPresenter(creationPresenter);
 
         EventBus viewerEventBus = new EventBus();
         ViewerController viewerController = new ViewerController(viewerEventBus, client);

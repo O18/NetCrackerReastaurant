@@ -1,9 +1,9 @@
-package forms.viwer.controller;
+package forms.viwer;
 
 import client.MenuClient;
 import client.ServerException;
 import forms.eventbus.EventBus;
-import forms.viwer.events.*;
+import forms.viwer.*;
 import model.MenuDTO;
 
 /**

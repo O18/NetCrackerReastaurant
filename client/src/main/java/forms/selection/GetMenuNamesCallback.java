@@ -1,4 +1,4 @@
-package forms.selection.events;
+package forms.selection;
 
 import forms.eventbus.Callback;
 

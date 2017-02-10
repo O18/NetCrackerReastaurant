@@ -1,7 +1,6 @@
-package forms.selection.view;
+package forms.selection;
 
 import forms.eventbus.EventBus;
-import forms.selection.events.*;
 import model.MenuDTO;
 
 import java.util.*;

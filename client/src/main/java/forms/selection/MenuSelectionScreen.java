@@ -1,7 +1,7 @@
-package forms.selection.view;
+package forms.selection;
 
-import forms.creation.view.MenuCreationScreen;
-import forms.viwer.view.MenuViewerScreen;
+import forms.creation.MenuCreationScreen;
+import forms.viwer.MenuViewerScreen;
 import model.MenuDTO;
 
 import javax.swing.*;
@@ -9,7 +9,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.util.List;
 
 public class MenuSelectionScreen extends JFrame {

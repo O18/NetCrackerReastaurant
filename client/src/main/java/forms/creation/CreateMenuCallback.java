@@ -1,4 +1,4 @@
-package forms.creation.events;
+package forms.creation;
 
 import forms.eventbus.Callback;
 import model.MenuDTO;

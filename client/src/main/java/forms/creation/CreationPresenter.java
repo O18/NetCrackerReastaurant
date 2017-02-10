@@ -1,7 +1,5 @@
-package forms.creation.view;
+package forms.creation;
 
-import forms.creation.events.CreateMenuCallback;
-import forms.creation.events.CreateMenuEvent;
 import forms.eventbus.EventBus;
 import model.MenuDTO;
 

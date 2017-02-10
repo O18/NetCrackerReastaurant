@@ -1,7 +1,6 @@
-package forms.viwer.view;
+package forms.viwer;
 
 import forms.eventbus.EventBus;
-import forms.viwer.events.*;
 import model.CategoryDTO;
 import model.DishDTO;
 import model.MenuDTO;

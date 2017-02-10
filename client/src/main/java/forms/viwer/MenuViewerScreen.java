@@ -1,7 +1,6 @@
-package forms.viwer.view;
+package forms.viwer;
 
-import forms.selection.view.MenuSelectionScreen;
-import javafx.collections.transformation.SortedList;
+import forms.selection.MenuSelectionScreen;
 import model.CategoryDTO;
 import model.DishDTO;
 import model.MenuDTO;

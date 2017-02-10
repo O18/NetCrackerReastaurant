@@ -1,7 +1,7 @@
-package forms.creation.view;
+package forms.creation;
 
-import forms.selection.view.MenuSelectionScreen;
-import forms.viwer.view.MenuViewerScreen;
+import forms.selection.MenuSelectionScreen;
+import forms.viwer.MenuViewerScreen;
 import model.MenuDTO;
 
 import javax.swing.*;

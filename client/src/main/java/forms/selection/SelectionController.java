@@ -1,11 +1,11 @@
-package forms.selection.controller;
+package forms.selection;
 
 import client.MenuClient;
 import client.ServerException;
 import forms.eventbus.EventBus;
-import forms.selection.events.DeleteMenuEvent;
-import forms.selection.events.GetMenuEvent;
-import forms.selection.events.GetMenuNamesEvent;
+import forms.selection.DeleteMenuEvent;
+import forms.selection.GetMenuEvent;
+import forms.selection.GetMenuNamesEvent;
 import model.MenuDTO;
 
 import java.util.Set;

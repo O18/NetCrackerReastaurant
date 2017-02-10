@@ -1,8 +1,7 @@
-package forms.creation.controller;
+package forms.creation;
 
 import client.MenuClient;
 import client.ServerException;
-import forms.creation.events.CreateMenuEvent;
 import forms.eventbus.EventBus;
 import model.MenuDTO;
 
