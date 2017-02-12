@@ -211,14 +211,26 @@ public class MenuViewerScreen extends JFrame {
                 dishesTableModel.insertRow(dishesTableModel.getRowCount(), newRow);
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
+                addDishButton.setEnabled(false);
+                removeDishButton.setEnabled(false);
+                editDishButton.setEnabled(false);
                 addOrChangeDish = true;
             }
         });
         removeDishButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                presenter.deleteDish(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), currentMenuName, selectionCategoryBox.getSelectedItem().toString());
-                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+                if(dishesTable.getSelectedRow() != -1) {
+                    String dishName = dishesTable.getValueAt(dishesTable.getSelectedRow(),0).toString();
+                    int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить блюдо " + dishName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
+                    if (choice == JOptionPane.YES_OPTION) {
+                        presenter.deleteDish(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), currentMenuName, selectionCategoryBox.getSelectedItem().toString());
+                        setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+                    }
+                }
+                else {
+                    JOptionPane.showMessageDialog(MenuViewerScreen.this, "Не выбрано блюдо");
+                }
             }
         });
 
@@ -227,6 +239,9 @@ public class MenuViewerScreen extends JFrame {
             public void mouseClicked(MouseEvent e) {
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
+                addDishButton.setEnabled(false);
+                removeDishButton.setEnabled(false);
+                editDishButton.setEnabled(false);
                 nameDishToEdit = dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString();
                 addOrChangeDish = false;
             }
@@ -253,17 +268,24 @@ public class MenuViewerScreen extends JFrame {
         });
         saveChangeButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {//todo сделать фокус на добавленной и измененной строке. Проблема в том , что таблица не выдает индекс выбранной строки !
+                //int rowsIndex;
                 if (addOrChangeDish) {
                     DishDTO dish = new DishDTO(dishesTable.getValueAt(dishesTable.getRowCount() - 1, 0).toString(), Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(), 1).toString()));
                     presenter.addDish(currentMenuName, dish, ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName());
+                    //rowsIndex = dishesTable.getRowCount() - 1;
                 } else {
                     DishDTO newDish = new DishDTO(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), Double.parseDouble(dishesTable.getValueAt(dishesTable.getSelectedRow(), 1).toString()));
                     presenter.changeDish(newDish, nameDishToEdit, currentMenuName, selectionCategoryBox.getSelectedItem().toString());
+                    //rowsIndex = dishesTable.getSelectedRow();
                 }
                 setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
+                addDishButton.setEnabled(true);
+                removeDishButton.setEnabled(true);
+                editDishButton.setEnabled(true);
+                //dishesTable.getSelectionModel().setSelectionInterval(rowsIndex,rowsIndex);
             }
         });
         removeChangeButton.addMouseListener(new MouseAdapter() {
@@ -274,6 +296,9 @@ public class MenuViewerScreen extends JFrame {
                 }
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
+                addDishButton.setEnabled(true);
+                removeDishButton.setEnabled(true);
+                editDishButton.setEnabled(true);
             }
         });
 

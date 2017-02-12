@@ -90,7 +90,7 @@ public class MenuSelectionScreen extends JFrame {
                 openCreationScreen();
             }
         });
-        createButton.addMouseListener(new MouseAdapter() {
+        deleteButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (deleteButton.isEnabled()) {
