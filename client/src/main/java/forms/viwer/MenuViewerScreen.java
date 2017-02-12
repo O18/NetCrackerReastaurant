@@ -39,7 +39,7 @@ public class MenuViewerScreen extends JFrame {
     private JButton saveChangeButton;
     private JButton removeChangeButton;
 
-    private DefaultTableModel dishesTableModel;
+    private DishesTableModel dishesTableModel;
     private ViewerPresenter presenter;
     private MenuSelectionScreen selectionScreen;
 
@@ -118,7 +118,7 @@ public class MenuViewerScreen extends JFrame {
         selectionCategoryBox = getSelectionCategoryBox();
         selectionCategoryBox.addItemListener(e -> {
             if (selectionCategoryBox.getSelectedIndex() != -1)
-                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+                updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
         });
 
         JTextField categoryEditor = (JTextField) selectionCategoryBox.getEditor().getEditorComponent();
@@ -145,7 +145,7 @@ public class MenuViewerScreen extends JFrame {
             if (selectionCategoryBox.getSelectedIndex() != -1) {
                 deleteCategoryButton.setEnabled(true);
                 editCategoryButton.setEnabled(true);
-                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+                updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
             } else {
                 deleteCategoryButton.setEnabled(false);
                 editCategoryButton.setEnabled(false);
@@ -215,11 +215,14 @@ public class MenuViewerScreen extends JFrame {
     private JPanel initDishesButtonsPanel() {
         JPanel dishesButtonPanel = new JPanel();
         addDishButton = getAddDishButton();
+        addDishButton.addActionListener(e -> {
+            //dishesTable.a
+        });
         addDishButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Vector newRow = new Vector(2);
-                dishesTableModel.insertRow(dishesTableModel.getRowCount(), newRow);
+                //dishesTableModel.insertRow(dishesTableModel.getRowCount(), newRow);
                 saveChangeButton.setVisible(true);
                 removeChangeButton.setVisible(true);
                 addDishButton.setEnabled(false);
@@ -238,7 +241,7 @@ public class MenuViewerScreen extends JFrame {
                     int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить блюдо " + dishName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
                     if (choice == JOptionPane.YES_OPTION) {
                         presenter.deleteDish(dishesTable.getValueAt(dishesTable.getSelectedRow(), 0).toString(), currentMenuName, selectionCategoryBox.getSelectedItem().toString());
-                        setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+                        updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
                     }
                 }
                 else {
@@ -295,7 +298,7 @@ public class MenuViewerScreen extends JFrame {
                     presenter.changeDish(newDish, nameDishToEdit, currentMenuName, selectionCategoryBox.getSelectedItem().toString());
                     //rowsIndex = dishesTable.getSelectedRow();
                 }
-                setDataAboutDishes((CategoryDTO) selectionCategoryBox.getSelectedItem());
+                updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
                 addDishButton.setEnabled(true);
@@ -310,7 +313,7 @@ public class MenuViewerScreen extends JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (addOrChangeDish) {
-                    dishesTableModel.removeRow(dishesTableModel.getRowCount() - 1);
+                    //dishesTableModel.removeRow(dishesTableModel.getRowCount() - 1);
                 }
                 saveChangeButton.setVisible(false);
                 removeChangeButton.setVisible(false);
@@ -388,35 +391,17 @@ public class MenuViewerScreen extends JFrame {
             dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
             dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
             dishesTable.setRowHeight(20);
-            dataAboutDishes = new Vector<>();
-            dishesTableModel = (DefaultTableModel) dishesTable.getModel();
-            columnHeader.add(NAME_DISH);
-            columnHeader.add(PRICE_DISH);
-            dishesTableModel.setColumnIdentifiers(columnHeader);
-            dishesTableModel.addTableModelListener(dishesTable);
+            dishesTableModel = new DishesTableModel();
+            dishesTable.setModel(dishesTableModel);
         }
         return dishesTable;
     }
 
-    //изменение таблицы
-    void setDataAboutDishes(CategoryDTO category) {
-        dataAboutDishes.removeAllElements();
-        for (DishDTO dish : category.getDishes()) {
-            dataAboutDishes.add(dish);
-        }
-        setDishesTable();
-    }
-
-    private void setDishesTable() {
-        dishesTableModel = new DefaultTableModel();
-        dishesTable.setModel(dishesTableModel);
-        dishesTableModel.setColumnIdentifiers(columnHeader);
-        for (DishDTO dish : dataAboutDishes) {
-            Vector<String> newRow = new Vector<>(2);
-            newRow.add(dish.getDishName());
-            newRow.add(Double.toString(dish.getCost()));
-            dishesTableModel.addRow(newRow);
-        }
+    private void updateTable(CategoryDTO category) {
+        List<DishDTO> dishes = new ArrayList<>();
+        dishes.addAll(category.getDishes());
+        dishes.sort(Comparator.comparing(DishDTO::getDishName));
+        dishesTableModel.update(dishes);
     }
 
     public void setSelectionScreen(MenuSelectionScreen selectionScreen) {
@@ -480,33 +465,45 @@ public class MenuViewerScreen extends JFrame {
     }
 
     private class DishesTableModel extends AbstractTableModel {
+        private static final long serialVersionUID = 5898245907476971686L;
 
         private final String[] columnNames = {NAME_DISH, PRICE_DISH};
         private final List<DishDTO> dishes;
 
-        private DishesTableModel(List<DishDTO> dishes) {
-            this.dishes = dishes;
+        private DishesTableModel() {
+            this.dishes = new ArrayList<>();
         }
 
-        public void clear() {
+        void clear() {
             fireTableRowsDeleted(0, dishes.size() - 1);
 
             dishes.clear();
         }
 
-        public void update(List<DishDTO> dishesToAdd) {
+        void update(List<DishDTO> dishesToAdd) {
             dishes.clear();
             for (DishDTO dish : dishesToAdd) {
                 dishes.add(dish);
             }
 
-            fireTableRowsInserted(0, dishes.size() - 1);
+            fireTableDataChanged();
         }
 
         public void add(DishDTO dish) {
             dishes.add(dish);
 
             fireTableRowsInserted(dishes.size() - 1, dishes.size() - 1);
+        }
+
+        public void insertEmptyRow(){
+            fireTableRowsInserted(dishes.size(), dishes.size());
+        }
+
+
+
+        @Override
+        public String getColumnName(int column) {
+            return columnNames[column];
         }
 
         @Override
