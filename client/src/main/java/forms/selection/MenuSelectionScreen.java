@@ -74,37 +74,25 @@ public class MenuSelectionScreen extends JFrame {
         buttonsPanel.add(deleteButton);
         rootPanel.add(buttonsPanel, constraints);
 
-        openButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (openButton.isEnabled()) {
-                    String selectedMenuName = menuList.getSelectedValue();
-                    if (selectedMenuName != null)
-                        presenter.getMenuByName(selectedMenuName);
-                }
+        openButton.addActionListener(e -> {
+            String selectedMenuName = menuList.getSelectedValue();
+            if (selectedMenuName != null)
+                presenter.getMenuByName(selectedMenuName);
+        });
+
+        createButton.addActionListener(e -> openCreationScreen());
+
+        deleteButton.addActionListener(e -> {
+            String selectedMenuName = menuList.getSelectedValue();
+            int choice = JOptionPane.showConfirmDialog(MenuSelectionScreen.this, "Удалить меню " + selectedMenuName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
+            if (choice == JOptionPane.YES_OPTION) {
+                presenter.deleteMenu(selectedMenuName);
+                presenter.getMenuNamesList();
+                openButton.setEnabled(false);
+                deleteButton.setEnabled(false);
             }
         });
-        createButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                openCreationScreen();
-            }
-        });
-        createButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                if (deleteButton.isEnabled()) {
-                    String selectedMenuName = menuList.getSelectedValue();
-                    int choice = JOptionPane.showConfirmDialog(MenuSelectionScreen.this, "Удалить меню " + selectedMenuName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
-                    if (choice == JOptionPane.YES_OPTION) {
-                        presenter.deleteMenu(selectedMenuName);
-                        presenter.getMenuNamesList();
-                        openButton.setEnabled(false);
-                        deleteButton.setEnabled(false);
-                    }
-                }
-            }
-        });
+
         menuList.addListSelectionListener(e -> {
             openButton.setEnabled(true);
             deleteButton.setEnabled(true);

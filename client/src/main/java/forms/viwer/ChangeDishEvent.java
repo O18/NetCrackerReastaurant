@@ -6,7 +6,7 @@ import model.DishDTO;
 /**
  * Created by User on 30.01.2017
  */
-public class ChangeDishEvent implements Event {
+class ChangeDishEvent implements Event {
     private final String menuName;
     private final DishDTO dish;
     private final String oldDishName;
@@ -14,7 +14,7 @@ public class ChangeDishEvent implements Event {
     private final String categoryName;
 
 
-    public ChangeDishEvent(String menuName, DishDTO dish, String oldDishName, String categoryName, ViewerCallback callback) {
+    ChangeDishEvent(String menuName, DishDTO dish, String oldDishName, String categoryName, ViewerCallback callback) {
         this.menuName = menuName;
         this.dish = dish;
         this.oldDishName = oldDishName;
@@ -22,23 +22,23 @@ public class ChangeDishEvent implements Event {
         this.categoryName = categoryName;
     }
 
-    public String getMenuName() {
+    String getMenuName() {
         return menuName;
     }
 
-    public DishDTO getDish() {
+    DishDTO getDish() {
         return dish;
     }
 
-    public String getOldDishName() {
+    String getOldDishName() {
         return oldDishName;
     }
 
-    public ViewerCallback getCallback() {
+    ViewerCallback getCallback() {
         return callback;
     }
 
-    public String getCategoryName() {
+    String getCategoryName() {
         return categoryName;
     }
 }

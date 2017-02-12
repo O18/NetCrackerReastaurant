@@ -6,26 +6,26 @@ import model.CategoryDTO;
 /**
  * Created by User on 30.01.2017
  */
-public class AddCategoryEvent implements Event {
+class AddCategoryEvent implements Event {
     private final String menuName;
     private final CategoryDTO category;
     private final ViewerCallback callback;
 
-    public AddCategoryEvent(String menuName, CategoryDTO category, ViewerCallback callback) {
+    AddCategoryEvent(String menuName, CategoryDTO category, ViewerCallback callback) {
         this.menuName = menuName;
         this.category = category;
         this.callback = callback;
     }
 
-    public CategoryDTO getCategory() {
+    CategoryDTO getCategory() {
         return category;
     }
 
-    public ViewerCallback getCallback() {
+    ViewerCallback getCallback() {
         return callback;
     }
 
-    public String getMenuName() {
+    String getMenuName() {
         return menuName;
     }
 }
