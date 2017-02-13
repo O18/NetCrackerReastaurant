@@ -6,8 +6,11 @@ import model.DishDTO;
 import model.MenuDTO;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import java.awt.*;
 import java.awt.event.*;
 import java.util.*;
@@ -117,8 +120,14 @@ public class MenuViewerScreen extends JFrame {
     private JPanel initCategoryPanel() {
         selectionCategoryBox = getSelectionCategoryBox();
         selectionCategoryBox.addItemListener(e -> {
-            if (selectionCategoryBox.getSelectedIndex() != -1)
+            if (selectionCategoryBox.getSelectedIndex() != -1) {
+                deleteCategoryButton.setEnabled(true);
+                editCategoryButton.setEnabled(true);
                 updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
+            } else {
+                deleteCategoryButton.setEnabled(false);
+                editCategoryButton.setEnabled(false);
+            }
         });
 
         JTextField categoryEditor = (JTextField) selectionCategoryBox.getEditor().getEditorComponent();
@@ -138,17 +147,6 @@ public class MenuViewerScreen extends JFrame {
             public void focusLost(FocusEvent e) {
                 selectionCategoryBox.setEditable(false);
                 //todo обработать потерю фокуса
-            }
-        });
-
-        selectionCategoryBox.addItemListener(e -> {
-            if (selectionCategoryBox.getSelectedIndex() != -1) {
-                deleteCategoryButton.setEnabled(true);
-                editCategoryButton.setEnabled(true);
-                updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
-            } else {
-                deleteCategoryButton.setEnabled(false);
-                editCategoryButton.setEnabled(false);
             }
         });
 
@@ -216,9 +214,10 @@ public class MenuViewerScreen extends JFrame {
         JPanel dishesButtonPanel = new JPanel();
         addDishButton = getAddDishButton();
         addDishButton.addActionListener(e -> {
-            //dishesTable.a
+            dishesTableModel.insertEmptyRow();
+            addDishButton.setEnabled(false);
         });
-        addDishButton.addMouseListener(new MouseAdapter() {
+        /*addDishButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 Vector newRow = new Vector(2);
@@ -230,7 +229,7 @@ public class MenuViewerScreen extends JFrame {
                 editDishButton.setEnabled(false);
                 addOrChangeDish = true;
             }
-        });
+        });*/
 
         removeDishButton = getRemoveDishButton();
         removeDishButton.addMouseListener(new MouseAdapter() {
@@ -386,14 +385,31 @@ public class MenuViewerScreen extends JFrame {
     }
 
     private JTable getDishesTable() {
-        if (dishesTable == null) {
-            dishesTable = new JTable();
-            dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-            dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-            dishesTable.setRowHeight(20);
-            dishesTableModel = new DishesTableModel();
-            dishesTable.setModel(dishesTableModel);
-        }
+        dishesTable = new JTable(){
+            @Override
+            public void editingStopped(ChangeEvent e){
+                TableCellEditor editor = getCellEditor();
+                if (editor != null) {
+                    Object value = editor.getCellEditorValue();
+                    setValueAt(value, editingRow, editingColumn);
+                    if(editingColumn == 1){
+                        String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
+                        presenter.addDish(currentMenuName, dishesTableModel.getDishAt(editingRow), categoryName);
+                    }
+
+                    removeEditor();
+                }
+            }
+        };
+        dishesTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        dishesTable.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
+        dishesTable.setRowHeight(20);
+        dishesTableModel = new DishesTableModel();
+        dishesTable.setModel(dishesTableModel);
+        dishesTableModel.addTableModelListener(e -> {
+            System.out.println(e.getType());
+        });
+
         return dishesTable;
     }
 
@@ -486,7 +502,7 @@ public class MenuViewerScreen extends JFrame {
                 dishes.add(dish);
             }
 
-            fireTableDataChanged();
+            fireTableRowsUpdated(0, dishes.size());
         }
 
         public void add(DishDTO dish) {
@@ -495,11 +511,32 @@ public class MenuViewerScreen extends JFrame {
             fireTableRowsInserted(dishes.size() - 1, dishes.size() - 1);
         }
 
-        public void insertEmptyRow(){
-            fireTableRowsInserted(dishes.size(), dishes.size());
+        private void insertEmptyRow(){
+            dishes.add(new DishDTO());
+
+            fireTableRowsInserted(dishes.size() - 1, dishes.size());
         }
 
+        public DishDTO getDishAt(int row){
+            return dishes.get(row);
+        }
 
+        @Override
+        public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+            switch (columnIndex){
+                case 0:
+                    dishes.get(rowIndex).setDishName((String) aValue);
+                    break;
+                case 1:
+                    dishes.get(rowIndex).setCost(Double.parseDouble((String)aValue));
+                    break;
+            }
+        }
+
+        @Override
+        public boolean isCellEditable(int rowIndex, int columnIndex) {
+            return true;
+        }
 
         @Override
         public String getColumnName(int column) {
