@@ -17,6 +17,8 @@ public class DishDTO implements Serializable{
     }
 
     public DishDTO() {
+        dishName = "";
+        cost = 0.0;
     }
 
     public String getDishName() {
