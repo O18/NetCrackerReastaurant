@@ -41,7 +41,7 @@ public class MenuViewerScreen extends JFrame {
     private MenuSelectionScreen selectionScreen;
 
     private String currentMenuName;
-    private CategoryDTO addedCategory;//todo сделать запоминание созданной или переименованной категории для ее выбора при перезагрузки меню
+    private CategoryDTO lastChosenCategory;//todo сделать запоминание созданной или переименованной категории для ее выбора при перезагрузки меню
     private CategoryDTO categoryToEdit;
 
     public MenuViewerScreen() {
@@ -126,8 +126,11 @@ public class MenuViewerScreen extends JFrame {
             String categoryName = e.getActionCommand();
             if (categoryToEdit == null) {
                 CategoryDTO newCategory = new CategoryDTO(categoryName);
+                lastChosenCategory = newCategory;
                 presenter.addCategory(newCategory, currentMenuName);
             } else {
+                lastChosenCategory = categoryToEdit;
+                lastChosenCategory.setName(categoryName);
                 presenter.changeCategory(categoryName, categoryToEdit.getName(), currentMenuName);
             }
 
@@ -233,7 +236,6 @@ public class MenuViewerScreen extends JFrame {
     }
 
     void updateMenu(MenuDTO currentMenu) {
-        int lastSelectedIndex = selectionCategoryBox.getSelectedIndex();
         selectionCategoryBox.removeAllItems();
         List<CategoryDTO> sortedList = new ArrayList<>(currentMenu.getCategories());
         sortedList.sort(Comparator.comparing(CategoryDTO::getName));
@@ -241,8 +243,8 @@ public class MenuViewerScreen extends JFrame {
             selectionCategoryBox.addItem(category);
         }
 
-        if (lastSelectedIndex != -1) {
-            selectionCategoryBox.setSelectedIndex(lastSelectedIndex);
+        if (lastChosenCategory != null) {
+            selectionCategoryBox.setSelectedItem(lastChosenCategory);
         }
         updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
     }
@@ -325,7 +327,7 @@ public class MenuViewerScreen extends JFrame {
         dishesTableModel = new DishesTableModel();
         dishesTable.setModel(dishesTableModel);
         dishesTable.getSelectionModel().addListSelectionListener(e -> {
-            if(dishesTable.getSelectionModel().isSelectionEmpty()){
+            if(dishesTable.getSelectionModel().isSelectionEmpty() || dishesTable.isEditing()){
                 deleteDishButton.setEnabled(false);
             } else {
                 deleteDishButton.setEnabled(true);
@@ -370,6 +372,7 @@ public class MenuViewerScreen extends JFrame {
         if (deleteDishButton == null) {
             deleteDishButton = new JButton(REMOVE);
             deleteDishButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 22));
+            setEnabled(false);
         }
         return deleteDishButton;
     }
