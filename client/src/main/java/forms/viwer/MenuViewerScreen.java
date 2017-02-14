@@ -7,6 +7,7 @@ import model.MenuDTO;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
@@ -34,9 +35,6 @@ public class MenuViewerScreen extends JFrame {
     private JTable dishesTable;
     private JButton addDishButton;
     private JButton deleteDishButton;
-    private JButton editDishButton;
-    private JButton saveChangeButton;
-    private JButton removeChangeButton;
 
     private DishesTableModel dishesTableModel;
     private ViewerPresenter presenter;
@@ -52,8 +50,6 @@ public class MenuViewerScreen extends JFrame {
 
         this.pack();
         this.setMinimumSize(getSize());
-        removeChangeButton.setVisible(false);
-        saveChangeButton.setVisible(false);
     }
 
     private void initComponents() {
@@ -141,7 +137,6 @@ public class MenuViewerScreen extends JFrame {
             @Override
             public void focusLost(FocusEvent e) {
                 selectionCategoryBox.setEditable(false);
-                //todo обработать потерю фокуса
             }
         });
 
@@ -218,7 +213,7 @@ public class MenuViewerScreen extends JFrame {
             String dishName = dishesTableModel.getDishAt(dishesTable.getSelectedRow()).getDishName();
             int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить блюдо " + dishName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
             if (choice == JOptionPane.YES_OPTION) {
-                String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
+                String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
                 presenter.deleteDish(dishName, currentMenuName, categoryName);
             }
         });
@@ -249,6 +244,7 @@ public class MenuViewerScreen extends JFrame {
         if (lastSelectedIndex != -1) {
             selectionCategoryBox.setSelectedIndex(lastSelectedIndex);
         }
+        updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
     }
 
     private JComboBox<CategoryDTO> getSelectionCategoryBox() {
@@ -284,47 +280,40 @@ public class MenuViewerScreen extends JFrame {
     }
 
     private JTable getDishesTable() {
-        dishesTable = new JTable(){
-
-            public boolean isCellEditable(int row, int column) {
-                return getModel().isCellEditable(convertRowIndexToModel(row),
-                        convertColumnIndexToModel(column));
-            }
-
-            /*@Override
-            public void editingCanceled(ChangeEvent e){
-
-            }*/
-
+        dishesTable = new JTable() {
             @Override
-            public void editingStopped(ChangeEvent e){
+            public void editingStopped(ChangeEvent e) {
                 TableCellEditor editor = getCellEditor();
                 if (editor != null) {
                     DishDTO editingDish = dishesTableModel.getDishAt(editingRow);
                     Object value = editor.getCellEditorValue();
-                    if(editingColumn == 0){
-                        if(value.toString().equals("")){
-                            JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Имя не может быть пустым!");
-                        } else if(!editingDish.getDishName().equals("")){
-                            String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
-                            presenter.changeDish(dishesTableModel.getDishAt(editingRow), editingDish.getDishName(), currentMenuName, categoryName);
+                    if (editingColumn == 0) {
+                        if (value.toString().equals("")) {
+                            JOptionPane.showMessageDialog(MenuViewerScreen.this, "Имя не может быть пустым!");
+                        } else if (!editingDish.getDishName().equals("")) {
+                            String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
+                            editingDish.setDishName(value.toString());
+                            editingDish.setDishName((String) value);
+                            presenter.changeDish(editingDish, editingDish.getDishName(), currentMenuName, categoryName);
+                        } else {
+                            setValueAt(value, editingRow, editingColumn);
                         }
                     } else {
-                        if(Double.parseDouble(value.toString()) > 0.0){
-                            if(editingDish.getCost() != 0.0){
-                                String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
-                                presenter.changeDish(dishesTableModel.getDishAt(editingRow), editingDish.getDishName(), currentMenuName, categoryName);
+                        if (Double.parseDouble(value.toString()) > 0.0) {
+                            if (editingDish.getCost() != 0.0) {
+                                editingDish.setCost(Double.parseDouble(value.toString()));
+                                String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
+                                presenter.changeDish(editingDish, editingDish.getDishName(), currentMenuName, categoryName);
                             } else {
-                                String categoryName = ((CategoryDTO)selectionCategoryBox.getSelectedItem()).getName();
-                                presenter.addDish(currentMenuName, dishesTableModel.getDishAt(editingRow), categoryName);
+                                editingDish.setCost(Double.parseDouble(value.toString()));
+                                String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
+                                presenter.addDish(currentMenuName, editingDish, categoryName);
                                 addDishButton.setEnabled(true);
                             }
                         } else {
-                            JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Стоимость не может быть отрицательной!");
-                            value = editingDish.getCost();
+                            JOptionPane.showMessageDialog(MenuViewerScreen.this, "Стоимость не может быть нулем или отрицательной!");
                         }
                     }
-                    setValueAt(value, editingRow, editingColumn);
                     removeEditor();
                 }
             }
@@ -336,9 +325,11 @@ public class MenuViewerScreen extends JFrame {
         dishesTableModel = new DishesTableModel();
         dishesTable.setModel(dishesTableModel);
         dishesTable.getSelectionModel().addListSelectionListener(e -> {
-            System.out.println(e.getSource());
-            System.out.println(e.getLastIndex());
-            deleteDishButton.setEnabled(true);
+            if(dishesTable.getSelectionModel().isSelectionEmpty()){
+                deleteDishButton.setEnabled(false);
+            } else {
+                deleteDishButton.setEnabled(true);
+            }
         });
 
         return dishesTable;
@@ -383,30 +374,6 @@ public class MenuViewerScreen extends JFrame {
         return deleteDishButton;
     }
 
-    private JButton getEditDishButton() {
-        if (editDishButton == null) {
-            editDishButton = new JButton(EDIT);
-            editDishButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-        }
-        return editDishButton;
-    }
-
-    private JButton getSaveChangeButton() {
-        if (saveChangeButton == null) {
-            saveChangeButton = new JButton("V");
-            saveChangeButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-        }
-        return saveChangeButton;
-    }
-
-    private JButton getRemoveChangeButton() {
-        if (removeChangeButton == null) {
-            removeChangeButton = new JButton("X");
-            removeChangeButton.setFont(new Font("Comic Sans MS", Font.PLAIN, 16));
-        }
-        return removeChangeButton;
-    }
-
     void showErrorMessage(String message) {
         JOptionPane.showMessageDialog(this, message);
     }
@@ -421,45 +388,33 @@ public class MenuViewerScreen extends JFrame {
             this.dishes = new ArrayList<>();
         }
 
-        void clear() {
-            fireTableRowsDeleted(0, dishes.size() - 1);
-
-            dishes.clear();
-        }
-
         void update(List<DishDTO> dishesToAdd) {
             dishes.clear();
             for (DishDTO dish : dishesToAdd) {
                 dishes.add(dish);
             }
 
-            fireTableRowsUpdated(0, dishes.size());
+            fireTableDataChanged();
         }
 
-        public void add(DishDTO dish) {
-            dishes.add(dish);
-
-            fireTableRowsInserted(dishes.size() - 1, dishes.size() - 1);
-        }
-
-        private void insertEmptyRow(){
+        private void insertEmptyRow() {
             dishes.add(new DishDTO());
 
             fireTableRowsInserted(dishes.size() - 1, dishes.size());
         }
 
-        private DishDTO getDishAt(int row){
+        private DishDTO getDishAt(int row) {
             return dishes.get(row);
         }
 
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
-            switch (columnIndex){
+            switch (columnIndex) {
                 case 0:
                     dishes.get(rowIndex).setDishName((String) aValue);
                     break;
                 case 1:
-                    dishes.get(rowIndex).setCost(Double.parseDouble((String)aValue));
+                    dishes.get(rowIndex).setCost(Double.parseDouble((String) aValue));
                     break;
             }
         }

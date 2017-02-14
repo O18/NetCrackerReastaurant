@@ -38,9 +38,6 @@ public class Category implements Serializable{
             return false;
         name = newName;
 
-        for (Dish dish : dishes)
-            dish.setName(newName);
-
         return true;
     }
 
