@@ -41,7 +41,7 @@ public class MenuViewerScreen extends JFrame {
     private MenuSelectionScreen selectionScreen;
 
     private String currentMenuName;
-    private CategoryDTO lastChosenCategory;//todo сделать запоминание созданной или переименованной категории для ее выбора при перезагрузки меню
+    private CategoryDTO lastChosenCategory;//todo сделать запоминание созданной или переименованной категории для ее выбора при перезагрузке меню
     private CategoryDTO categoryToEdit;
 
     public MenuViewerScreen() {
@@ -50,6 +50,7 @@ public class MenuViewerScreen extends JFrame {
 
         this.pack();
         this.setMinimumSize(getSize());
+        this.setEnabled(true);
     }
 
     private void initComponents() {
@@ -99,6 +100,7 @@ public class MenuViewerScreen extends JFrame {
         backToSelectionMenuButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                selectionScreen.updateMenusList();
                 selectionScreen.setVisible(true);
                 MenuViewerScreen.super.setVisible(false);
             }
@@ -339,8 +341,10 @@ public class MenuViewerScreen extends JFrame {
 
     private void updateTable(CategoryDTO category) {
         List<DishDTO> dishes = new ArrayList<>();
-        dishes.addAll(category.getDishes());
-        dishes.sort(Comparator.comparing(DishDTO::getDishName));
+        if (category!=null) {
+            dishes.addAll(category.getDishes());
+            dishes.sort(Comparator.comparing(DishDTO::getDishName));
+        }
         dishesTableModel.update(dishes);
     }
 
