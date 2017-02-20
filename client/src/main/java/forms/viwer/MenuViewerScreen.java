@@ -103,6 +103,9 @@ public class MenuViewerScreen extends JFrame {
             public void menuSelected(MenuEvent e) {
                 selectionScreen.updateMenusList();
                 selectionScreen.setVisible(true);
+                if(dishesTable.getCellEditor() != null) {
+                    dishesTable.getCellEditor().cancelCellEditing();
+                }
                 MenuViewerScreen.super.setVisible(false);
             }
 
