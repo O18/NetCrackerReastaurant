@@ -60,4 +60,18 @@ public class SelectionPresenter {
             }
         }));
     }
+
+    void createMenu(String menuName) {
+        eventBus.post(new CreateMenuEvent(menuName, new CreateMenuCallback() {
+            @Override
+            public void onFail(RuntimeException e) {
+                selectionScreen.showErrorMessage(e.getMessage());
+            }
+
+            @Override
+            public void onSuccess(MenuDTO menu, String menuName) {
+                selectionScreen.openMenu(menu, menuName);
+            }
+        }));
+    }
 }

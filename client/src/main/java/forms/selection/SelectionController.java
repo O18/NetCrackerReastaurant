@@ -19,6 +19,7 @@ public class SelectionController {
         eventBus.addHandler(GetMenuNamesEvent.class, this::loadMenuNames);
         eventBus.addHandler(GetMenuEvent.class, this::loadMenu);
         eventBus.addHandler(DeleteMenuEvent.class, this::deleteMenu);
+        eventBus.addHandler(CreateMenuEvent.class, this::createMenu);
     }
 
     private void loadMenuNames(GetMenuNamesEvent event){
@@ -43,6 +44,16 @@ public class SelectionController {
         try {
             client.deleteMenu(event.getMenuName());
             event.getCallback().onSuccess();
+        } catch (ServerException e){
+            event.getCallback().onFail(e);
+        }
+    }
+
+    private void createMenu(CreateMenuEvent event){
+        try{
+            client.createMenu(event.getMenuName());
+            MenuDTO createdMenu = client.getMenu(event.getMenuName());
+            event.getCallback().onSuccess(createdMenu, event.getMenuName());
         } catch (ServerException e){
             event.getCallback().onFail(e);
         }

@@ -1,14 +1,12 @@
 package forms.selection;
 
-import forms.creation.MenuCreationScreen;
+
 import forms.viwer.MenuViewerScreen;
 import model.MenuDTO;
 
 import javax.swing.*;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 public class MenuSelectionScreen extends JFrame {
@@ -21,16 +19,14 @@ public class MenuSelectionScreen extends JFrame {
 
     private SelectionPresenter presenter;
     private MenuViewerScreen viewScreen;
-    private MenuCreationScreen createScreen;
 
     private JList<String> menuList;
     private JButton openButton;
     private JButton deleteButton;
 
-    public MenuSelectionScreen(MenuViewerScreen viewScreen, MenuCreationScreen createScreen) {
+    public MenuSelectionScreen(MenuViewerScreen viewScreen) {
         super(SELECTION_OF_MENU);
         this.viewScreen = viewScreen;
-        this.createScreen = createScreen;
         menuList = getMenuList();
         JLabel listOfMenuLabel = createLabel(LIST_OF_MENU);
         openButton = createButton(OPEN, false);
@@ -141,12 +137,16 @@ public class MenuSelectionScreen extends JFrame {
     }
 
     private void openCreationScreen() {
-        createScreen.setVisible(true);
-        this.setVisible(false);
+        String newMenuName = JOptionPane.showInputDialog(this, "Введите название меню", "Создание нового меню").trim();
+        if(newMenuName.isEmpty()){
+            showErrorMessage("Название меню не должно быть пустым!");
+        } else {
+            presenter.createMenu(newMenuName);
+        }
     }
 
     void showErrorMessage(String message) {
-        JOptionPane.showMessageDialog(this, message);
+        JOptionPane.showMessageDialog(this, message, "Ошибка", JOptionPane.ERROR_MESSAGE);
     }
 
     private JButton createButton(String text, boolean enable) {

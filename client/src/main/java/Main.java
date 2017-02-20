@@ -1,7 +1,4 @@
 import client.MenuClient;
-import forms.creation.CreationController;
-import forms.creation.CreationPresenter;
-import forms.creation.MenuCreationScreen;
 import forms.eventbus.EventBus;
 import forms.selection.MenuSelectionScreen;
 import forms.selection.SelectionController;
@@ -21,20 +18,13 @@ public class Main {
         MenuClient client = new MenuClient();
 
         MenuViewerScreen viewScreen = new MenuViewerScreen();
-        MenuCreationScreen creationScreen = new MenuCreationScreen(viewScreen);
-        MenuSelectionScreen selectionScreen = new MenuSelectionScreen(viewScreen, creationScreen);
+        MenuSelectionScreen selectionScreen = new MenuSelectionScreen(viewScreen);
 
         EventBus selectionScreenEventBus = new EventBus();
         SelectionController selectionController = new SelectionController(selectionScreenEventBus, client);
         SelectionPresenter selectionPresenter = new SelectionPresenter(selectionScreenEventBus, selectionScreen);
         selectionScreen.setPresenter(selectionPresenter);
         selectionScreen.updateMenusList();
-
-        EventBus creationEventBus = new EventBus();
-        CreationController creationController = new CreationController(creationEventBus, client);
-        CreationPresenter creationPresenter = new CreationPresenter(creationEventBus, creationScreen);
-        creationScreen.setSelectionScreen(selectionScreen);
-        creationScreen.setPresenter(creationPresenter);
 
         EventBus viewerEventBus = new EventBus();
         ViewerController viewerController = new ViewerController(viewerEventBus, client);
@@ -44,8 +34,6 @@ public class Main {
 
         selectionScreen.setLocationRelativeTo(null);
         selectionScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        creationScreen.setLocationRelativeTo(null);
-        creationScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         viewScreen.setLocationRelativeTo(null);
         viewScreen.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 

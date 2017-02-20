@@ -470,7 +470,7 @@ public class MenuViewerScreen extends JFrame {
             throw new IllegalArgumentException();
         }
 
-        public void deleteLast() {
+        void deleteLast() {
             dishes.remove(dishes.size() - 1);
 
             fireTableDataChanged();
