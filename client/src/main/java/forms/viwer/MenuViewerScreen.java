@@ -98,25 +98,19 @@ public class MenuViewerScreen extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu backToSelectionMenuButton = new JMenu(OPEN);
         menuBar.add(backToSelectionMenuButton);
-        backToSelectionMenuButton.addMenuListener(new MenuListener() {
+        backToSelectionMenuButton.addMouseListener(new MouseAdapter() {
             @Override
-            public void menuSelected(MenuEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 selectionScreen.updateMenusList();
                 selectionScreen.setVisible(true);
                 if(dishesTable.getCellEditor() != null) {
                     dishesTable.getCellEditor().cancelCellEditing();
                 }
                 MenuViewerScreen.super.setVisible(false);
-            }
-
-            @Override
-            public void menuDeselected(MenuEvent e) {
-
-            }
-
-            @Override
-            public void menuCanceled(MenuEvent e) {
-
+                /*for (int numOfRow = 0;numOfRow<dishesTable.getRowCount();numOfRow ++)
+                    for (int numOfColumn = 0;numOfColumn<dishesTable.getColumnCount();numOfColumn ++)
+                        if (dishesTable.isCellEditable(numOfRow,numOfColumn))
+                            dishesTable.editingCanceled(new ChangeEvent(dishesTable.getCellEditor(numOfRow,numOfColumn)));*/
             }
         });
 
