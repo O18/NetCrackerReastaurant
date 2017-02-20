@@ -15,40 +15,38 @@ import java.util.Set;
 
 @Path("menus")
 public class MenuRestResource {
-    private static final String EXTENSION = ".menu";
-    private static final String CATALOG_PATH = "menus/";
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Set<String> getMenusList() {
-        return MenuService.getMenusNames(CATALOG_PATH, EXTENSION);
+        return MenuService.getMenusNames();
     }
 
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{menu_name}")
     public MenuDTO getMenu(@PathParam("menu_name") String menuName) {
-        return MenuService.getMenu(CATALOG_PATH + menuName + EXTENSION);
+        return MenuService.getMenu(menuName);
     }
 
     @POST
     @Path("{menu_name}")
     public void createMenu(@PathParam("menu_name") String menuName) {
-        MenuService.createMenu(CATALOG_PATH + menuName + EXTENSION);
+        MenuService.createMenu(menuName);
     }
 
 
     @DELETE
     @Path("{menu_name}")
     public void deleteMenu(@PathParam("menu_name") String menuName) {
-        MenuService.deleteMenu(CATALOG_PATH + menuName + EXTENSION);
+        MenuService.deleteMenu(menuName);
     }
 
     @PUT
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{menu_name}")
     public void addCategory(CategoryDTO categoryDTO, @PathParam("menu_name") String menuName) {
-        MenuService.addCategory(categoryDTO, CATALOG_PATH + menuName + EXTENSION);
+        MenuService.addCategory(categoryDTO, menuName);
     }
 
     @PUT
@@ -56,32 +54,32 @@ public class MenuRestResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("{menu_name}/{category_name}")
     public void addDish(DishDTO dishDTO, @PathParam("category_name") String categoryName, @PathParam("menu_name") String menuName) {
-        MenuService.addDish(dishDTO, categoryName, CATALOG_PATH + menuName + EXTENSION);
+        MenuService.addDish(dishDTO, categoryName, menuName);
     }
 
     @POST
     @Consumes(MediaType.TEXT_PLAIN)
     @Path("{menu_name}/{category_name}")
     public void changeCategory(String newCategoryName, @PathParam("category_name") String oldCategoryName, @PathParam("menu_name") String menuName) {
-        MenuService.changeCategory(newCategoryName, oldCategoryName, CATALOG_PATH + menuName + EXTENSION);
+        MenuService.changeCategory(newCategoryName, oldCategoryName, menuName);
     }
 
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Path("{menu_name}/{category_name}/{dish_name}")
     public void changeDish(DishDTO dishDTO, @PathParam("dish_name") String oldDishName, @PathParam("category_name") String categoryName, @PathParam("menu_name") String menuName) {
-        MenuService.changeDish(dishDTO, oldDishName, categoryName, CATALOG_PATH + menuName + EXTENSION);
+        MenuService.changeDish(dishDTO, oldDishName, categoryName, menuName);
     }
 
     @DELETE
     @Path("{menu_name}/{category_name}")
     public void deleteCategory(@PathParam("category_name") String categoryName, @PathParam("menu_name") String menuName) {
-        MenuService.deleteCategory(categoryName, CATALOG_PATH + menuName + EXTENSION);
+        MenuService.deleteCategory(categoryName, menuName);
     }
 
     @DELETE
     @Path("{menu_name}/{category_name}/{dish_name}")
     public void deleteDish(@PathParam("dish_name") String dishName, @PathParam("category_name") String categoryName, @PathParam("menu_name") String menuName) {
-        MenuService.deleteDish(dishName, categoryName, CATALOG_PATH + menuName + EXTENSION);
+        MenuService.deleteDish(dishName, categoryName, menuName);
     }
 }

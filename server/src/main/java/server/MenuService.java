@@ -2,34 +2,31 @@ package server;
 
 import model.*;
 
-import javax.ws.rs.NotFoundException;
 import javax.ws.rs.WebApplicationException;
-import javax.ws.rs.core.Response;
 import java.io.*;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Pattern;
 
 /**
  * Created by User on 26.01.2017.
  */
 class MenuService {
-
-    static Set<String> getMenusNames(String catalogPath, String extension){
-        Set<String> menusNames = new HashSet<>();
-        File path = new File(catalogPath);
-        String[] list = path.list((dir, name) -> Pattern.compile(".*" + extension).matcher(name).matches());
-
-        if (list != null) {
-            for (int i = 0; i < list.length; i++) {
-                list[i] = list[i].replace(extension, "");
+    private static final String EXTENSION = ".menu";
+    private static final String CATALOG_PATH = "menus/";
+    private static final String FILE_NAME = CATALOG_PATH + "Menus" + EXTENSION;
+    private static final File FILE_WITH_MENUS = new File(FILE_NAME);
+    static {
+        try {
+            if(FILE_WITH_MENUS.createNewFile()){
+                setMenus(new HashMap<>());
             }
-
-            Collections.addAll(menusNames, list);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+    }
 
-        return menusNames;
+    static Set<String> getMenusNames(){
+        return getMenus().keySet();
     }
 
     static MenuDTO getMenu(String path){
@@ -37,14 +34,14 @@ class MenuService {
         return convertToDTO(menu);
     }
 
-    private static Menu loadMenu(String path){
-        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(path))){
-            return (Menu) in.readObject();
-        }catch (FileNotFoundException e){
-            throw new WebApplicationException("Файла с таким именем не существует", e);
-        } catch (IOException | ClassNotFoundException e) {
-            throw new WebApplicationException("Ошибка чтения. Невозможно открыть файл", e);
+    private static Menu loadMenu(String name){
+        //noinspection unchecked
+        Map<String, Menu> menus = getMenus();
+        Menu menu = menus.get(name);
+        if(menu != null){
+            return menu;
         }
+        throw new WebApplicationException("Ошибка чтения. Меню с именем " + name + " не существует");
     }
 
     private static MenuDTO convertToDTO(Menu menu) {
@@ -63,90 +60,78 @@ class MenuService {
         return new DishDTO(dish.getName(), dish.getCost());
     }
 
-    static void createMenu(String menuPath) {
-        File file = new File(menuPath);
-        try{
-            //noinspection ResultOfMethodCallIgnored
-            file.createNewFile();
-        } catch (IOException e) {
-            throw new WebApplicationException("Ошибка при создании файла", e);
-        }
-
-        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(menuPath))) {
-            out.writeObject(new Menu());
-        } catch (FileNotFoundException e) {
-            throw new WebApplicationException("Файл не найден", e);
-        } catch (IOException e) {
-            throw new WebApplicationException("Ошибка записи меню в файл с именем " + menuPath, e);
-        }
+    static void createMenu(String name) {
+        Map<String, Menu> menus = getMenus();
+        menus.put(name, new Menu());
+        setMenus(menus);
     }
 
-    static void addCategory(CategoryDTO categoryDTO, String menuPath){
+    static void addCategory(CategoryDTO categoryDTO, String name){
         if(categoryDTO.getName().equals(""))
             throw new WebApplicationException("Нельзя добавить категорию без имени");
-        Menu menu = loadMenu(menuPath);
+        Menu menu = loadMenu(name);
         if(menu.addCategory(new Category(categoryDTO.getName()))) {
-            saveMenu(menuPath, menu);
-        }else {
+            saveMenu(name, menu);
+        } else {
             throw new WebApplicationException("Категория с именем " + categoryDTO.getName() + " уже существует");
         }
     }
 
-    static void addDish(DishDTO dishDTO, String categoryName, String menuPath){
-        Menu menu = loadMenu(menuPath);
+    static void addDish(DishDTO dishDTO, String categoryName, String menuName){
+        Menu menu = loadMenu(menuName);
         Category category = getCategoryByName(categoryName, menu);
         if(!menu.addDishToCategory(convertToModel(dishDTO), category)){
             throw new WebApplicationException("Блюдо с именем " + dishDTO.getDishName() + " уже существует");
         }
 
-        saveMenu(menuPath, menu);
+        saveMenu(menuName, menu);
     }
 
-    static void deleteCategory(String categoryName, String menuPath){
-        Menu menu = loadMenu(menuPath);
+    static void deleteCategory(String categoryName, String menuName){
+        Menu menu = loadMenu(menuName);
         if(!menu.deleteCategory(getCategoryByName(categoryName, menu))){
-            throw new WebApplicationException("Категории с именем " + categoryName + " не существует в меню в файле " + menuPath);
+            throw new WebApplicationException("Категории с именем " + categoryName + " не существует в меню в файле " + menuName);
         }
 
-        saveMenu(menuPath, menu);
+        saveMenu(menuName, menu);
     }
 
-    static void deleteDish(String dishName, String categoryName, String menuPath){
-        Menu menu = loadMenu(menuPath);
+    static void deleteDish(String dishName, String categoryName, String menuName){
+        Menu menu = loadMenu(menuName);
         Category category = getCategoryByName(categoryName, menu);
         Dish dish = getDishByName(dishName, category);
         if(!menu.deleteDishFromCategory(dish, category)){
-            throw new WebApplicationException("Блюда с именем " + dishName + " не существует в категории " + categoryName + " в файле " + menuPath);
+            throw new WebApplicationException("Блюда с именем " + dishName + " не существует в категории " + categoryName + " в файле " + menuName);
         }
 
-        saveMenu(menuPath, menu);
+        saveMenu(menuName, menu);
     }
 
-    static void changeCategory(String newCategoryName, String oldCategoryName, String menuPath){
-        Menu menu = loadMenu(menuPath);
+    static void changeCategory(String newCategoryName, String oldCategoryName, String menuName){
+        Menu menu = loadMenu(menuName);
         Category oldCategory = getCategoryByName(oldCategoryName, menu);
         if(menu.getCategories().contains(oldCategory)){
             oldCategory.setName(newCategoryName);
         }
         else {
-            throw new WebApplicationException("Категории с именем " + oldCategoryName + " не существует в меню в файле " + menuPath);
+            throw new WebApplicationException("Категории с именем " + oldCategoryName + " не существует в меню в файле " + menuName);
         }
 
-        saveMenu(menuPath, menu);
+        saveMenu(menuName, menu);
     }
 
-    static void changeDish(DishDTO newDishDTO, String oldDishName, String categoryName, String menuPath){
-        Menu menu = loadMenu(menuPath);
+    static void changeDish(DishDTO newDishDTO, String oldDishName, String categoryName, String menuName){
+        Menu menu = loadMenu(menuName);
         Category category = getCategoryByName(categoryName, menu);
         Dish dish = getDishByName(oldDishName, category);
         if(menu.deleteDishFromCategory(dish, category)){
             menu.addDishToCategory(convertToModel(newDishDTO), category);
         }
         else {
-            throw new WebApplicationException("Блюда с именем " + oldDishName + " не существует в категории " + categoryName + " в файле " + menuPath);
+            throw new WebApplicationException("Блюда с именем " + oldDishName + " не существует в категории " + categoryName + " в файле " + menuName);
         }
 
-        saveMenu(menuPath, menu);
+        saveMenu(menuName, menu);
     }
 
     private static Dish getDishByName(String dishName, Category category) {
@@ -173,20 +158,39 @@ class MenuService {
         return new Dish(dishDTO.getDishName(), dishDTO.getCost());
     }
 
-    private static void saveMenu(String menuPath, Menu menu) {
-        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(menuPath))) {
-            out.writeObject(menu);
-        } catch (FileNotFoundException e) {
-            throw new WebApplicationException("Файл не найден", e);
-        } catch (IOException e) {
-            throw new WebApplicationException("Ошибка записи меню в файл с именем " + menuPath, e);
-        }
+    private static void saveMenu(String name, Menu menu) {
+        Map<String, Menu> menus = getMenus();
+        menus.put(name, menu);
+        setMenus(menus);
     }
 
     static void deleteMenu(String menuName) {
-        File file = new File(menuName);
-        if(!file.delete()){
+        Map<String, Menu> menus = getMenus();
+
+        if(menus.remove(menuName) != null){
             throw new WebApplicationException("Удаление несуществующего файла " + menuName);
+        }
+    }
+
+    private static Map<String, Menu> getMenus(){
+        try(ObjectInputStream in = new ObjectInputStream(new FileInputStream(FILE_WITH_MENUS))){
+            //noinspection unchecked
+            return (Map) in.readObject();
+        } catch (FileNotFoundException e) {
+            throw new WebApplicationException("Невозможно найти файл", e);
+        } catch (IOException | ClassNotFoundException e) {
+            throw new WebApplicationException("Ошибка чтения", e);
+        }
+    }
+
+    private static void setMenus(Map<String, Menu> menus){
+        try(ObjectOutputStream out = new ObjectOutputStream(new FileOutputStream(FILE_WITH_MENUS))){
+            //noinspection unchecked
+            out.writeObject(menus);
+        } catch (FileNotFoundException e) {
+            throw new WebApplicationException("Невозможно найти файл", e);
+        } catch (IOException e) {
+            throw new WebApplicationException("Ошибка чтения", e);
         }
     }
 }

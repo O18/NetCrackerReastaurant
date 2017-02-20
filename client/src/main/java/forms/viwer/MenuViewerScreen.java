@@ -7,6 +7,8 @@ import model.MenuDTO;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
+import javax.swing.event.MenuEvent;
+import javax.swing.event.MenuListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
@@ -96,10 +98,23 @@ public class MenuViewerScreen extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu backToSelectionMenuButton = new JMenu(OPEN);
         menuBar.add(backToSelectionMenuButton);
-        backToSelectionMenuButton.addActionListener(e -> {
+        backToSelectionMenuButton.addMenuListener(new MenuListener() {
+            @Override
+            public void menuSelected(MenuEvent e) {
                 selectionScreen.updateMenusList();
                 selectionScreen.setVisible(true);
                 MenuViewerScreen.super.setVisible(false);
+            }
+
+            @Override
+            public void menuDeselected(MenuEvent e) {
+
+            }
+
+            @Override
+            public void menuCanceled(MenuEvent e) {
+
+            }
         });
 
         return menuBar;
