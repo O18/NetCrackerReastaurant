@@ -92,6 +92,12 @@ public class MenuViewerScreen extends JFrame {
         constraints.insets = new Insets(0, 0, 10, 5);
         rootPanel.add(dishesButtonsPanel, constraints);
 
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.okButtonText", "Да");
+        UIManager.put("OptionPane.font", new Font("Comic Sans MS", Font.PLAIN, 16));
+        UIManager.put("OptionPane.inputDialogTitle", "Ввод");
+        UIManager.put("OptionPane.messageDialogTitle", "Сообщение");
     }
 
     private JMenuBar initMenuBar() {

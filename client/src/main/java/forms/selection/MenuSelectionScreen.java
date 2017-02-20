@@ -93,6 +93,13 @@ public class MenuSelectionScreen extends JFrame {
             openButton.setEnabled(true);
             deleteButton.setEnabled(true);
         });
+
+        UIManager.put("OptionPane.cancelButtonText", "Отмена");
+        UIManager.put("OptionPane.noButtonText", "Нет");
+        UIManager.put("OptionPane.okButtonText", "Да");
+        UIManager.put("OptionPane.font", new Font("Comic Sans MS", Font.PLAIN, 16));
+        UIManager.put("OptionPane.inputDialogTitle", "Ввод");
+
         this.pack();
         this.setMinimumSize(getSize());
     }
@@ -137,8 +144,8 @@ public class MenuSelectionScreen extends JFrame {
     }
 
     private void openCreationScreen() {
-        String newMenuName = JOptionPane.showInputDialog(this, "Введите название меню", "Создание нового меню").trim();
-        if(newMenuName.isEmpty()){
+        String newMenuName = JOptionPane.showInputDialog(this, "Введите название меню", "Создание нового меню");
+        if(newMenuName != null && newMenuName.trim().isEmpty()){
             showErrorMessage("Название меню не должно быть пустым!");
         } else {
             presenter.createMenu(newMenuName);
