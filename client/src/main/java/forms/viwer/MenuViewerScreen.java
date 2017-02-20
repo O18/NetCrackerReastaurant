@@ -76,7 +76,7 @@ public class MenuViewerScreen extends JFrame {
         JPanel categoryButtonsPanel = initCategoryButtonsPanel();
         constraints.gridx = 1;
         constraints.gridy = 0;
-        constraints.insets = new Insets(10, 0, 0, 5);
+        constraints.insets = new Insets(10, 5, 0, 5);
         rootPanel.add(categoryButtonsPanel, constraints);
 
         JPanel dishesPanel = initDishesPanel();
@@ -108,15 +108,11 @@ public class MenuViewerScreen extends JFrame {
                 }
                 MenuViewerScreen.super.setVisible(false);
             }
-
             @Override
             public void menuDeselected(MenuEvent e) {
-
             }
-
             @Override
             public void menuCanceled(MenuEvent e) {
-
             }
         });
 
@@ -229,10 +225,16 @@ public class MenuViewerScreen extends JFrame {
         deleteDishButton = getDeleteDishButton();
         deleteDishButton.addActionListener(e -> {
             String dishName = dishesTableModel.getDishAt(dishesTable.getSelectedRow()).getDishName();
-            int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить блюдо " + dishName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
-            if (choice == JOptionPane.YES_OPTION) {
-                String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
-                presenter.deleteDish(dishName, currentMenuName, categoryName);
+            if(dishName.isEmpty()){
+                dishesTableModel.deleteLast();
+                addDishButton.setEnabled(true);
+            }
+            else {
+                int choice = JOptionPane.showConfirmDialog(MenuViewerScreen.this, "Удалить блюдо " + dishName + "?", "Подтверждение удаления", JOptionPane.YES_NO_OPTION);
+                if (choice == JOptionPane.YES_OPTION) {
+                    String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
+                    presenter.deleteDish(dishName, currentMenuName, categoryName);
+                }
             }
         });
 
@@ -466,6 +468,12 @@ public class MenuViewerScreen extends JFrame {
             }
 
             throw new IllegalArgumentException();
+        }
+
+        public void deleteLast() {
+            dishes.remove(dishes.size() - 1);
+
+            fireTableDataChanged();
         }
     }
 }
