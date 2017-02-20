@@ -95,7 +95,9 @@ class MenuService {
     static void addDish(DishDTO dishDTO, String categoryName, String menuPath){
         Menu menu = loadMenu(menuPath);
         Category category = getCategoryByName(categoryName, menu);
-        menu.addDishToCategory(convertToModel(dishDTO), category);
+        if(!menu.addDishToCategory(convertToModel(dishDTO), category)){
+            throw new WebApplicationException("Блюдо с именем " + dishDTO.getDishName() + " уже существует");
+        }
 
         saveMenu(menuPath, menu);
     }

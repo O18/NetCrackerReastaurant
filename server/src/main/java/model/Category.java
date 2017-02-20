@@ -42,6 +42,11 @@ public class Category implements Serializable{
     }
 
     boolean addDish(Dish dish){
+        for(Dish d : dishes){
+            if(d.getName().equals(dish.getName())){
+                return false;
+            }
+        }
         return dishes.add(dish);
     }
 

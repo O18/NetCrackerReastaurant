@@ -7,7 +7,6 @@ import model.MenuDTO;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
 import java.awt.*;
@@ -41,7 +40,7 @@ public class MenuViewerScreen extends JFrame {
     private MenuSelectionScreen selectionScreen;
 
     private String currentMenuName;
-    private CategoryDTO lastChosenCategory;//todo сделать запоминание созданной или переименованной категории для ее выбора при перезагрузке меню
+    private CategoryDTO lastChosenCategory;
     private CategoryDTO categoryToEdit;
 
     public MenuViewerScreen() {
@@ -97,13 +96,10 @@ public class MenuViewerScreen extends JFrame {
         JMenuBar menuBar = new JMenuBar();
         JMenu backToSelectionMenuButton = new JMenu(OPEN);
         menuBar.add(backToSelectionMenuButton);
-        backToSelectionMenuButton.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
+        backToSelectionMenuButton.addActionListener(e -> {
                 selectionScreen.updateMenusList();
                 selectionScreen.setVisible(true);
                 MenuViewerScreen.super.setVisible(false);
-            }
         });
 
         return menuBar;
@@ -131,8 +127,7 @@ public class MenuViewerScreen extends JFrame {
                 lastChosenCategory = newCategory;
                 presenter.addCategory(newCategory, currentMenuName);
             } else {
-                lastChosenCategory = categoryToEdit;
-                lastChosenCategory.setName(categoryName);
+                lastChosenCategory = new CategoryDTO(categoryName, categoryToEdit.getDishes());
                 presenter.changeCategory(categoryName, categoryToEdit.getName(), currentMenuName);
             }
 
@@ -238,6 +233,7 @@ public class MenuViewerScreen extends JFrame {
     }
 
     void updateMenu(MenuDTO currentMenu) {
+        dishesTable.getSelectionModel().clearSelection();
         selectionCategoryBox.removeAllItems();
         List<CategoryDTO> sortedList = new ArrayList<>(currentMenu.getCategories());
         sortedList.sort(Comparator.comparing(CategoryDTO::getName));
@@ -290,26 +286,30 @@ public class MenuViewerScreen extends JFrame {
                 TableCellEditor editor = getCellEditor();
                 if (editor != null) {
                     DishDTO editingDish = dishesTableModel.getDishAt(editingRow);
-                    Object value = editor.getCellEditorValue();
+                    Object changedValue = editor.getCellEditorValue();
                     if (editingColumn == 0) {
-                        if (value.toString().equals("")) {
+                        if (changedValue.toString().equals("")) {
                             JOptionPane.showMessageDialog(MenuViewerScreen.this, "Имя не может быть пустым!");
                         } else if (!editingDish.getDishName().equals("")) {
                             String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
-                            editingDish.setDishName(value.toString());
-                            editingDish.setDishName((String) value);
-                            presenter.changeDish(editingDish, editingDish.getDishName(), currentMenuName, categoryName);
+                            String oldName = editingDish.getDishName();
+                            editingDish.setDishName(changedValue.toString());
+                            lastChosenCategory = (CategoryDTO) selectionCategoryBox.getSelectedItem();
+                            presenter.changeDish(editingDish, oldName, currentMenuName, categoryName);
                         } else {
-                            setValueAt(value, editingRow, editingColumn);
+                            setValueAt(changedValue, editingRow, editingColumn);
                         }
                     } else {
-                        if (Double.parseDouble(value.toString()) > 0.0) {
+                        if (Double.parseDouble(changedValue.toString()) > 0.0) {
+                            lastChosenCategory = (CategoryDTO) selectionCategoryBox.getSelectedItem();
                             if (editingDish.getCost() != 0.0) {
-                                editingDish.setCost(Double.parseDouble(value.toString()));
+                                editingDish.setCost(Double.parseDouble(changedValue.toString()));
                                 String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
-                                presenter.changeDish(editingDish, editingDish.getDishName(), currentMenuName, categoryName);
+                                String oldName = editingDish.getDishName();
+                                lastChosenCategory = (CategoryDTO) selectionCategoryBox.getSelectedItem();
+                                presenter.changeDish(editingDish, oldName, currentMenuName, categoryName);
                             } else {
-                                editingDish.setCost(Double.parseDouble(value.toString()));
+                                editingDish.setCost(Double.parseDouble(changedValue.toString()));
                                 String categoryName = ((CategoryDTO) selectionCategoryBox.getSelectedItem()).getName();
                                 presenter.addDish(currentMenuName, editingDish, categoryName);
                                 addDishButton.setEnabled(true);
@@ -354,14 +354,6 @@ public class MenuViewerScreen extends JFrame {
 
     public void setPresenter(ViewerPresenter presenter) {
         this.presenter = presenter;
-    }
-
-    private JButton createButton(String text, Font font, boolean enabled) {
-        JButton button = new JButton(text);
-        button.setFont(font);
-        setEnabled(enabled);
-
-        return button;
     }
 
     private JButton getAddDishButton() {

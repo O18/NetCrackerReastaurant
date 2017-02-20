@@ -30,24 +30,27 @@ public class ViewerPresenter {
         };
     }
 
-    void addCategory(CategoryDTO categoryDTO, String menuName){
+    void addCategory(CategoryDTO categoryDTO, String menuName) {
         eventBus.post(new AddCategoryEvent(menuName, categoryDTO, callback));
     }
 
-    void changeCategory(String newCategoryName, String oldCategoryName, String menuName){
+    void changeCategory(String newCategoryName, String oldCategoryName, String menuName) {
         eventBus.post(new ChangeCategoryEvent(menuName, newCategoryName, oldCategoryName, callback));
     }
 
-    void deleteCategoryEvent(String deletedCategoryName, String menuName){
+    void deleteCategoryEvent(String deletedCategoryName, String menuName) {
         eventBus.post(new DeleteCategoryEvent(menuName, deletedCategoryName, callback));
     }
-    void addDish(String menuName, DishDTO dish, String categoryName){
-        eventBus.post(new AddDishEvent(menuName,dish,categoryName,callback));
+
+    void addDish(String menuName, DishDTO dish, String categoryName) {
+        eventBus.post(new AddDishEvent(menuName, dish, categoryName, callback));
     }
-    void deleteDish(String deletedDishName, String menuName,String categoryName) {
-        eventBus.post(new DeleteDishEvent(menuName,deletedDishName, categoryName, callback));
+
+    void deleteDish(String deletedDishName, String menuName, String categoryName) {
+        eventBus.post(new DeleteDishEvent(menuName, deletedDishName, categoryName, callback));
     }
-    void changeDish(DishDTO dish, String oldDishName, String menuName,String categoryName) {
-        eventBus.post(new ChangeDishEvent(menuName,dish,oldDishName, categoryName, callback));
+
+    void changeDish(DishDTO dish, String oldDishName, String menuName, String categoryName) {
+        eventBus.post(new ChangeDishEvent(menuName, dish, oldDishName, categoryName, callback));
     }
 }
