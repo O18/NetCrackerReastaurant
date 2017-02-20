@@ -133,9 +133,13 @@ public class MenuViewerScreen extends JFrame {
                 editCategoryButton.setEnabled(true);
                 addDishButton.setEnabled(true);
                 updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
+
             } else {
                 deleteCategoryButton.setEnabled(false);
                 editCategoryButton.setEnabled(false);
+            }
+            if(dishesTable.getCellEditor() != null) {
+                dishesTable.getCellEditor().cancelCellEditing();
             }
         });
 
@@ -263,12 +267,16 @@ public class MenuViewerScreen extends JFrame {
         selectionCategoryBox.removeAllItems();
         List<CategoryDTO> sortedList = new ArrayList<>(currentMenu.getCategories());
         sortedList.sort(Comparator.comparing(CategoryDTO::getName));
+        CategoryDTO categoryToSelect = null;
         for (CategoryDTO category : sortedList) {
             selectionCategoryBox.addItem(category);
+            if(lastChosenCategory != null && category.getName().equals(lastChosenCategory.getName())){
+                categoryToSelect = category;
+            }
         }
 
-        if (lastChosenCategory != null) {
-            selectionCategoryBox.setSelectedItem(lastChosenCategory);
+        if (categoryToSelect != null) {
+            selectionCategoryBox.setSelectedItem(categoryToSelect);
         }
         updateTable((CategoryDTO) selectionCategoryBox.getSelectedItem());
     }
